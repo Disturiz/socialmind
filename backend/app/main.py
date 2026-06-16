@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
+import app.models  # noqa: importar modelos para que Alembic los detecte
 
 app = FastAPI(
     title="SocialMind API",
