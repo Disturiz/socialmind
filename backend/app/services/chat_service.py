@@ -1,5 +1,6 @@
 import anthropic
 from datetime import datetime, timezone
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.config import settings
@@ -76,7 +77,13 @@ def _call_anthropic(emotion_key: str, db_messages: list[ChatMessage]) -> dict:
         tool_choice={"type": "tool", "name": "respond_to_child"},
         messages=messages,
     )
-    tool_use = next(b for b in response.content if b.type == "tool_use")
+    tool_use = next((b for b in response.content if b.type == "tool_use"), None)
+    if tool_use is None:
+        return {
+            "message": "Lo siento, hubo un problema técnico. ¿Podés intentarlo de nuevo?",
+            "options": ["Reintentar", "Terminar"],
+            "lumi_state": "idle",
+        }
     return tool_use.input
 
 
@@ -165,24 +172,32 @@ def send_message(db: Session, user_id: int, conversation_id: int, content: str) 
 
 
 def get_history(db: Session, user_id: int) -> list[dict]:
-    conversations = (
-        db.query(ChatConversation)
+    msg_counts = (
+        db.query(
+            ChatMessage.conversation_id,
+            func.count(ChatMessage.id).label("count"),
+        )
+        .group_by(ChatMessage.conversation_id)
+        .subquery()
+    )
+    rows = (
+        db.query(ChatConversation, msg_counts.c.count)
+        .outerjoin(msg_counts, ChatConversation.id == msg_counts.c.conversation_id)
         .filter(ChatConversation.user_id == user_id)
         .order_by(ChatConversation.started_at.desc())
         .limit(10)
         .all()
     )
-    result = []
-    for conv in conversations:
-        count = db.query(ChatMessage).filter(ChatMessage.conversation_id == conv.id).count()
-        result.append({
+    return [
+        {
             "conversation_id": conv.id,
             "emotion_key": conv.emotion_key,
             "started_at": conv.started_at,
             "ended_at": conv.ended_at,
-            "message_count": count,
-        })
-    return result
+            "message_count": count or 0,
+        }
+        for conv, count in rows
+    ]
 
 
 def get_conversation(db: Session, user_id: int, conversation_id: int) -> dict:

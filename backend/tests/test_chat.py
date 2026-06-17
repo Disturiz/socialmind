@@ -188,3 +188,66 @@ def test_get_conversation_returns_all_messages(client):
     assert data["emotion_key"] == "nervioso"
     assert len(data["messages"]) >= 1
     assert data["messages"][0]["role"] == "assistant"
+
+
+def test_send_terminar_closes_conversation(client):
+    token = _register_and_login(client, "terminar@test.com")
+    mock_anthropic = _make_anthropic_mock()
+
+    with patch("app.services.chat_service.anthropic_client", mock_anthropic):
+        start = client.post(
+            "/api/v1/chat/start",
+            json={"emotion_key": "feliz"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        conv_id = start.json()["conversation_id"]
+
+        response = client.post(
+            f"/api/v1/chat/{conv_id}/message",
+            json={"content": "Terminar"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["ended"] is True
+
+    # Segunda llamada debe retornar 409
+    with patch("app.services.chat_service.anthropic_client", mock_anthropic):
+        response2 = client.post(
+            f"/api/v1/chat/{conv_id}/message",
+            json={"content": "Hola de nuevo"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+    assert response2.status_code == 409
+
+
+def test_send_message_anthropic_returns_no_tool_use_returns_fallback(client):
+    token = _register_and_login(client, "fallback@test.com")
+    mock_anthropic = _make_anthropic_mock()
+
+    with patch("app.services.chat_service.anthropic_client", mock_anthropic):
+        start = client.post(
+            "/api/v1/chat/start",
+            json={"emotion_key": "confundido"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        conv_id = start.json()["conversation_id"]
+
+    # Mock que no devuelve tool_use block
+    mock_no_tool = MagicMock()
+    mock_no_tool.content = []  # lista vacía — next() devolvería None con el fix
+    mock_client_no_tool = MagicMock()
+    mock_client_no_tool.messages.create.return_value = mock_no_tool
+
+    with patch("app.services.chat_service.anthropic_client", mock_client_no_tool):
+        response = client.post(
+            f"/api/v1/chat/{conv_id}/message",
+            json={"content": "Hola"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "problema técnico" in data["message"]
+    assert "Reintentar" in data["options"]
