@@ -19,6 +19,8 @@ export function EmotionSelector() {
   const [emotions, setEmotions] = useState([])
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lumiState, setLumiState] = useState('idle')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     emotionsApi.list()
@@ -29,12 +31,18 @@ export function EmotionSelector() {
   const handleSelect = async (key) => {
     if (selected) return
     setSelected(key)
+    setError(null)
     try {
       await emotionsApi.log(key)
+      setLumiState('happy')
+      setTimeout(() => {
+        setLumiState('idle')
+        navigate('/escenarios')
+      }, 600)
     } catch {
-      // Si no está autenticado, continúa igual
+      setError('Algo salió mal. Intenta de nuevo.')
+      setSelected(null)
     }
-    setTimeout(() => navigate('/escenarios'), 600)
   }
 
   return (
@@ -42,14 +50,20 @@ export function EmotionSelector() {
       <div className="max-w-md w-full flex flex-col items-center gap-8">
 
         <div className="flex flex-col items-center gap-3 text-center">
-          <LumiCharacter state="idle" size={90} />
+          <LumiCharacter state={lumiState} size={90} />
           <h1 className="text-2xl font-extrabold text-primary-700">
             ¿Cómo te sientes hoy?
           </h1>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             Elige la emoción que más se parece a cómo te sientes ahora.
           </p>
         </div>
+
+        {error && (
+          <p className="text-base text-accent-coral">
+            {error}
+          </p>
+        )}
 
         {loading ? (
           <p className="text-text-muted text-base">Cargando...</p>
@@ -76,7 +90,7 @@ export function EmotionSelector() {
                 <span className="text-5xl leading-none" role="img" aria-hidden="true">
                   {emotion.emoji}
                 </span>
-                <span className="text-sm font-bold text-text-primary">
+                <span className="text-base font-bold text-text-primary">
                   {emotion.label}
                 </span>
               </motion.button>
