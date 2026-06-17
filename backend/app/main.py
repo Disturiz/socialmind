@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-import app.models  # noqa: importar modelos para que Alembic los detecte
+from app.routers import auth
 
 app = FastAPI(
     title="SocialMind API",
@@ -16,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["autenticación"])
+
 
 @app.get("/health", tags=["sistema"])
 def health_check():
