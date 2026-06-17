@@ -57,7 +57,7 @@ export function Dashboard() {
             <h1 className="text-xl font-extrabold text-primary-700">
               ¡Hola, {firstName}!
             </h1>
-            <p className="text-sm text-text-secondary">
+            <p className="text-base text-text-secondary">
               {ROLE_LABELS[user?.role] || 'Usuario'}
             </p>
           </div>
@@ -86,8 +86,8 @@ export function Dashboard() {
                 >
                   <span className="text-3xl">{mod.emoji}</span>
                   <div className="flex-1">
-                    <p className="font-bold text-text-primary text-sm">{mod.title}</p>
-                    <p className="text-xs text-text-secondary">{mod.desc}</p>
+                    <p className="font-bold text-text-primary text-base">{mod.title}</p>
+                    <p className="text-base text-text-secondary">{mod.desc}</p>
                   </div>
                   <span className="text-text-muted text-xl">›</span>
                 </button>
@@ -95,8 +95,8 @@ export function Dashboard() {
                 <Card className="flex items-center gap-4 opacity-50">
                   <span className="text-3xl">{mod.emoji}</span>
                   <div>
-                    <p className="font-bold text-text-primary text-sm">{mod.title}</p>
-                    <p className="text-xs text-text-muted">{mod.desc}</p>
+                    <p className="font-bold text-text-primary text-base">{mod.title}</p>
+                    <p className="text-base text-text-muted">{mod.desc}</p>
                   </div>
                 </Card>
               )}
