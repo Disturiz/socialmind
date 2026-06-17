@@ -51,6 +51,7 @@ export const chatApi = {
 }
 
 export const calmApi = {
-  saveSession: (data)       => api.post('/calma/session', data),
+  saveSession: (activity_type, duration_seconds, emotion_key) =>
+    api.post('/calma/session', { activity_type, duration_seconds, emotion_key }),
   getPhrase:   (emotionKey) => api.post('/calma/phrase', { emotion_key: emotionKey }),
 }
