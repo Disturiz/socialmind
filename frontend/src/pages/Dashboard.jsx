@@ -13,9 +13,27 @@ const ROLE_LABELS = {
 }
 
 const MODULE_CARDS = [
-  { emoji: '😊', title: 'Selector emocional',   desc: 'Próximamente',  available: false },
-  { emoji: '🤝', title: 'Escenarios sociales',  desc: 'Próximamente',  available: false },
-  { emoji: '🧘', title: 'Zona de calma',        desc: 'Próximamente',  available: false },
+  {
+    emoji: '😊',
+    title: 'Selector emocional',
+    desc: '¿Cómo te sientes hoy?',
+    available: true,
+    path: '/emociones',
+  },
+  {
+    emoji: '🤝',
+    title: 'Escenarios sociales',
+    desc: 'Practica situaciones del día a día',
+    available: true,
+    path: '/escenarios',
+  },
+  {
+    emoji: '🧘',
+    title: 'Zona de calma',
+    desc: 'Próximamente',
+    available: false,
+    path: null,
+  },
 ]
 
 export function Dashboard() {
@@ -55,13 +73,33 @@ export function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              <Card className="flex items-center gap-4 opacity-60">
-                <span className="text-3xl">{mod.emoji}</span>
-                <div>
-                  <p className="font-bold text-text-primary text-sm">{mod.title}</p>
-                  <p className="text-xs text-text-muted">{mod.desc}</p>
-                </div>
-              </Card>
+              {mod.available ? (
+                <button
+                  onClick={() => navigate(mod.path)}
+                  className="
+                    w-full flex items-center gap-4 p-5 rounded-3xl
+                    bg-calm-surface border-2 border-calm-border
+                    hover:border-primary-500 hover:bg-primary-50
+                    transition-colors text-left min-h-[72px]
+                  "
+                  aria-label={`Ir a ${mod.title}`}
+                >
+                  <span className="text-3xl">{mod.emoji}</span>
+                  <div className="flex-1">
+                    <p className="font-bold text-text-primary text-sm">{mod.title}</p>
+                    <p className="text-xs text-text-secondary">{mod.desc}</p>
+                  </div>
+                  <span className="text-text-muted text-xl">›</span>
+                </button>
+              ) : (
+                <Card className="flex items-center gap-4 opacity-50">
+                  <span className="text-3xl">{mod.emoji}</span>
+                  <div>
+                    <p className="font-bold text-text-primary text-sm">{mod.title}</p>
+                    <p className="text-xs text-text-muted">{mod.desc}</p>
+                  </div>
+                </Card>
+              )}
             </motion.div>
           ))}
         </div>
