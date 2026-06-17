@@ -47,3 +47,39 @@ def test_log_emotion_invalid_key(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 400
+
+
+def test_emotions_today_returns_latest_emotion(client):
+    client.post("/api/v1/auth/register", json={
+        "email": "today1@test.com", "password": "Password123!", "full_name": "Hoy Test", "role": "parent",
+    })
+    login = client.post("/api/v1/auth/login", json={"email": "today1@test.com", "password": "Password123!"})
+    token = login.json()["access_token"]
+
+    client.post(
+        "/api/v1/emotions/log",
+        json={"emotion_key": "nervioso"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    response = client.get(
+        "/api/v1/emotions/today",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    assert response.json()["emotion_key"] == "nervioso"
+
+
+def test_emotions_today_returns_null_when_no_log_today(client):
+    client.post("/api/v1/auth/register", json={
+        "email": "today2@test.com", "password": "Password123!", "full_name": "Sin Log", "role": "parent",
+    })
+    login = client.post("/api/v1/auth/login", json={"email": "today2@test.com", "password": "Password123!"})
+    token = login.json()["access_token"]
+
+    response = client.get(
+        "/api/v1/emotions/today",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    assert response.json()["emotion_key"] is None

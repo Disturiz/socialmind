@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.emotions import EmotionOut, EmotionLogRequest, EmotionLogOut
-from app.services.emotion_service import list_emotions, log_emotion
+from app.schemas.emotions import EmotionOut, EmotionLogRequest, EmotionLogOut, EmotionTodayOut
+from app.services.emotion_service import list_emotions, log_emotion, get_today_emotion
 
 router = APIRouter()
 
@@ -21,3 +21,12 @@ def log_emotion_endpoint(
     db: Session = Depends(get_db),
 ):
     return log_emotion(db, current_user.id, data)
+
+
+@router.get("/today", response_model=EmotionTodayOut)
+def get_today_emotion_endpoint(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    key = get_today_emotion(db, current_user.id)
+    return EmotionTodayOut(emotion_key=key)

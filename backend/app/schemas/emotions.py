@@ -18,3 +18,7 @@ class EmotionLogOut(BaseModel):
     logged_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class EmotionTodayOut(BaseModel):
+    emotion_key: str | None

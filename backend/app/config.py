@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 60
     cors_origins: str = "http://localhost:3000"
     app_env: str = "development"
+    anthropic_api_key: str = ""
 
     class Config:
         env_file = ".env"
