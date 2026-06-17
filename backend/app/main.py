@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routers import auth
+import app.models.user  # noqa: ensure models registered for Alembic
+import app.models.child_profile  # noqa: ensure models registered for Alembic
 
 app = FastAPI(
     title="SocialMind API",

@@ -23,6 +23,16 @@ def test_register_specialist(client):
     assert response.json()["role"] == "specialist"
 
 
+def test_register_invalid_role(client):
+    response = client.post("/api/v1/auth/register", json={
+        "email": "nino@example.com",
+        "password": "Password123!",
+        "full_name": "Niño Test",
+        "role": "child",
+    })
+    assert response.status_code == 422
+
+
 def test_register_duplicate_email(client):
     payload = {"email": "padre@example.com", "password": "Password123!", "full_name": "Test", "role": "parent"}
     client.post("/api/v1/auth/register", json=payload)
