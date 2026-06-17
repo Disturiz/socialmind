@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.models.emotion_log import EmotionLog
-from app.schemas.emotions import EmotionOut, EmotionLogRequest, EmotionLogOut
+from app.schemas.emotions import EmotionOut, EmotionLogRequest
 
 VALID_EMOTION_KEYS = {"feliz", "nervioso", "confundido", "frustrado", "cansado"}
 

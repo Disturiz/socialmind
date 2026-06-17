@@ -145,8 +145,9 @@ _SCENARIO_MAP: dict[int, ScenarioFull] = {
 
 
 def list_scenarios() -> list[ScenarioMeta]:
+    sorted_scenarios = sorted(_SCENARIO_MAP.values(), key=lambda s: s.id)
     return [ScenarioMeta(id=s.id, emoji=s.emoji, title=s.title, description=s.description)
-            for s in _SCENARIO_MAP.values()]
+            for s in sorted_scenarios]
 
 
 def get_scenario(scenario_id: int) -> ScenarioFull:
