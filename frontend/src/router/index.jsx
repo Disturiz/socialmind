@@ -6,6 +6,7 @@ import { Register }       from '../pages/Register'
 import { Dashboard }      from '../pages/Dashboard'
 import { EmotionSelector } from '../pages/EmotionSelector'
 import { ScenarioList }   from '../pages/ScenarioList'
+import { ScenarioFlow }   from '../pages/ScenarioFlow'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -37,5 +38,9 @@ export const router = createBrowserRouter([
   {
     path: '/escenarios',
     element: <ProtectedRoute><ScenarioList /></ProtectedRoute>,
+  },
+  {
+    path: '/escenarios/:scenarioId',
+    element: <ProtectedRoute><ScenarioFlow /></ProtectedRoute>,
   },
 ])
