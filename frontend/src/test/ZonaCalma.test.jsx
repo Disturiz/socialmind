@@ -45,7 +45,7 @@ describe('ZonaCalma', () => {
   it('muestra 3 tarjetas de actividad al cargar', async () => {
     renderCalma()
     await waitFor(() => {
-      expect(screen.getByText('Respirar')).toBeInTheDocument()
+      expect(screen.getAllByText('Respirar').length).toBeGreaterThan(0)
       expect(screen.getByText('Pausar')).toBeInTheDocument()
       expect(screen.getByText('Frase de Lumi')).toBeInTheDocument()
     })
@@ -53,8 +53,9 @@ describe('ZonaCalma', () => {
 
   it('tarjeta sugerida tiene clase border-primary-500 cuando emocion es nervioso', async () => {
     renderCalma()
-    await waitFor(() => screen.getByText('Respirar'))
-    const respirarBtn = screen.getByText('Respirar').closest('button')
+    await waitFor(() => screen.getAllByText('Respirar'))
+    const buttons = screen.getAllByText('Respirar')
+    const respirarBtn = buttons.find((el) => el.closest('button'))?.closest('button')
     expect(respirarBtn).toHaveClass('border-primary-500')
   })
 

@@ -108,8 +108,8 @@ export function ZonaCalma() {
         <div className="flex items-start gap-4 bg-primary-50 border-2 border-primary-200 rounded-3xl p-5">
           <LumiCharacter state="happy" size={64} />
           <p className="text-base text-text-primary leading-relaxed">
-            Hoy te sentiste <strong>{emotionKey}</strong>. Te sugiero empezar con la actividad
-            destacada con borde azul.
+            Hoy te sentiste <strong>{emotionKey}</strong>. Te sugiero que pruebes{' '}
+            <strong>{ACTIVITIES.find((a) => a.id === suggestion)?.label}</strong>.
           </p>
         </div>
 
