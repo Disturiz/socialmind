@@ -5,7 +5,7 @@ const TOTAL_CYCLES = 5
 const HALF_CYCLE_MS = 4000
 const TOTAL_SECONDS = TOTAL_CYCLES * 8
 
-export function BreathingExercise({ onComplete }) {
+export function BreathingExercise({ emotionKey, onComplete }) {
   const [phase, setPhase] = useState('inhala')
   const [cycleNum, setCycleNum] = useState(1)
   const startTimeRef = useRef(Date.now())

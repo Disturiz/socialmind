@@ -41,10 +41,12 @@ export function ZonaCalma() {
   }, [])
 
   async function handleComplete(durationSeconds) {
-    try {
-      await calmApi.saveSession(activeActivity, durationSeconds, emotionKey)
-    } catch {
-      // session loss is acceptable — don't block the child
+    if (activeActivity !== 'frase') {
+      try {
+        await calmApi.saveSession(activeActivity, durationSeconds, emotionKey)
+      } catch {
+        // session loss is acceptable — don't block the child
+      }
     }
     setActiveActivity(null)
   }
@@ -76,7 +78,7 @@ export function ZonaCalma() {
           </div>
           <div className="flex-1 flex items-center justify-center">
             {activeActivity === 'respirar' && (
-              <BreathingExercise onComplete={handleComplete} />
+              <BreathingExercise emotionKey={emotionKey} onComplete={handleComplete} />
             )}
             {activeActivity === 'pausa' && (
               <VisualTimer onComplete={handleComplete} />

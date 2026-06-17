@@ -19,6 +19,12 @@ export function LumiPhrase({ emotionKey, onComplete }) {
       } finally {
         setLoading(false)
       }
+      // Guardar sesión al mostrar la frase — no esperamos "Listo"
+      try {
+        await calmApi.saveSession('frase', 0, emotionKey)
+      } catch {
+        // pérdida silenciosa aceptable
+      }
     }
     loadPhrase()
   }, [emotionKey])
