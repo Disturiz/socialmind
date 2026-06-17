@@ -1,9 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Welcome }   from '../pages/Welcome'
-import { Login }     from '../pages/Login'
-import { Register }  from '../pages/Register'
-import { Dashboard } from '../pages/Dashboard'
+import { Welcome }        from '../pages/Welcome'
+import { Login }          from '../pages/Login'
+import { Register }       from '../pages/Register'
+import { Dashboard }      from '../pages/Dashboard'
+import { EmotionSelector } from '../pages/EmotionSelector'
+import { ScenarioList }   from '../pages/ScenarioList'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -27,5 +29,13 @@ export const router = createBrowserRouter([
   {
     path: '/inicio',
     element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
+  },
+  {
+    path: '/emociones',
+    element: <ProtectedRoute><EmotionSelector /></ProtectedRoute>,
+  },
+  {
+    path: '/escenarios',
+    element: <ProtectedRoute><ScenarioList /></ProtectedRoute>,
   },
 ])
