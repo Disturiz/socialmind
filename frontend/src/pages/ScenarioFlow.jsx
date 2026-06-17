@@ -25,7 +25,7 @@ function StepProgress({ current, total }) {
 function StepObjective({ step }) {
   return (
     <div className="flex flex-col gap-4 text-center">
-      <p className="text-xs font-bold text-primary-500 uppercase tracking-wide">
+      <p className="text-sm font-bold text-primary-500 uppercase tracking-wide">
         Objetivo
       </p>
       <h2 className="text-lg font-extrabold text-primary-700">{step.title}</h2>
@@ -37,7 +37,7 @@ function StepObjective({ step }) {
 function StepExplanation({ step }) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs font-bold text-secondary-600 uppercase tracking-wide text-center">
+      <p className="text-sm font-bold text-secondary-600 uppercase tracking-wide text-center">
         Explicación
       </p>
       <h2 className="text-lg font-extrabold text-primary-700 text-center">{step.title}</h2>
@@ -59,7 +59,7 @@ function StepPractice({ step, onAnswer }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs font-bold text-accent-yellow uppercase tracking-wide text-center">
+      <p className="text-sm font-bold text-accent-yellow uppercase tracking-wide text-center">
         Practiquemos
       </p>
       <h2 className="text-base font-bold text-text-primary text-center">{step.question}</h2>
@@ -104,7 +104,7 @@ function StepPractice({ step, onAnswer }) {
 function StepFeedback({ step }) {
   return (
     <div className="flex flex-col gap-4 text-center">
-      <p className="text-xs font-bold text-secondary-600 uppercase tracking-wide">
+      <p className="text-sm font-bold text-secondary-600 uppercase tracking-wide">
         Retroalimentación
       </p>
       <h2 className="text-xl font-extrabold text-primary-700">{step.title}</h2>
@@ -188,7 +188,7 @@ export function ScenarioFlow() {
             ‹
           </button>
           <div className="flex-1">
-            <p className="text-xs text-text-muted font-semibold">{scenario.emoji} {scenario.title}</p>
+            <p className="text-sm text-text-muted font-semibold">{scenario.emoji} {scenario.title}</p>
           </div>
         </div>
 
