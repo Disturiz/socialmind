@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, emotions, scenarios, chat
+from app.routers import auth, emotions, scenarios, chat, calm
 import app.models.user
 import app.models.child_profile
 import app.models.emotion_log
 import app.models.scenario_completion
 import app.models.chat_conversation
 import app.models.chat_message
+import app.models.calm_session
 
 app = FastAPI(
     title="SocialMind API",
@@ -27,6 +28,7 @@ app.include_router(auth.router,      prefix="/api/v1/auth",      tags=["autentic
 app.include_router(emotions.router,  prefix="/api/v1/emotions",  tags=["emociones"])
 app.include_router(scenarios.router, prefix="/api/v1/scenarios", tags=["escenarios"])
 app.include_router(chat.router,      prefix="/api/v1/chat",      tags=["chat"])
+app.include_router(calm.router,      prefix="/api/v1/calma",     tags=["calma"])
 
 
 @app.get("/health", tags=["sistema"])
