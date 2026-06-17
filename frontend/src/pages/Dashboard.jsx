@@ -37,9 +37,9 @@ const MODULE_CARDS = [
   {
     emoji: '🧘',
     title: 'Zona de calma',
-    desc: 'Próximamente',
-    available: false,
-    path: null,
+    desc: 'Respira, pausa y calmáte',
+    available: true,
+    path: '/calma',
   },
 ]
 

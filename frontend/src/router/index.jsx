@@ -8,6 +8,7 @@ import { EmotionSelector } from '../pages/EmotionSelector'
 import { ScenarioList }    from '../pages/ScenarioList'
 import { ScenarioFlow }    from '../pages/ScenarioFlow'
 import { ChatIA }          from '../pages/ChatIA'
+import { ZonaCalma }       from '../pages/ZonaCalma'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -47,5 +48,9 @@ export const router = createBrowserRouter([
   {
     path: '/chat',
     element: <ProtectedRoute><ChatIA /></ProtectedRoute>,
+  },
+  {
+    path: '/calma',
+    element: <ProtectedRoute><ZonaCalma /></ProtectedRoute>,
   },
 ])
