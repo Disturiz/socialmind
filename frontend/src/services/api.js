@@ -30,3 +30,14 @@ export const authApi = {
   login:    (data) => api.post('/auth/login', data),
   getMe:    ()     => api.get('/auth/me'),
 }
+
+export const emotionsApi = {
+  list: ()         => api.get('/emotions'),
+  log:  (key)      => api.post('/emotions/log', { emotion_key: key }),
+}
+
+export const scenariosApi = {
+  list:     ()          => api.get('/scenarios'),
+  get:      (id)        => api.get(`/scenarios/${id}`),
+  complete: (id)        => api.post(`/scenarios/${id}/complete`),
+}
