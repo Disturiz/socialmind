@@ -1,12 +1,13 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Welcome }        from '../pages/Welcome'
-import { Login }          from '../pages/Login'
-import { Register }       from '../pages/Register'
-import { Dashboard }      from '../pages/Dashboard'
+import { Welcome }         from '../pages/Welcome'
+import { Login }           from '../pages/Login'
+import { Register }        from '../pages/Register'
+import { Dashboard }       from '../pages/Dashboard'
 import { EmotionSelector } from '../pages/EmotionSelector'
-import { ScenarioList }   from '../pages/ScenarioList'
-import { ScenarioFlow }   from '../pages/ScenarioFlow'
+import { ScenarioList }    from '../pages/ScenarioList'
+import { ScenarioFlow }    from '../pages/ScenarioFlow'
+import { ChatIA }          from '../pages/ChatIA'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -24,9 +25,9 @@ function ProtectedRoute({ children }) {
 }
 
 export const router = createBrowserRouter([
-  { path: '/',        element: <Welcome /> },
-  { path: '/login',   element: <Login /> },
-  { path: '/registro',element: <Register /> },
+  { path: '/',         element: <Welcome /> },
+  { path: '/login',    element: <Login /> },
+  { path: '/registro', element: <Register /> },
   {
     path: '/inicio',
     element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
@@ -42,5 +43,9 @@ export const router = createBrowserRouter([
   {
     path: '/escenarios/:scenarioId',
     element: <ProtectedRoute><ScenarioFlow /></ProtectedRoute>,
+  },
+  {
+    path: '/chat',
+    element: <ProtectedRoute><ChatIA /></ProtectedRoute>,
   },
 ])

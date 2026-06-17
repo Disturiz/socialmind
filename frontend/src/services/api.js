@@ -32,12 +32,20 @@ export const authApi = {
 }
 
 export const emotionsApi = {
-  list: ()         => api.get('/emotions'),
-  log:  (key)      => api.post('/emotions/log', { emotion_key: key }),
+  list:  ()    => api.get('/emotions'),
+  log:   (key) => api.post('/emotions/log', { emotion_key: key }),
+  today: ()    => api.get('/emotions/today'),
 }
 
 export const scenariosApi = {
-  list:     ()          => api.get('/scenarios'),
-  get:      (id)        => api.get(`/scenarios/${id}`),
-  complete: (id)        => api.post(`/scenarios/${id}/complete`),
+  list:     ()   => api.get('/scenarios'),
+  get:      (id) => api.get(`/scenarios/${id}`),
+  complete: (id) => api.post(`/scenarios/${id}/complete`),
+}
+
+export const chatApi = {
+  start:           (emotion_key)  => api.post('/chat/start', { emotion_key }),
+  sendMessage:     (id, content)  => api.post(`/chat/${id}/message`, { content }),
+  getHistory:      ()             => api.get('/chat/history'),
+  getConversation: (id)           => api.get(`/chat/${id}`),
 }

@@ -28,6 +28,13 @@ const MODULE_CARDS = [
     path: '/escenarios',
   },
   {
+    emoji: '🦉',
+    title: 'Chat con Lumi',
+    desc: 'Conversa sobre cómo te sentís',
+    available: true,
+    path: '/chat',
+  },
+  {
     emoji: '🧘',
     title: 'Zona de calma',
     desc: 'Próximamente',
