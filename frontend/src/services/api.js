@@ -49,3 +49,8 @@ export const chatApi = {
   getHistory:      ()             => api.get('/chat/history'),
   getConversation: (id)           => api.get(`/chat/${id}`),
 }
+
+export const calmApi = {
+  saveSession: (data)       => api.post('/calma/session', data),
+  getPhrase:   (emotionKey) => api.post('/calma/phrase', { emotion_key: emotionKey }),
+}
