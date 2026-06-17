@@ -9,11 +9,19 @@ export function ScenarioList() {
   const navigate  = useNavigate()
   const [scenarios, setScenarios] = useState([])
   const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState(null)
 
-  useEffect(() => {
+  const fetchScenarios = () => {
+    setLoading(true)
+    setError(null)
     scenariosApi.list()
       .then(res => setScenarios(res.data))
+      .catch(() => setError('No pudimos cargar los escenarios. Intenta de nuevo.'))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchScenarios()
   }, [])
 
   return (
@@ -34,6 +42,16 @@ export function ScenarioList() {
 
         {loading ? (
           <p className="text-text-muted text-base text-center py-8">Cargando...</p>
+        ) : error ? (
+          <div className="flex flex-col gap-4 items-center justify-center py-8">
+            <p className="text-base text-accent-coral text-center">{error}</p>
+            <button
+              onClick={() => fetchScenarios()}
+              className="text-base text-primary-600 font-semibold underline min-h-[44px] px-4 py-2 hover:text-primary-700 transition-colors"
+            >
+              Reintentar
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col gap-3">
             {scenarios.map((scenario, i) => (
