@@ -1,11 +1,16 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.auth import RegisterRequest, LoginRequest
 from app.core.security import hash_password, verify_password, create_access_token
 
 
 def register_user(db: Session, data: RegisterRequest) -> User:
+    if data.role not in (UserRole.parent, UserRole.specialist):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El rol seleccionado no está permitido en el registro público.",
+        )
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
         raise HTTPException(

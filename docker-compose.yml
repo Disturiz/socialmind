@@ -53,6 +53,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
+      # VITE_API_URL es para llamadas del navegador (host); localhost:8000 resuelve al backend desde el host
       - VITE_API_URL=http://localhost:8000
 
 volumes:
