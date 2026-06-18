@@ -11,6 +11,7 @@ import { ChatIA }            from '../pages/ChatIA'
 import { ZonaCalma }         from '../pages/ZonaCalma'
 import { PanelProfesional }  from '../pages/PanelProfesional'
 import { ChildDetail }       from '../pages/ChildDetail'
+import { Biblioteca }        from '../pages/Biblioteca'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -78,5 +79,9 @@ export const router = createBrowserRouter([
   {
     path: '/panel/ninos/:childId',
     element: <SpecialistRoute><ChildDetail /></SpecialistRoute>,
+  },
+  {
+    path: '/biblioteca',
+    element: <SpecialistRoute><Biblioteca /></SpecialistRoute>,
   },
 ])

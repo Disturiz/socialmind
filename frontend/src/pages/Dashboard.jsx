@@ -43,13 +43,22 @@ const MODULE_CARDS = [
   },
 ]
 
-const SPECIALIST_CARD = {
-  emoji: '📊',
-  title: 'Panel Profesional',
-  desc: 'Historial de los niños',
-  available: true,
-  path: '/panel',
-}
+const SPECIALIST_CARDS = [
+  {
+    emoji: '📊',
+    title: 'Panel Profesional',
+    desc: 'Historial de los niños',
+    available: true,
+    path: '/panel',
+  },
+  {
+    emoji: '📚',
+    title: 'Biblioteca',
+    desc: 'Documentos educativos para Lumi',
+    available: true,
+    path: '/biblioteca',
+  },
+]
 
 export function Dashboard() {
   const { user, logout } = useAuth()
@@ -57,7 +66,7 @@ export function Dashboard() {
   const firstName        = user?.full_name?.split(' ')[0] || 'Bienvenido'
 
   const cards = user?.role === 'specialist'
-    ? [...MODULE_CARDS, SPECIALIST_CARD]
+    ? [...MODULE_CARDS, ...SPECIALIST_CARDS]
     : MODULE_CARDS
 
   const handleLogout = () => {

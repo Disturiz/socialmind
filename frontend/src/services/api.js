@@ -62,3 +62,12 @@ export const panelApi = {
   saveNote:     (childId, content) =>
     api.put(`/panel/children/${childId}/note`, { content }),
 }
+
+export const bibliotecaApi = {
+  upload: (formData) =>
+    api.post('/biblioteca/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  list:   ()      => api.get('/biblioteca/documents'),
+  delete: (docId) => api.delete(`/biblioteca/documents/${docId}`),
+}
