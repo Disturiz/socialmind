@@ -55,3 +55,10 @@ export const calmApi = {
     api.post('/calma/session', { activity_type, duration_seconds, emotion_key }),
   getPhrase:   (emotionKey) => api.post('/calma/phrase', { emotion_key: emotionKey }),
 }
+
+export const panelApi = {
+  listChildren: ()          => api.get('/panel/children'),
+  getChild:     (childId)   => api.get(`/panel/children/${childId}`),
+  saveNote:     (childId, content) =>
+    api.put(`/panel/children/${childId}/note`, { content }),
+}

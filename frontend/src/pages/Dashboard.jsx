@@ -43,10 +43,22 @@ const MODULE_CARDS = [
   },
 ]
 
+const SPECIALIST_CARD = {
+  emoji: '📊',
+  title: 'Panel Profesional',
+  desc: 'Historial de los niños',
+  available: true,
+  path: '/panel',
+}
+
 export function Dashboard() {
   const { user, logout } = useAuth()
   const navigate         = useNavigate()
   const firstName        = user?.full_name?.split(' ')[0] || 'Bienvenido'
+
+  const cards = user?.role === 'specialist'
+    ? [...MODULE_CARDS, SPECIALIST_CARD]
+    : MODULE_CARDS
 
   const handleLogout = () => {
     logout()
@@ -73,7 +85,7 @@ export function Dashboard() {
         {/* Módulos */}
         <div className="flex flex-col gap-4">
           <h2 className="text-lg font-bold text-text-primary">Módulos</h2>
-          {MODULE_CARDS.map((mod, i) => (
+          {cards.map((mod, i) => (
             <motion.div
               key={mod.title}
               initial={{ opacity: 0, y: 12 }}

@@ -1,14 +1,16 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Welcome }         from '../pages/Welcome'
-import { Login }           from '../pages/Login'
-import { Register }        from '../pages/Register'
-import { Dashboard }       from '../pages/Dashboard'
-import { EmotionSelector } from '../pages/EmotionSelector'
-import { ScenarioList }    from '../pages/ScenarioList'
-import { ScenarioFlow }    from '../pages/ScenarioFlow'
-import { ChatIA }          from '../pages/ChatIA'
-import { ZonaCalma }       from '../pages/ZonaCalma'
+import { Welcome }           from '../pages/Welcome'
+import { Login }             from '../pages/Login'
+import { Register }          from '../pages/Register'
+import { Dashboard }         from '../pages/Dashboard'
+import { EmotionSelector }   from '../pages/EmotionSelector'
+import { ScenarioList }      from '../pages/ScenarioList'
+import { ScenarioFlow }      from '../pages/ScenarioFlow'
+import { ChatIA }            from '../pages/ChatIA'
+import { ZonaCalma }         from '../pages/ZonaCalma'
+import { PanelProfesional }  from '../pages/PanelProfesional'
+import { ChildDetail }       from '../pages/ChildDetail'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -52,5 +54,13 @@ export const router = createBrowserRouter([
   {
     path: '/calma',
     element: <ProtectedRoute><ZonaCalma /></ProtectedRoute>,
+  },
+  {
+    path: '/panel',
+    element: <ProtectedRoute><PanelProfesional /></ProtectedRoute>,
+  },
+  {
+    path: '/panel/ninos/:childId',
+    element: <ProtectedRoute><ChildDetail /></ProtectedRoute>,
   },
 ])
