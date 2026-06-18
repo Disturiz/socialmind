@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, emotions, scenarios, chat, calm, panel
+from app.routers import auth, emotions, scenarios, chat, calm, panel, biblioteca
 import app.models.user
 import app.models.child_profile
 import app.models.emotion_log
@@ -32,7 +32,8 @@ app.include_router(emotions.router,  prefix="/api/v1/emotions",  tags=["emocione
 app.include_router(scenarios.router, prefix="/api/v1/scenarios", tags=["escenarios"])
 app.include_router(chat.router,      prefix="/api/v1/chat",      tags=["chat"])
 app.include_router(calm.router,      prefix="/api/v1/calma",     tags=["calma"])
-app.include_router(panel.router,     prefix="/api/v1/panel",     tags=["panel"])
+app.include_router(panel.router,      prefix="/api/v1/panel",      tags=["panel"])
+app.include_router(biblioteca.router, prefix="/api/v1/biblioteca", tags=["biblioteca"])
 
 
 @app.get("/health", tags=["sistema"])
