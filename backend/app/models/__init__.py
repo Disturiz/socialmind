@@ -5,10 +5,11 @@ from app.models.scenario_completion import ScenarioCompletion
 from app.models.chat_conversation import ChatConversation
 from app.models.chat_message import ChatMessage
 from app.models.calm_session import CalmSession
+from app.models.specialist_note import SpecialistNote
 
 __all__ = [
     "User", "UserRole", "ChildProfile",
     "EmotionLog", "ScenarioCompletion",
     "ChatConversation", "ChatMessage",
-    "CalmSession",
+    "CalmSession", "SpecialistNote",
 ]
