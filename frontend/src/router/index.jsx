@@ -27,6 +27,22 @@ function ProtectedRoute({ children }) {
   return children
 }
 
+function SpecialistRoute({ children }) {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-calm-bg flex items-center justify-center">
+        <p className="text-text-secondary text-base">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'specialist') return <Navigate to="/inicio" replace />
+  return children
+}
+
 export const router = createBrowserRouter([
   { path: '/',         element: <Welcome /> },
   { path: '/login',    element: <Login /> },
@@ -57,10 +73,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/panel',
-    element: <ProtectedRoute><PanelProfesional /></ProtectedRoute>,
+    element: <SpecialistRoute><PanelProfesional /></SpecialistRoute>,
   },
   {
     path: '/panel/ninos/:childId',
-    element: <ProtectedRoute><ChildDetail /></ProtectedRoute>,
+    element: <SpecialistRoute><ChildDetail /></SpecialistRoute>,
   },
 ])

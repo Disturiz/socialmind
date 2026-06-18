@@ -173,3 +173,42 @@ def test_save_note_parent_role_returns_403(client, db):
         headers={"Authorization": f"Bearer {parent_token}"},
     )
     assert response.status_code == 403
+
+
+def _make_admin(db, email="admin_test@test.com"):
+    from app.models.user import User, UserRole
+    from app.core.security import hash_password, create_access_token
+    user = User(
+        email=email,
+        hashed_password=hash_password("Password123!"),
+        full_name="Admin Test",
+        role=UserRole.admin,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    token = create_access_token({"sub": str(user.id), "role": user.role.value})
+    return token
+
+
+def test_list_children_admin_role_returns_403(client, db):
+    admin_token = _make_admin(db, "admin1@test.com")
+    response = client.get(
+        "/api/v1/panel/children",
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+    assert response.status_code == 403
+
+
+def test_save_note_admin_role_returns_403(client, db):
+    admin_token = _make_admin(db, "admin2@test.com")
+    parent_token = _login(client, "parent8@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    child = _make_child(db, parent_id)
+
+    response = client.put(
+        f"/api/v1/panel/children/{child.id}/note",
+        json={"content": "Intento admin."},
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+    assert response.status_code == 403
