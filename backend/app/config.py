@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"
     app_env: str = "development"
     anthropic_api_key: str = ""
+    openai_api_key: str = ""
 
     class Config:
         env_file = ".env"
