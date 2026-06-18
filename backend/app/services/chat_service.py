@@ -124,13 +124,14 @@ def _call_anthropic(
 
         if search_use:
             results = biblioteca_service.search(db, search_use.input["query"], top_k=3)
+            tool_content = results if results else "No se encontró información relevante en la biblioteca."
             messages.append({"role": "assistant", "content": response.content})
             messages.append({
                 "role": "user",
                 "content": [{
                     "type": "tool_result",
                     "tool_use_id": search_use.id,
-                    "content": results,
+                    "content": tool_content,
                 }],
             })
         else:

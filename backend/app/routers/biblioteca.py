@@ -29,6 +29,11 @@ def upload_document(
             status_code=413,
             detail="El archivo excede el tamaño máximo de 10 MB.",
         )
+    if not file_bytes.startswith(b"%PDF-"):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="El archivo no es un PDF válido.",
+        )
     return biblioteca_service.upload_and_process(
         db=db,
         specialist_id=current_user.id,

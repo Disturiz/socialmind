@@ -324,3 +324,43 @@ def test_chat_no_search_needed_responds_directly(client, db):
     assert resp.json()["message"] == "¡Qué bueno escucharte!"
     assert mock_anthropic.messages.create.call_count == 1
     mock_bs.search.assert_not_called()
+
+
+def test_chat_search_returns_empty_does_not_crash(client, db):
+    token = _register_and_login(client, "rag_empty@test.com")
+
+    search_block = MagicMock()
+    search_block.type = "tool_use"
+    search_block.name = "search_library"
+    search_block.id = "tu_empty1"
+    search_block.input = {"query": "algo"}
+
+    search_response = MagicMock()
+    search_response.content = [search_block]
+
+    respond_block = MagicMock()
+    respond_block.type = "tool_use"
+    respond_block.name = "respond_to_child"
+    respond_block.input = {
+        "message": "No encontré nada, pero aquí estoy.",
+        "options": ["Cambiar tema", "Terminar"],
+        "lumi_state": "thinking",
+    }
+    final_response = MagicMock()
+    final_response.content = [respond_block]
+
+    with patch("app.services.chat_service.anthropic_client") as mock_anthropic, \
+         patch("app.services.chat_service.biblioteca_service") as mock_bs:
+        mock_anthropic.messages.create.side_effect = [search_response, final_response]
+        mock_bs.search.return_value = ""  # empty library
+
+        resp = client.post(
+            "/api/v1/chat/start",
+            json={"emotion_key": "curioso"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert resp.status_code == 201
+    assert resp.json()["message"] == "No encontré nada, pero aquí estoy."
+    # The second messages.create call must have been made (not raised)
+    assert mock_anthropic.messages.create.call_count == 2

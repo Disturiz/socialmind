@@ -31,7 +31,7 @@ export function Biblioteca() {
     }
   }
 
-  useEffect(() => { loadDocs() }, [])
+  useEffect(() => { loadDocs() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleUpload(e) {
     const file = e.target.files?.[0]

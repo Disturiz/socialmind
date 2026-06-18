@@ -157,13 +157,13 @@ def delete_document(db: Session, specialist_id: int, doc_id: int) -> None:
 
 
 def search(db: Session, query: str, top_k: int = 3) -> str:
-    chunks = (
-        db.query(DocumentChunk)
+    rows = (
+        db.query(DocumentChunk, Document.original_name)
         .join(Document, DocumentChunk.document_id == Document.id)
         .filter(Document.status == "ready")
         .all()
     )
-    if not chunks:
+    if not rows:
         return ""
 
     query_resp = openai_client.embeddings.create(
@@ -173,18 +173,16 @@ def search(db: Session, query: str, top_k: int = 3) -> str:
     query_emb = query_resp.data[0].embedding
 
     scored = []
-    for chunk in chunks:
+    for chunk, original_name in rows:
         chunk_emb = json.loads(chunk.embedding)
         sim = _cosine_similarity(query_emb, chunk_emb)
-        scored.append((sim, chunk))
+        scored.append((sim, chunk, original_name))
 
     scored.sort(key=lambda x: x[0], reverse=True)
     top = scored[:top_k]
 
     parts = []
-    for i, (_, chunk) in enumerate(top, 1):
-        doc = db.query(Document).filter(Document.id == chunk.document_id).first()
-        doc_name = doc.original_name if doc else "documento"
-        parts.append(f'[Fragmento {i} de "{doc_name}"]:\n{chunk.content}')
+    for i, (_, chunk, original_name) in enumerate(top, 1):
+        parts.append(f'[Fragmento {i} de "{original_name}"]:\n{chunk.content}')
 
     return "\n\n".join(parts)
