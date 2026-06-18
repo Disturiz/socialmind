@@ -16,6 +16,7 @@ def _make_anthropic_mock(message="Hola, ¿cómo estás?", options=None, lumi_sta
         options = ["Bien", "Regular", "Quiero hablar", "Terminar"]
     mock_tool = MagicMock()
     mock_tool.type = "tool_use"
+    mock_tool.name = "respond_to_child"
     mock_tool.input = {"message": message, "options": options, "lumi_state": lumi_state}
     mock_resp = MagicMock()
     mock_resp.content = [mock_tool]
@@ -251,3 +252,75 @@ def test_send_message_anthropic_returns_no_tool_use_returns_fallback(client):
     data = response.json()
     assert "problema técnico" in data["message"]
     assert "Reintentar" in data["options"]
+
+
+def test_chat_search_library_injects_context(client, db):
+    token = _register_and_login(client, "rag_search@test.com")
+
+    search_block = MagicMock()
+    search_block.type = "tool_use"
+    search_block.name = "search_library"
+    search_block.id = "tu_abc123"
+    search_block.input = {"query": "autismo regulacion emocional"}
+
+    search_response = MagicMock()
+    search_response.content = [search_block]
+
+    respond_block = MagicMock()
+    respond_block.type = "tool_use"
+    respond_block.name = "respond_to_child"
+    respond_block.input = {
+        "message": "Lo que sentís tiene mucho sentido.",
+        "options": ["Contame más", "Cambiar tema", "Terminar"],
+        "lumi_state": "happy",
+    }
+
+    final_response = MagicMock()
+    final_response.content = [respond_block]
+
+    with patch("app.services.chat_service.anthropic_client") as mock_anthropic, \
+         patch("app.services.chat_service.biblioteca_service") as mock_bs:
+        mock_anthropic.messages.create.side_effect = [search_response, final_response]
+        mock_bs.search.return_value = "[Fragmento 1]: Texto educativo relevante."
+
+        resp = client.post(
+            "/api/v1/chat/start",
+            json={"emotion_key": "confundido"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert resp.status_code == 201
+    assert resp.json()["message"] == "Lo que sentís tiene mucho sentido."
+    assert mock_anthropic.messages.create.call_count == 2
+    mock_bs.search.assert_called_once()
+
+
+def test_chat_no_search_needed_responds_directly(client, db):
+    token = _register_and_login(client, "rag_no_search@test.com")
+
+    respond_block = MagicMock()
+    respond_block.type = "tool_use"
+    respond_block.name = "respond_to_child"
+    respond_block.input = {
+        "message": "¡Qué bueno escucharte!",
+        "options": ["Gracias", "Contame algo", "Terminar"],
+        "lumi_state": "happy",
+    }
+
+    direct_response = MagicMock()
+    direct_response.content = [respond_block]
+
+    with patch("app.services.chat_service.anthropic_client") as mock_anthropic, \
+         patch("app.services.chat_service.biblioteca_service") as mock_bs:
+        mock_anthropic.messages.create.return_value = direct_response
+
+        resp = client.post(
+            "/api/v1/chat/start",
+            json={"emotion_key": "feliz"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert resp.status_code == 201
+    assert resp.json()["message"] == "¡Qué bueno escucharte!"
+    assert mock_anthropic.messages.create.call_count == 1
+    mock_bs.search.assert_not_called()

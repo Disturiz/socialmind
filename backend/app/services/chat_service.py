@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from app.config import settings
 from app.models.chat_conversation import ChatConversation
 from app.models.chat_message import ChatMessage
+from app.services import biblioteca_service
 
 MAX_MESSAGES = 30
 
@@ -35,6 +36,25 @@ RESPOND_TOOL = {
     },
 }
 
+SEARCH_TOOL = {
+    "name": "search_library",
+    "description": (
+        "Busca en la biblioteca educativa cuando el niño menciona algo "
+        "sobre lo que querés agregar contexto de los documentos subidos "
+        "por especialistas. Solo úsala cuando sea relevante para la conversación."
+    ),
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "Texto de búsqueda semántica en la biblioteca",
+            }
+        },
+        "required": ["query"],
+    },
+}
+
 SYSTEM_PROMPT_TEMPLATE = (
     "Eres Lumi, un búho amigable y paciente que acompaña a niños y adolescentes "
     "(8-17 años) en su aprendizaje social y emocional.\n\n"
@@ -47,17 +67,22 @@ SYSTEM_PROMPT_TEMPLATE = (
     "- Si el niño expresa angustia severa o peligro, responde: "
     "'Eso suena muy importante. ¿Podés contarle a un adulto de confianza cómo te sentís?'\n"
     "- La última opción de respuesta SIEMPRE es 'Terminar'\n"
-    "- Usa la herramienta respond_to_child para cada respuesta\n\n"
+    "- Usa respond_to_child para cada respuesta. Usa search_library solo si el "
+    "contexto de la biblioteca educativa sería útil para el niño.\n\n"
     "CONTEXTO DE HOY: El niño se siente {emotion_key}."
 )
+
+FALLBACK_RESPONSE = {
+    "message": "Lo siento, hubo un problema técnico. ¿Podés intentarlo de nuevo?",
+    "options": ["Reintentar", "Terminar"],
+    "lumi_state": "idle",
+}
 
 # Singleton — se parchea en tests con unittest.mock.patch
 anthropic_client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
 
 def _build_messages(emotion_key: str, db_messages: list[ChatMessage]) -> list[dict]:
-    # Anthropic requires conversations to start with 'user'.
-    # The kickoff message is synthetic and never stored in the DB.
     msgs: list[dict] = [
         {"role": "user", "content": f"Hola Lumi, hoy me siento {emotion_key}."}
     ]
@@ -66,25 +91,52 @@ def _build_messages(emotion_key: str, db_messages: list[ChatMessage]) -> list[di
     return msgs
 
 
-def _call_anthropic(emotion_key: str, db_messages: list[ChatMessage]) -> dict:
+def _call_anthropic(
+    emotion_key: str, db_messages: list[ChatMessage], db: Session
+) -> dict:
     system = SYSTEM_PROMPT_TEMPLATE.format(emotion_key=emotion_key)
     messages = _build_messages(emotion_key, db_messages)
-    response = anthropic_client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=512,
-        system=system,
-        tools=[RESPOND_TOOL],
-        tool_choice={"type": "tool", "name": "respond_to_child"},
-        messages=messages,
-    )
-    tool_use = next((b for b in response.content if b.type == "tool_use"), None)
-    if tool_use is None:
-        return {
-            "message": "Lo siento, hubo un problema técnico. ¿Podés intentarlo de nuevo?",
-            "options": ["Reintentar", "Terminar"],
-            "lumi_state": "idle",
-        }
-    return tool_use.input
+    max_iterations = 3
+
+    for _ in range(max_iterations):
+        response = anthropic_client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=system,
+            tools=[RESPOND_TOOL, SEARCH_TOOL],
+            tool_choice={"type": "auto"},
+            messages=messages,
+        )
+
+        search_use = next(
+            (b for b in response.content
+             if b.type == "tool_use" and b.name == "search_library"),
+            None,
+        )
+        respond_use = next(
+            (b for b in response.content
+             if b.type == "tool_use" and b.name == "respond_to_child"),
+            None,
+        )
+
+        if respond_use:
+            return respond_use.input
+
+        if search_use:
+            results = biblioteca_service.search(db, search_use.input["query"], top_k=3)
+            messages.append({"role": "assistant", "content": response.content})
+            messages.append({
+                "role": "user",
+                "content": [{
+                    "type": "tool_result",
+                    "tool_use_id": search_use.id,
+                    "content": results,
+                }],
+            })
+        else:
+            break
+
+    return FALLBACK_RESPONSE
 
 
 def start_conversation(db: Session, user_id: int, emotion_key: str) -> dict:
@@ -92,7 +144,7 @@ def start_conversation(db: Session, user_id: int, emotion_key: str) -> dict:
     db.add(conv)
     db.flush()
 
-    lumi_resp = _call_anthropic(emotion_key, [])
+    lumi_resp = _call_anthropic(emotion_key, [], db)
 
     db.add(ChatMessage(
         conversation_id=conv.id,
@@ -154,7 +206,7 @@ def send_message(db: Session, user_id: int, conversation_id: int, content: str) 
                 .order_by(ChatMessage.created_at)
                 .all()
             )
-            lumi_resp = _call_anthropic(conv.emotion_key, history)
+            lumi_resp = _call_anthropic(conv.emotion_key, history, db)
 
     db.add(ChatMessage(
         conversation_id=conv.id,
