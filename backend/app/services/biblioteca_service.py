@@ -127,6 +127,8 @@ def upload_and_process(
     except Exception:
         doc.status = "failed"
         db.commit()
+        if os.path.exists(file_path):
+            os.remove(file_path)
         raise
 
 
