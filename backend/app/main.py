@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routers import auth, emotions, scenarios, chat, calm, panel, biblioteca
+from app.gamification import router as gamification_router
 import app.models.user
 import app.models.child_profile
 import app.models.emotion_log
@@ -36,6 +37,7 @@ app.include_router(chat.router,      prefix="/api/v1/chat",      tags=["chat"])
 app.include_router(calm.router,      prefix="/api/v1/calma",     tags=["calma"])
 app.include_router(panel.router,      prefix="/api/v1/panel",      tags=["panel"])
 app.include_router(biblioteca.router, prefix="/api/v1/biblioteca", tags=["biblioteca"])
+app.include_router(gamification_router.router, prefix="/api/v1/gamification", tags=["gamificación"])
 
 
 @app.get("/health", tags=["sistema"])
