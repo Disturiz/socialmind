@@ -41,6 +41,13 @@ const MODULE_CARDS = [
     available: true,
     path: '/calma',
   },
+  {
+    emoji: '⭐',
+    title: 'Mi aventura',
+    desc: 'Tu progreso y recompensas',
+    available: true,
+    path: '/mi-aventura',
+  },
 ]
 
 const SPECIALIST_CARDS = [

@@ -71,3 +71,7 @@ export const bibliotecaApi = {
   list:   ()      => api.get('/biblioteca/documents'),
   delete: (docId) => api.delete(`/biblioteca/documents/${docId}`),
 }
+
+export const gamificationApi = {
+  getProgress: () => api.get('/gamification/progreso'),
+}

@@ -12,6 +12,7 @@ import { ZonaCalma }         from '../pages/ZonaCalma'
 import { PanelProfesional }  from '../pages/PanelProfesional'
 import { ChildDetail }       from '../pages/ChildDetail'
 import { Biblioteca }        from '../pages/Biblioteca'
+import { MiAventura }        from '../pages/MiAventura'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -83,5 +84,9 @@ export const router = createBrowserRouter([
   {
     path: '/biblioteca',
     element: <SpecialistRoute><Biblioteca /></SpecialistRoute>,
+  },
+  {
+    path: '/mi-aventura',
+    element: <ProtectedRoute><MiAventura /></ProtectedRoute>,
   },
 ])
