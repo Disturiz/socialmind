@@ -139,6 +139,7 @@ export function ScenarioFlow() {
   const [stepIndex, setStepIndex] = useState(0)
   const [practiceAnswered, setPracticeAnswered] = useState(false)
   const [loading, setLoading]     = useState(true)
+  const [completing, setCompleting] = useState(false)
 
   useEffect(() => {
     scenariosApi.get(Number(scenarioId))
@@ -161,7 +162,9 @@ export function ScenarioFlow() {
   const canAdvance  = !isPractice || practiceAnswered
 
   const handleNext = async () => {
+    if (completing) return
     if (isLast) {
+      setCompleting(true)
       try { await scenariosApi.complete(scenario.id) } catch { /* continúa */ }
       navigate('/escenarios')
       return
@@ -221,8 +224,8 @@ export function ScenarioFlow() {
         {/* Botón siguiente */}
         {canAdvance && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Button onClick={handleNext} className="w-full">
-              {isLast ? '¡Terminar!' : 'Siguiente'}
+            <Button onClick={handleNext} disabled={completing} className="w-full">
+              {isLast ? (completing ? 'Guardando...' : '¡Terminar!') : 'Siguiente'}
             </Button>
           </motion.div>
         )}
