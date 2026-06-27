@@ -5,6 +5,7 @@ from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.calm import CalmSessionRequest, CalmSessionOut, CalmPhraseRequest, CalmPhraseOut
 from app.services import calm_service
+from app.gamification.service import register_event
 
 router = APIRouter()
 
@@ -15,9 +16,11 @@ def save_calm_session(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return calm_service.save_session(
+    session = calm_service.save_session(
         db, current_user.id, data.activity_type, data.duration_seconds, data.emotion_key
     )
+    register_event(db, current_user.id, "calm_session")
+    return session
 
 
 @router.post("/phrase", response_model=CalmPhraseOut)

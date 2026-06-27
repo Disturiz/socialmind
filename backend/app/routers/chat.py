@@ -9,6 +9,7 @@ from app.schemas.chat import (
     ChatHistoryItem, ChatConversationOut,
 )
 from app.services import chat_service
+from app.gamification.service import register_event
 
 router = APIRouter()
 
@@ -19,7 +20,9 @@ def start_chat(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return chat_service.start_conversation(db, current_user.id, data.emotion_key)
+    result = chat_service.start_conversation(db, current_user.id, data.emotion_key)
+    register_event(db, current_user.id, "lumi_chat")
+    return result
 
 
 @router.post("/{conversation_id}/message", response_model=ChatMessageOut)

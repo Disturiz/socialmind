@@ -5,6 +5,7 @@ from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.scenarios import ScenarioMeta, ScenarioFull, ScenarioCompletionOut
 from app.services.scenario_service import list_scenarios, get_scenario, complete_scenario
+from app.gamification.service import register_event
 
 router = APIRouter()
 
@@ -25,4 +26,6 @@ def complete_scenario_endpoint(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return complete_scenario(db, current_user.id, scenario_id)
+    result = complete_scenario(db, current_user.id, scenario_id)
+    register_event(db, current_user.id, "scenario_completed", {"scenario_id": scenario_id})
+    return result
