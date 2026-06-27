@@ -212,3 +212,43 @@ def test_save_note_admin_role_returns_403(client, db):
         headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert response.status_code == 403
+
+
+def test_child_detail_includes_gamification(client, db):
+    from app.core.security import hash_password
+    from app.models.user import User, UserRole
+    from app.models.child_profile import ChildProfile
+
+    spec = User(
+        email="spec_gami@test.com",
+        hashed_password=hash_password("Password123!"),
+        full_name="Spec", role=UserRole.specialist,
+    )
+    padre = User(
+        email="padre_gami@test.com",
+        hashed_password=hash_password("Password123!"),
+        full_name="Padre", role=UserRole.parent,
+    )
+    db.add_all([spec, padre])
+    db.commit()
+
+    child = ChildProfile(parent_id=padre.id, name="Niño Test", age=10, avatar_emoji="🌟")
+    db.add(child)
+    db.commit()
+    db.refresh(child)
+
+    spec_login = client.post(
+        "/api/v1/auth/login",
+        json={"email": "spec_gami@test.com", "password": "Password123!"},
+    )
+    spec_token = spec_login.json()["access_token"]
+
+    r = client.get(
+        f"/api/v1/panel/children/{child.id}",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert r.status_code == 200
+    data = r.json()
+    assert "gamification_progress" in data
+    assert data["gamification_progress"]["total_stars"] == 0
+    assert data["gamification_progress"]["level_key"] == "explorador"

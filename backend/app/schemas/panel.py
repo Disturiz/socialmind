@@ -39,6 +39,15 @@ class ConversationOut(BaseModel):
     messages: list[MessageOut]
 
 
+class GamificationProgressOut(BaseModel):
+    total_stars: int
+    current_streak: int
+    level_key: str
+    level_name: str
+    progress_pct: int
+    badges_earned: int
+
+
 class ChildDetailOut(BaseModel):
     child_profile_id: int
     name: str
@@ -48,6 +57,7 @@ class ChildDetailOut(BaseModel):
     calm_sessions: list[CalmEntryOut]
     conversations: list[ConversationOut]
     specialist_note: str | None
+    gamification_progress: GamificationProgressOut | None = None
 
 
 class NoteRequest(BaseModel):

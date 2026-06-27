@@ -36,12 +36,14 @@ export function ChildDetail() {
   const [note, setNote]         = useState('')
   const [noteSaved, setNoteSaved] = useState(false)
   const [saving, setSaving]     = useState(false)
+  const [gamification, setGamification] = useState(null)
 
   useEffect(() => {
     panelApi.getChild(childId)
       .then((res) => {
         setChild(res.data)
         setNote(res.data.specialist_note ?? '')
+        setGamification(res.data.gamification_progress ?? null)
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
@@ -251,6 +253,34 @@ export function ChildDetail() {
             )}
           </div>
         </div>
+
+        {/* Progreso y recompensas */}
+        {gamification && (
+          <div className="mt-6 border-t border-calm-border pt-6">
+            <h3 className="text-base font-bold text-text-primary mb-3">Progreso y recompensas</h3>
+            <div className="flex gap-4 flex-wrap">
+              <div className="flex items-center gap-1 bg-calm-surface rounded-2xl px-4 py-2">
+                <span>⭐</span>
+                <span className="font-extrabold text-primary-700">{gamification.total_stars}</span>
+                <span className="text-text-secondary text-sm">estrellas</span>
+              </div>
+              <div className="flex items-center gap-1 bg-calm-surface rounded-2xl px-4 py-2">
+                <span>🔥</span>
+                <span className="font-extrabold text-primary-700">{gamification.current_streak}</span>
+                <span className="text-text-secondary text-sm">días</span>
+              </div>
+              <div className="flex items-center gap-1 bg-calm-surface rounded-2xl px-4 py-2">
+                <span>🏅</span>
+                <span className="font-extrabold text-primary-700">{gamification.badges_earned}</span>
+                <span className="text-text-secondary text-sm">insignias</span>
+              </div>
+            </div>
+            <p className="text-sm text-text-secondary mt-2">
+              Nivel: <strong className="text-primary-700">{gamification.level_name}</strong>
+              {' '}· {gamification.progress_pct}% hacia el siguiente nivel
+            </p>
+          </div>
+        )}
 
       </div>
     </PageWrapper>

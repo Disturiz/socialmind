@@ -65,6 +65,14 @@ const mockChild = {
     },
   ],
   specialist_note: 'Nota preexistente.',
+  gamification_progress: {
+    total_stars: 15,
+    current_streak: 2,
+    level_key: 'explorador',
+    level_name: 'Explorador',
+    progress_pct: 30,
+    badges_earned: 1,
+  },
 }
 
 function renderDetail() {
@@ -84,7 +92,7 @@ describe('ChildDetail', () => {
     renderDetail()
     await waitFor(() => {
       expect(screen.getByText('Juan')).toBeInTheDocument()
-      expect(screen.getByText('⭐')).toBeInTheDocument()
+      expect(screen.getAllByText('⭐').length).toBeGreaterThan(0)
     })
   })
 
@@ -139,6 +147,14 @@ describe('ChildDetail', () => {
       expect(
         screen.getByText(/no se pudo cargar/i)
       ).toBeInTheDocument()
+    })
+  })
+
+  it('muestra progreso de gamificación', async () => {
+    renderDetail()
+    await waitFor(() => {
+      expect(screen.getByText('Progreso y recompensas')).toBeInTheDocument()
+      expect(screen.getByText('Explorador')).toBeInTheDocument()
     })
   })
 })

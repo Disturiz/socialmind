@@ -7,6 +7,7 @@ from app.models.calm_session import CalmSession
 from app.models.chat_conversation import ChatConversation
 from app.models.chat_message import ChatMessage
 from app.models.specialist_note import SpecialistNote
+from app.gamification.service import get_progress as get_gamification_progress
 
 
 def list_children(db: Session) -> list[dict]:
@@ -92,6 +93,8 @@ def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
         .first()
     )
 
+    gamification = get_gamification_progress(db, pid)
+
     return {
         "child_profile_id": profile.id,
         "name": profile.name,
@@ -112,6 +115,14 @@ def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
         ],
         "conversations": conv_details,
         "specialist_note": note.content if note else None,
+        "gamification_progress": {
+            "total_stars": gamification["total_stars"],
+            "current_streak": gamification["current_streak"],
+            "level_key": gamification["level"]["key"],
+            "level_name": gamification["level"]["name"],
+            "progress_pct": gamification["progress_pct"],
+            "badges_earned": sum(1 for b in gamification["badges"] if b["earned"]),
+        },
     }
 
 
