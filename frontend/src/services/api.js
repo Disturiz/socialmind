@@ -75,3 +75,8 @@ export const bibliotecaApi = {
 export const gamificationApi = {
   getProgress: () => api.get('/gamification/progreso'),
 }
+
+export const profilesApi = {
+  getMe:       () => api.get('/profiles/me'),
+  createChild: (data) => api.post('/profiles/children', data),
+}
