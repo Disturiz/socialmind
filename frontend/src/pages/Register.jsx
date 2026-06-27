@@ -32,7 +32,11 @@ export function Register() {
     setLoading(true)
     try {
       await register(form)
-      navigate('/inicio')
+      if (form.role === 'parent') {
+        navigate('/perfil/nuevo-nino')
+      } else {
+        navigate('/inicio')
+      }
     } catch (err) {
       setError(err.response?.data?.detail || 'Hubo un error. Inténtalo de nuevo.')
     } finally {

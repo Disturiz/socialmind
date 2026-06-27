@@ -1,5 +1,7 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { createBrowserRouter, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { profilesApi } from '../services/api'
 import { Welcome }           from '../pages/Welcome'
 import { Login }             from '../pages/Login'
 import { Register }          from '../pages/Register'
@@ -13,6 +15,7 @@ import { PanelProfesional }  from '../pages/PanelProfesional'
 import { ChildDetail }       from '../pages/ChildDetail'
 import { Biblioteca }        from '../pages/Biblioteca'
 import { MiAventura }        from '../pages/MiAventura'
+import { ChildProfileForm }  from '../pages/ChildProfileForm'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -45,33 +48,98 @@ function SpecialistRoute({ children }) {
   return children
 }
 
+function ParentOnboardingGuard({ children }) {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const [checked, setChecked] = useState(user?.role !== 'parent')
+
+  useEffect(() => {
+    if (user?.role !== 'parent') return
+    profilesApi.getMe()
+      .then(res => {
+        if (!res.data.child) {
+          navigate('/perfil/nuevo-nino', { replace: true })
+        } else {
+          setChecked(true)
+        }
+      })
+      .catch(() => setChecked(true))
+  }, [user?.role, navigate])
+
+  if (!checked) {
+    return (
+      <div className="min-h-screen bg-calm-bg flex items-center justify-center">
+        <p className="text-text-secondary text-base">Cargando...</p>
+      </div>
+    )
+  }
+
+  return children
+}
+
 export const router = createBrowserRouter([
   { path: '/',         element: <Welcome /> },
   { path: '/login',    element: <Login /> },
   { path: '/registro', element: <Register /> },
   {
+    path: '/perfil/nuevo-nino',
+    element: <ProtectedRoute><ChildProfileForm /></ProtectedRoute>,
+  },
+  {
     path: '/inicio',
-    element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><Dashboard /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/emociones',
-    element: <ProtectedRoute><EmotionSelector /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><EmotionSelector /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/escenarios',
-    element: <ProtectedRoute><ScenarioList /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><ScenarioList /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/escenarios/:scenarioId',
-    element: <ProtectedRoute><ScenarioFlow /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><ScenarioFlow /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/chat',
-    element: <ProtectedRoute><ChatIA /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><ChatIA /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/calma',
-    element: <ProtectedRoute><ZonaCalma /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><ZonaCalma /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/mi-aventura',
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><MiAventura /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/panel',
@@ -84,9 +152,5 @@ export const router = createBrowserRouter([
   {
     path: '/biblioteca',
     element: <SpecialistRoute><Biblioteca /></SpecialistRoute>,
-  },
-  {
-    path: '/mi-aventura',
-    element: <ProtectedRoute><MiAventura /></ProtectedRoute>,
   },
 ])
