@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -6,6 +7,8 @@ from app.models.user import User
 from app.schemas.calm import CalmSessionRequest, CalmSessionOut, CalmPhraseRequest, CalmPhraseOut
 from app.services import calm_service
 from app.gamification.service import register_event
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -19,7 +22,10 @@ def save_calm_session(
     session = calm_service.save_session(
         db, current_user.id, data.activity_type, data.duration_seconds, data.emotion_key
     )
-    register_event(db, current_user.id, "calm_session")
+    try:
+        register_event(db, current_user.id, "calm_session")
+    except Exception:
+        logger.exception("gamification register_event failed")
     return session
 
 

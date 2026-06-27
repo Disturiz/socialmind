@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -11,6 +12,8 @@ from app.schemas.chat import (
 from app.services import chat_service
 from app.gamification.service import register_event
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
 
@@ -21,7 +24,10 @@ def start_chat(
     db: Session = Depends(get_db),
 ):
     result = chat_service.start_conversation(db, current_user.id, data.emotion_key)
-    register_event(db, current_user.id, "lumi_chat")
+    try:
+        register_event(db, current_user.id, "lumi_chat")
+    except Exception:
+        logger.exception("gamification register_event failed")
     return result
 
 

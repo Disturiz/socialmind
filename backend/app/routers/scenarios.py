@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -6,6 +7,8 @@ from app.models.user import User
 from app.schemas.scenarios import ScenarioMeta, ScenarioFull, ScenarioCompletionOut
 from app.services.scenario_service import list_scenarios, get_scenario, complete_scenario
 from app.gamification.service import register_event
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -27,5 +30,8 @@ def complete_scenario_endpoint(
     db: Session = Depends(get_db),
 ):
     result = complete_scenario(db, current_user.id, scenario_id)
-    register_event(db, current_user.id, "scenario_completed", {"scenario_id": scenario_id})
+    try:
+        register_event(db, current_user.id, "scenario_completed", {"scenario_id": scenario_id})
+    except Exception:
+        logger.exception("gamification register_event failed")
     return result
