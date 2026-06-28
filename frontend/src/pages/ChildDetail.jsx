@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { panelApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { EmotionDistributionChart, EMOTION_META } from '../components/panel/EmotionDistributionChart'
 
 const ACTIVITY_LABELS = {
   respirar: 'Respirar',
@@ -109,6 +110,9 @@ export function ChildDetail() {
           </div>
         </div>
 
+        {/* Tendencia emocional */}
+        <EmotionDistributionChart emotions={child.emotions} />
+
         {/* Tabs */}
         <div className="flex gap-2 border-b border-calm-border">
           {TABS.map((tab) => (
@@ -134,7 +138,10 @@ export function ChildDetail() {
             ) : (
               child.emotions.map((e, i) => (
                 <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-calm-surface border border-calm-border">
-                  <p className="text-base font-bold text-text-primary">{e.emotion_key}</p>
+                  <p className="text-base font-bold text-text-primary">
+                    {EMOTION_META[e.emotion_key]?.emoji ?? ''}{' '}
+                    {EMOTION_META[e.emotion_key]?.label ?? e.emotion_key}
+                  </p>
                   <p className="text-base text-text-secondary">{formatDate(e.logged_at)}</p>
                 </div>
               ))

@@ -101,7 +101,7 @@ describe('ChildDetail', () => {
     await waitFor(() => screen.getByText('Emociones'))
     await userEvent.click(screen.getByText('Emociones'))
     await waitFor(() => {
-      expect(screen.getByText('nervioso')).toBeInTheDocument()
+      expect(screen.getAllByText(/Nervioso/i).length).toBeGreaterThan(0)
     })
   })
 
@@ -155,6 +155,25 @@ describe('ChildDetail', () => {
     await waitFor(() => {
       expect(screen.getByText('Progreso y recompensas')).toBeInTheDocument()
       expect(screen.getByText('Explorador')).toBeInTheDocument()
+    })
+  })
+
+  it('muestra el gráfico de tendencia emocional encima de los tabs', async () => {
+    renderDetail()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('img', { name: /distribución de emociones/i })
+      ).toBeInTheDocument()
+    })
+  })
+
+  it('tab Emociones muestra emoji + label en lugar de clave cruda', async () => {
+    renderDetail()
+    await waitFor(() => screen.getByText('Emociones'))
+    await userEvent.click(screen.getByText('Emociones'))
+    await waitFor(() => {
+      expect(screen.queryByText('nervioso')).not.toBeInTheDocument()
+      expect(screen.getAllByText(/Nervioso/i).length).toBeGreaterThan(0)
     })
   })
 })
