@@ -51,10 +51,14 @@ function SpecialistRoute({ children }) {
 function ParentOnboardingGuard({ children }) {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [checked, setChecked] = useState(user?.role !== 'parent')
+  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    if (user?.role !== 'parent') return
+    if (!user) return
+    if (user.role !== 'parent') {
+      setChecked(true)
+      return
+    }
     profilesApi.getMe()
       .then(res => {
         if (!res.data.child) {
@@ -64,7 +68,7 @@ function ParentOnboardingGuard({ children }) {
         }
       })
       .catch(() => setChecked(true))
-  }, [user?.role, navigate])
+  }, [user, navigate])
 
   if (!checked) {
     return (

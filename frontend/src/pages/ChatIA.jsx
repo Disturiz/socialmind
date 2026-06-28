@@ -7,9 +7,12 @@ import { LumiCharacter } from '../components/lumi/LumiCharacter'
 import { ChatBubble } from '../components/chat/ChatBubble'
 import { ChatOptions } from '../components/chat/ChatOptions'
 
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+
 export function ChatIA() {
   const navigate = useNavigate()
   const bottomRef = useRef(null)
+  const recognitionRef = useRef(null)
 
   const [conversationId, setConversationId] = useState(null)
   const [messages, setMessages] = useState([])
@@ -18,6 +21,8 @@ export function ChatIA() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState(null)
+  const [inputText, setInputText] = useState('')
+  const [listening, setListening] = useState(false)
 
   useEffect(() => {
     initChat()
@@ -44,6 +49,45 @@ export function ChatIA() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleSendText() {
+    const text = inputText.trim()
+    if (!text || sending) return
+    setInputText('')
+    handleSelect(text)
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSendText()
+    }
+  }
+
+  function toggleVoice() {
+    if (!SpeechRecognition) return
+
+    if (listening) {
+      recognitionRef.current?.stop()
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognitionRef.current = recognition
+    recognition.lang = 'es-ES'
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+
+    recognition.onstart = () => setListening(true)
+    recognition.onend = () => setListening(false)
+    recognition.onerror = () => setListening(false)
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript
+      handleSelect(transcript)
+    }
+
+    recognition.start()
   }
 
   async function handleSelect(content) {
@@ -124,10 +168,10 @@ export function ChatIA() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Opciones */}
-        <div className="px-6 py-4 bg-calm-bg border-t border-calm-border shrink-0">
+        {/* Opciones + entrada libre */}
+        <div className="px-6 py-4 bg-calm-bg border-t border-calm-border shrink-0 flex flex-col gap-3">
           {error && messages.length > 0 && (
-            <p className="text-base text-accent-coral mb-3 text-center">{error}</p>
+            <p className="text-base text-accent-coral text-center">{error}</p>
           )}
           {options.length > 0 && (
             <ChatOptions
@@ -136,6 +180,55 @@ export function ChatIA() {
               disabled={sending}
             />
           )}
+
+          {/* Entrada de texto libre + voz */}
+          <div className="flex gap-2 items-center">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={sending}
+              placeholder="Escribe lo que quieras..."
+              className="
+                flex-1 px-4 py-3 rounded-2xl border-2 border-calm-border bg-white
+                text-base text-text-primary placeholder:text-text-muted
+                focus:outline-none focus:border-primary-400
+                disabled:opacity-50
+                min-h-[48px]
+              "
+            />
+            {SpeechRecognition && (
+              <button
+                onClick={toggleVoice}
+                disabled={sending}
+                aria-label={listening ? 'Detener micrófono' : 'Hablar con Lumi'}
+                className={`
+                  flex items-center justify-center rounded-full min-w-[48px] min-h-[48px]
+                  border-2 transition-colors disabled:opacity-50
+                  ${listening
+                    ? 'border-accent-coral bg-accent-coral/10 text-accent-coral animate-pulse'
+                    : 'border-primary-300 bg-white text-primary-500 hover:bg-primary-50'
+                  }
+                `}
+              >
+                {listening ? '⏹' : '🎤'}
+              </button>
+            )}
+            <button
+              onClick={handleSendText}
+              disabled={sending || !inputText.trim()}
+              aria-label="Enviar mensaje"
+              className="
+                flex items-center justify-center rounded-full min-w-[48px] min-h-[48px]
+                border-2 border-primary-400 bg-primary-500 text-white
+                hover:bg-primary-600 transition-colors
+                disabled:opacity-40 disabled:cursor-not-allowed
+              "
+            >
+              ➤
+            </button>
+          </div>
         </div>
 
       </div>

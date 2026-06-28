@@ -43,3 +43,4 @@ class ChildProfileOut(BaseModel):
 
 class ParentProfileOut(BaseModel):
     child: ChildProfileOut | None
+    model_config = {"from_attributes": True}

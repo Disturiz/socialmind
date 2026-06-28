@@ -1,6 +1,3 @@
-import pytest
-
-
 def _register_parent(client):
     r = client.post("/api/v1/auth/register", json={
         "email": "padre@example.com",
