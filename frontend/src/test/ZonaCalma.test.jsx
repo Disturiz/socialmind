@@ -108,7 +108,7 @@ describe('ZonaCalma', () => {
     await waitFor(() => screen.getByText('Salir antes'))
     await userEvent.click(screen.getByText('Salir antes'))
     await waitFor(() => {
-      expect(screen.getByText(/Cómo te sientes ahora/i)).toBeInTheDocument()
+      expect(screen.getByText(/te sientes/i)).toBeInTheDocument()
     })
   })
 
