@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { emotionsApi } from '../../services/api'
 import { LumiCharacter } from '../lumi/LumiCharacter'
+import { Button } from '../ui/Button'
 
 const COMPLETION_MESSAGES = {
   respirar: '¡Muy bien! Terminaste de respirar 🌬️ ¿Cómo te sientes ahora?',
@@ -57,6 +58,7 @@ export function PostActivityCheckin({ activityId, emotionsBefore, onDone }) {
             className={`
               flex flex-col items-center gap-2 p-5 rounded-3xl border-2
               min-h-[100px] cursor-pointer transition-all
+              focus:outline-none focus:ring-4 focus:ring-primary-100
               ${EMOTION_COLORS[emotion.key]}
             `}
             aria-label={emotion.label}
@@ -70,6 +72,15 @@ export function PostActivityCheckin({ activityId, emotionsBefore, onDone }) {
           </motion.button>
         ))}
       </div>
+
+      <Button
+        variant="ghost"
+        className="w-full mt-2"
+        aria-label="Saltar por ahora"
+        onClick={onDone}
+      >
+        Saltar por ahora
+      </Button>
     </div>
   )
 }
