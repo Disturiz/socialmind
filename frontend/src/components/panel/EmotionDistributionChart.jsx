@@ -37,7 +37,7 @@ export function EmotionDistributionChart({ emotions }) {
             <div
               key={key}
               className="flex items-center gap-3"
-              aria-label={`${meta.label}: ${count} veces`}
+              aria-label={`${meta.label}: ${count} ${count === 1 ? 'vez' : 'veces'}`}
             >
               <span className="w-28 text-base text-text-primary flex-shrink-0">
                 {meta.emoji} {meta.label}

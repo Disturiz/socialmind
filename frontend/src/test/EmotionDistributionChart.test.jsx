@@ -38,8 +38,8 @@ describe('EmotionDistributionChart', () => {
 
   it('ordena emociones por frecuencia descendente', () => {
     render(<EmotionDistributionChart emotions={emotions} />)
-    const rows = screen.getAllByLabelText(/veces/i)
+    const rows = screen.getAllByLabelText(/(vez|veces)/i)
     expect(rows[0]).toHaveAccessibleName(/Nervioso.*2 veces/i)
-    expect(rows[1]).toHaveAccessibleName(/Feliz.*1 veces/i)
+    expect(rows[1]).toHaveAccessibleName(/Feliz.*1 vez/i)
   })
 })

@@ -81,8 +81,10 @@ describe('PanelProfesional', () => {
   it('muestra emoji + label para last_emotion_key en lugar de clave cruda', async () => {
     renderPanel()
     await waitFor(() => {
-      expect(screen.queryByText('nervioso')).not.toBeInTheDocument()
-      expect(screen.getByText(/Hoy:.*Nervioso/i)).toBeInTheDocument()
+      // Case-sensitive: old code showed "nervioso" (lowercase), new shows "Nervioso" (capital N)
+      expect(screen.queryByText(/Hoy:.*nervioso/)).not.toBeInTheDocument()
+      // Verify emoji appears alongside the label
+      expect(screen.getByText(/😰.*Nervioso/)).toBeInTheDocument()
     })
   })
 })
