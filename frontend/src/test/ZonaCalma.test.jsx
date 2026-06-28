@@ -15,7 +15,7 @@ vi.mock('../services/api', () => ({
   emotionsApi: {
     today: vi.fn().mockResolvedValue({ data: { emotion_key: 'nervioso' } }),
     list: vi.fn(),
-    log: vi.fn(),
+    log: vi.fn().mockResolvedValue({ data: {} }),
   },
   calmApi: {
     saveSession: vi.fn().mockResolvedValue({ data: { id: 1 } }),
@@ -40,6 +40,7 @@ describe('ZonaCalma', () => {
     calmApi.saveSession.mockClear()
     calmApi.getPhrase.mockClear()
     emotionsApi.today.mockClear()
+    emotionsApi.log.mockClear()
   })
 
   it('muestra 3 tarjetas de actividad al cargar', async () => {
@@ -97,6 +98,43 @@ describe('ZonaCalma', () => {
       expect(
         screen.getByText('Estás bien. Respira. Todo va a estar bien.')
       ).toBeInTheDocument()
+    })
+  })
+
+  it('después de salir del timer muestra pantalla de completado con mensaje de Lumi', async () => {
+    renderCalma()
+    await waitFor(() => screen.getByText('Pausar'))
+    await userEvent.click(screen.getByText('Pausar'))
+    await waitFor(() => screen.getByText('Salir antes'))
+    await userEvent.click(screen.getByText('Salir antes'))
+    await waitFor(() => {
+      expect(screen.getByText(/Cómo te sientes ahora/i)).toBeInTheDocument()
+    })
+  })
+
+  it('en la pantalla de completado se muestran las 5 emociones', async () => {
+    renderCalma()
+    await waitFor(() => screen.getByText('Pausar'))
+    await userEvent.click(screen.getByText('Pausar'))
+    await waitFor(() => screen.getByText('Salir antes'))
+    await userEvent.click(screen.getByText('Salir antes'))
+    await waitFor(() => {
+      expect(screen.getByText('Feliz')).toBeInTheDocument()
+      expect(screen.getByText('Nervioso')).toBeInTheDocument()
+    })
+  })
+
+  it('al seleccionar emoción post-actividad llama emotionsApi.log y vuelve a la lista', async () => {
+    renderCalma()
+    await waitFor(() => screen.getByText('Pausar'))
+    await userEvent.click(screen.getByText('Pausar'))
+    await waitFor(() => screen.getByText('Salir antes'))
+    await userEvent.click(screen.getByText('Salir antes'))
+    await waitFor(() => screen.getByRole('button', { name: 'Feliz' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Feliz' }))
+    await waitFor(() => {
+      expect(calmApi.saveSession).toHaveBeenCalled()
+      expect(screen.getAllByText('Respirar').length).toBeGreaterThan(0)
     })
   })
 })

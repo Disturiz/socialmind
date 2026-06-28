@@ -7,6 +7,7 @@ import { LumiCharacter } from '../components/lumi/LumiCharacter'
 import { BreathingExercise } from '../components/calma/BreathingExercise'
 import { VisualTimer } from '../components/calma/VisualTimer'
 import { LumiPhrase } from '../components/calma/LumiPhrase'
+import { PostActivityCheckin } from '../components/calma/PostActivityCheckin'
 
 function getSuggestion(emotionKey) {
   if (['nervioso', 'frustrado', 'enojado'].includes(emotionKey)) return 'respirar'
@@ -22,9 +23,10 @@ const ACTIVITIES = [
 
 export function ZonaCalma() {
   const navigate = useNavigate()
-  const [emotionKey, setEmotionKey]         = useState('feliz')
-  const [activeActivity, setActiveActivity] = useState(null)
-  const [loading, setLoading]               = useState(true)
+  const [emotionKey, setEmotionKey]               = useState('feliz')
+  const [activeActivity, setActiveActivity]       = useState(null)
+  const [completedActivity, setCompletedActivity] = useState(null)
+  const [loading, setLoading]                     = useState(true)
 
   useEffect(() => {
     async function loadEmotion() {
@@ -45,9 +47,10 @@ export function ZonaCalma() {
       try {
         await calmApi.saveSession(activeActivity, durationSeconds, emotionKey)
       } catch {
-        // session loss is acceptable — don't block the child
+        // pérdida silenciosa aceptable
       }
     }
+    setCompletedActivity({ id: activeActivity, duration: durationSeconds })
     setActiveActivity(null)
   }
 
@@ -88,6 +91,18 @@ export function ZonaCalma() {
             )}
           </div>
         </div>
+      </PageWrapper>
+    )
+  }
+
+  if (completedActivity) {
+    return (
+      <PageWrapper className="items-center justify-center px-6 py-10">
+        <PostActivityCheckin
+          activityId={completedActivity.id}
+          emotionsBefore={emotionKey}
+          onDone={() => setCompletedActivity(null)}
+        />
       </PageWrapper>
     )
   }

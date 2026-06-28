@@ -3,8 +3,8 @@ import { emotionsApi } from '../../services/api'
 import { LumiCharacter } from '../lumi/LumiCharacter'
 
 const COMPLETION_MESSAGES = {
-  respirar: '¡Muy bien! Terminaste de respirar 🌬️ ¿Cómo te sientes ahora?',
-  pausa:    '¡Descansaste! ¿Cómo te sientes después de tu pausa? ⏸️',
+  respirar: '¡Muy bien! Terminaste de respirar. ¿Cómo te sientes ahora?',
+  pausa:    '¡Descansaste bien! ¿Cómo te sientes ahora? ⏸️',
   frase:    '¡Gracias por leer mi frase! ¿Cómo te sientes ahora? 🦉',
 }
 
