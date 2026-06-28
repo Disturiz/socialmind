@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
+import { profilesApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
@@ -70,11 +72,17 @@ const SPECIALIST_CARDS = [
 export function Dashboard() {
   const { user, logout } = useAuth()
   const navigate         = useNavigate()
-  const firstName        = user?.full_name?.split(' ')[0] || 'Bienvenido'
+  const [child, setChild] = useState(null)
 
-  const cards = user?.role === 'specialist'
-    ? [...MODULE_CARDS, ...SPECIALIST_CARDS]
-    : MODULE_CARDS
+  useEffect(() => {
+    if (user?.role === 'parent') {
+      profilesApi.getMe()
+        .then(res => setChild(res.data.child))
+        .catch(() => {})
+    }
+  }, [user?.role])
+
+  const cards = user?.role === 'specialist' ? SPECIALIST_CARDS : MODULE_CARDS
 
   const handleLogout = () => {
     logout()
@@ -87,15 +95,29 @@ export function Dashboard() {
 
         {/* Cabecera */}
         <div className="flex items-center gap-4">
-          <LumiCharacter state="happy" size={80} />
-          <div>
-            <h1 className="text-xl font-extrabold text-primary-700">
-              ¡Hola, {firstName}!
-            </h1>
-            <p className="text-base text-text-secondary">
-              {ROLE_LABELS[user?.role] || 'Usuario'}
-            </p>
-          </div>
+          {user?.role === 'parent' && child ? (
+            <>
+              <span className="text-5xl" role="img" aria-label={`Avatar de ${child.name}`}>
+                {child.avatar_emoji}
+              </span>
+              <div>
+                <h1 className="text-xl font-extrabold text-primary-700">{child.name}</h1>
+                <p className="text-base text-text-secondary">{child.age} años</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <LumiCharacter state="happy" size={80} />
+              <div>
+                <h1 className="text-xl font-extrabold text-primary-700">
+                  ¡Hola, {user?.full_name?.split(' ')[0] || 'Bienvenido'}!
+                </h1>
+                <p className="text-base text-text-secondary">
+                  {ROLE_LABELS[user?.role] || 'Usuario'}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Módulos */}
