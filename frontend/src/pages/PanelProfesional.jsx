@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { panelApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { EMOTION_META } from '../components/panel/EmotionDistributionChart'
 
 export function PanelProfesional() {
   const navigate = useNavigate()
@@ -70,7 +71,8 @@ export function PanelProfesional() {
                 <div className="text-right">
                   {child.last_emotion_key && (
                     <p className="text-base text-text-secondary">
-                      Hoy: {child.last_emotion_key}
+                      Hoy: {EMOTION_META[child.last_emotion_key]?.emoji ?? ''}{' '}
+                      {EMOTION_META[child.last_emotion_key]?.label ?? child.last_emotion_key}
                     </p>
                   )}
                   <p className="text-base text-text-muted">

@@ -77,4 +77,12 @@ describe('PanelProfesional', () => {
     await userEvent.click(screen.getByText('Juan').closest('button') || screen.getByText('Juan'))
     expect(mockNavigate).toHaveBeenCalledWith('/panel/ninos/1')
   })
+
+  it('muestra emoji + label para last_emotion_key en lugar de clave cruda', async () => {
+    renderPanel()
+    await waitFor(() => {
+      expect(screen.queryByText('nervioso')).not.toBeInTheDocument()
+      expect(screen.getByText(/Hoy:.*Nervioso/i)).toBeInTheDocument()
+    })
+  })
 })
