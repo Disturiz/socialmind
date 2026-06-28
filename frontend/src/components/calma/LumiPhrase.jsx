@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { LumiCharacter } from '../lumi/LumiCharacter'
+import { Button } from '../ui/Button'
 import { calmApi } from '../../services/api'
 
 const FALLBACK_PHRASE = 'Estás bien. Respira. Todo va a estar bien.'
@@ -19,7 +20,6 @@ export function LumiPhrase({ emotionKey, onComplete }) {
       } finally {
         setLoading(false)
       }
-      // Guardar sesión al mostrar la frase — no esperamos "Listo"
       try {
         await calmApi.saveSession('frase', 0, emotionKey)
       } catch {
@@ -47,12 +47,9 @@ export function LumiPhrase({ emotionKey, onComplete }) {
       )}
 
       {!loading && (
-        <button
-          onClick={() => onComplete(0)}
-          className="text-base font-semibold text-white bg-primary-500 hover:bg-primary-600 min-h-[44px] px-8 py-2 rounded-2xl"
-        >
+        <Button variant="primary" onClick={() => onComplete(0)}>
           Listo
-        </button>
+        </Button>
       )}
     </div>
   )

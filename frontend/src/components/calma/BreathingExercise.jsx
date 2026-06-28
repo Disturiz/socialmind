@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { Button } from '../ui/Button'
 
 const TOTAL_CYCLES = 5
 const HALF_CYCLE_MS = 4000
@@ -71,12 +72,9 @@ export function BreathingExercise({ emotionKey, onComplete }) {
         Seguí el círculo con tu respiración.
       </p>
 
-      <button
-        onClick={handleExit}
-        className="text-base text-primary-600 font-semibold min-h-[44px] px-6 py-2 rounded-2xl border-2 border-primary-300 hover:bg-primary-50"
-      >
+      <Button variant="ghost" onClick={handleExit}>
         Salir
-      </button>
+      </Button>
     </div>
   )
 }

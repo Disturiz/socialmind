@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Button } from '../ui/Button'
 
 const TOTAL = 180
 const RADIUS = 45
@@ -69,12 +70,9 @@ export function VisualTimer({ onComplete }) {
         Tómate este momento para vos.
       </p>
 
-      <button
-        onClick={handleExit}
-        className="text-base text-primary-600 font-semibold min-h-[44px] px-6 py-2 rounded-2xl border-2 border-primary-300 hover:bg-primary-50"
-      >
+      <Button variant="ghost" onClick={handleExit}>
         Salir antes
-      </button>
+      </Button>
     </div>
   )
 }
