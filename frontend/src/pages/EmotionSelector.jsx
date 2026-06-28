@@ -82,9 +82,9 @@ export function EmotionSelector() {
       .then(([listRes, todayRes]) => {
         setEmotions(listRes.data)
         const key = todayRes.data.emotion_key
-        if (key) {
+        if (key && EMOTION_CONFIG[key]) {
           setToday(key)
-          setLumiState(EMOTION_CONFIG[key]?.lumiState ?? 'idle')
+          setLumiState(EMOTION_CONFIG[key].lumiState)
           setPhase('already_selected')
         } else {
           setPhase('selecting')
@@ -99,7 +99,7 @@ export function EmotionSelector() {
     setError(null)
     try {
       await emotionsApi.log(key)
-      setLumiState(EMOTION_CONFIG[key].lumiState)
+      setLumiState(EMOTION_CONFIG[key]?.lumiState ?? 'idle')
       setPhase('selected')
     } catch {
       setError('Algo salió mal. Intenta de nuevo.')
@@ -181,6 +181,12 @@ export function EmotionSelector() {
 
             {error && (
               <p className="text-base text-accent-coral">{error}</p>
+            )}
+
+            {emotions.length === 0 && !error && (
+              <p className="text-base text-accent-coral">
+                No se pudieron cargar las emociones. Intenta de nuevo más tarde.
+              </p>
             )}
 
             <div className="grid grid-cols-2 gap-4 w-full">
