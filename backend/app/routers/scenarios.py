@@ -14,8 +14,11 @@ router = APIRouter()
 
 
 @router.get("", response_model=list[ScenarioMeta])
-def get_scenarios():
-    return list_scenarios()
+def get_scenarios(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return list_scenarios(db, current_user.id)
 
 
 @router.get("/{scenario_id}", response_model=ScenarioFull)

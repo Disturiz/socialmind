@@ -144,10 +144,21 @@ _SCENARIO_MAP: dict[int, ScenarioFull] = {
 }
 
 
-def list_scenarios() -> list[ScenarioMeta]:
+def list_scenarios(db: Session, user_id: int) -> list[ScenarioMeta]:
     sorted_scenarios = sorted(_SCENARIO_MAP.values(), key=lambda s: s.id)
-    return [ScenarioMeta(id=s.id, emoji=s.emoji, title=s.title, description=s.description)
-            for s in sorted_scenarios]
+    completed_ids = {
+        row.scenario_id
+        for row in db.query(ScenarioCompletion.scenario_id)
+            .filter(ScenarioCompletion.user_id == user_id)
+            .all()
+    }
+    return [
+        ScenarioMeta(
+            id=s.id, emoji=s.emoji, title=s.title, description=s.description,
+            completed=s.id in completed_ids,
+        )
+        for s in sorted_scenarios
+    ]
 
 
 def get_scenario(scenario_id: int) -> ScenarioFull:

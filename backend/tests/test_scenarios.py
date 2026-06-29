@@ -1,5 +1,13 @@
 def test_list_scenarios(client):
-    response = client.get("/api/v1/scenarios")
+    client.post("/api/v1/auth/register", json={
+        "email": "padre_list@test.com", "password": "Password123!",
+        "full_name": "Padre List", "role": "parent",
+    })
+    login = client.post("/api/v1/auth/login", json={
+        "email": "padre_list@test.com", "password": "Password123!",
+    })
+    token = login.json()["access_token"]
+    response = client.get("/api/v1/scenarios", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 5
@@ -9,6 +17,8 @@ def test_list_scenarios(client):
     assert "Pedir ayuda" in titles
     assert "Esperar turno" in titles
     assert "Manejar la frustración" in titles
+    assert all("completed" in s for s in data)
+    assert all(s["completed"] is False for s in data)
 
 
 def test_get_scenario_detail(client):
@@ -71,3 +81,29 @@ def test_complete_scenario_not_found(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 404
+
+
+def test_list_scenarios_unauthenticated(client):
+    response = client.get("/api/v1/scenarios")
+    assert response.status_code == 401
+
+
+def test_list_scenarios_shows_completed(client):
+    client.post("/api/v1/auth/register", json={
+        "email": "padre_comp@test.com", "password": "Password123!",
+        "full_name": "Padre Comp", "role": "parent",
+    })
+    login = client.post("/api/v1/auth/login", json={
+        "email": "padre_comp@test.com", "password": "Password123!",
+    })
+    token = login.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    client.post("/api/v1/scenarios/1/complete", headers=headers)
+
+    response = client.get("/api/v1/scenarios", headers=headers)
+    data = response.json()
+    scenario_1 = next(s for s in data if s["id"] == 1)
+    scenario_2 = next(s for s in data if s["id"] == 2)
+    assert scenario_1["completed"] is True
+    assert scenario_2["completed"] is False

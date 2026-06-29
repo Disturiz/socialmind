@@ -23,6 +23,7 @@ class ScenarioMeta(BaseModel):
     emoji: str
     title: str
     description: str
+    completed: bool = False
 
 
 class ScenarioFull(ScenarioMeta):
