@@ -127,7 +127,39 @@ describe('ScenarioFlow', () => {
 
     await waitFor(() => {
       expect(scenariosApi.complete).toHaveBeenCalledWith(1)
-      expect(mockNavigate).toHaveBeenCalledWith('/escenarios')
     })
+  }, 15000)
+
+  it('al terminar el flujo muestra la pantalla de check-in post-escenario', async () => {
+    renderScenario()
+
+    // Step 0: objective
+    await waitFor(() => screen.getByText('¿Qué aprenderemos?'))
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }))
+
+    // Step 1: explanation
+    await waitFor(() => screen.getByText('¿Cómo se hace?'))
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }))
+
+    // Step 2: practice — seleccionar respuesta correcta y esperar timeout
+    await waitFor(() => screen.getByText('Practiquemos'))
+    await userEvent.click(screen.getByText('Digo Hola'))
+    await waitFor(() => screen.getByRole('button', { name: /siguiente/i }), { timeout: 3000 })
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }))
+
+    // Step 3: feedback
+    await waitFor(() => screen.getByText('Retroalimentación'))
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }))
+
+    // Step 4: closing → Terminar
+    await waitFor(() => screen.getByText('¡Lo lograste!'))
+    await userEvent.click(screen.getByRole('button', { name: /terminar/i }))
+
+    // Debe mostrar el check-in, NO navegar a /escenarios todavía
+    await waitFor(() => {
+      expect(screen.getByText(/Completaste «Saludar»/)).toBeInTheDocument()
+      expect(screen.getByLabelText('Feliz')).toBeInTheDocument()
+    })
+    expect(mockNavigate).not.toHaveBeenCalledWith('/escenarios')
   }, 15000)
 })

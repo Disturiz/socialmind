@@ -6,6 +6,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { PostScenarioCheckin } from '../components/scenarios/PostScenarioCheckin'
 
 function StepProgress({ current, total }) {
   return (
@@ -140,6 +141,7 @@ export function ScenarioFlow() {
   const [practiceAnswered, setPracticeAnswered] = useState(false)
   const [loading, setLoading]     = useState(true)
   const [completing, setCompleting] = useState(false)
+  const [phase, setPhase] = useState('flow')
 
   useEffect(() => {
     scenariosApi.get(Number(scenarioId))
@@ -156,6 +158,20 @@ export function ScenarioFlow() {
     )
   }
 
+  const badgeEmoji = scenario.steps.find(s => s.type === 'closing')?.badge_emoji ?? '🌟'
+
+  if (phase === 'checkin') {
+    return (
+      <PageWrapper className="items-center justify-center px-6 py-10">
+        <PostScenarioCheckin
+          badgeEmoji={badgeEmoji}
+          scenarioTitle={scenario.title}
+          onDone={() => navigate('/escenarios')}
+        />
+      </PageWrapper>
+    )
+  }
+
   const currentStep = scenario.steps[stepIndex]
   const isLast      = stepIndex === scenario.steps.length - 1
   const isPractice  = currentStep.type === 'practice'
@@ -166,7 +182,7 @@ export function ScenarioFlow() {
     if (isLast) {
       setCompleting(true)
       try { await scenariosApi.complete(scenario.id) } catch { /* continúa */ }
-      navigate('/escenarios')
+      setPhase('checkin')
       return
     }
     setStepIndex(i => i + 1)
