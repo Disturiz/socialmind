@@ -155,11 +155,15 @@ describe('ScenarioFlow', () => {
     await waitFor(() => screen.getByText('¡Lo lograste!'))
     await userEvent.click(screen.getByRole('button', { name: /terminar/i }))
 
-    // Debe mostrar el check-in, NO navegar a /escenarios todavía
+    // Debe mostrar el check-in, no navegar a /escenarios todavía
     await waitFor(() => {
       expect(screen.getByText(/Completaste «Saludar»/)).toBeInTheDocument()
       expect(screen.getByLabelText('Feliz')).toBeInTheDocument()
     })
     expect(mockNavigate).not.toHaveBeenCalledWith('/escenarios')
+
+    // Al saltar el check-in, navega a /escenarios
+    await userEvent.click(screen.getByLabelText('Saltar por ahora'))
+    expect(mockNavigate).toHaveBeenCalledWith('/escenarios')
   }, 15000)
 })
