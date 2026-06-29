@@ -62,13 +62,15 @@ export function ScenarioList() {
                 transition={{ delay: i * 0.08 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate(`/escenarios/${scenario.id}`)}
-                className="
+                className={`
                   flex items-center gap-4 p-5 rounded-3xl
-                  bg-calm-surface border-2 border-calm-border
-                  hover:border-primary-500 hover:bg-primary-50
+                  bg-calm-surface border-2
+                  ${scenario.completed
+                    ? 'border-secondary-500 hover:border-secondary-600'
+                    : 'border-calm-border hover:border-primary-500 hover:bg-primary-50'}
                   transition-colors text-left w-full min-h-[72px]
-                "
-                aria-label={`Practicar: ${scenario.title}`}
+                `}
+                aria-label={`${scenario.completed ? 'Repetir' : 'Practicar'}: ${scenario.title}`}
               >
                 <span className="text-4xl leading-none flex-shrink-0" role="img" aria-hidden="true">
                   {scenario.emoji}
@@ -77,7 +79,10 @@ export function ScenarioList() {
                   <p className="font-bold text-text-primary text-base">{scenario.title}</p>
                   <p className="text-base text-text-muted">{scenario.description}</p>
                 </div>
-                <span className="ml-auto text-text-muted text-xl">›</span>
+                {scenario.completed
+                  ? <span className="ml-auto text-secondary-500 font-bold text-lg" aria-label="Completado">✓</span>
+                  : <span className="ml-auto text-text-muted text-xl">›</span>
+                }
               </motion.button>
             ))}
           </div>
