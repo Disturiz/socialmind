@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 export function TypingIndicator() {
   return (
     <div
+      role="status"
       aria-label="Lumi está escribiendo"
       className="
         bg-primary-50 border-2 border-primary-200

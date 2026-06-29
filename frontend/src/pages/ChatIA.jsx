@@ -152,7 +152,7 @@ export function ChatIA() {
               ¡Fue un gusto charlar contigo! Hasta la próxima. 🌟
             </p>
           </div>
-          <Button variant="primary" onClick={() => navigate('/inicio')}>
+          <Button variant="primary" autoFocus onClick={() => navigate('/inicio')}>
             Volver al inicio
           </Button>
         </motion.div>
