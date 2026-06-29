@@ -100,6 +100,8 @@ describe('ScenarioFlow', () => {
   })
 
   it('flujo completo llama a scenariosApi.complete y navega', async () => {
+    // Navigation to /escenarios happens via PostScenarioCheckin.onDone —
+    // covered by the "muestra la pantalla de check-in post-escenario" test below.
     renderScenario()
 
     // Step 0: objective

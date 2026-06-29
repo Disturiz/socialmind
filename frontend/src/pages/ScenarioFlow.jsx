@@ -182,6 +182,7 @@ export function ScenarioFlow() {
     if (isLast) {
       setCompleting(true)
       try { await scenariosApi.complete(scenario.id) } catch { /* continúa */ }
+      setCompleting(false)
       setPhase('checkin')
       return
     }

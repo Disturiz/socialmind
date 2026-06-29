@@ -80,7 +80,7 @@ export function ScenarioList() {
                   <p className="text-base text-text-muted">{scenario.description}</p>
                 </div>
                 {scenario.completed
-                  ? <span className="ml-auto text-secondary-500 font-bold text-lg" aria-label="Completado">✓</span>
+                  ? <span className="ml-auto text-secondary-500 font-bold text-lg" aria-hidden="true">✓</span>
                   : <span className="ml-auto text-text-muted text-xl">›</span>
                 }
               </motion.button>
