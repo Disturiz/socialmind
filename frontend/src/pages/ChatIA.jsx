@@ -6,6 +6,8 @@ import { Button } from '../components/ui/Button'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
 import { ChatBubble } from '../components/chat/ChatBubble'
 import { ChatOptions } from '../components/chat/ChatOptions'
+import { motion } from 'framer-motion'
+import { TypingIndicator } from '../components/chat/TypingIndicator'
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 
@@ -23,6 +25,7 @@ export function ChatIA() {
   const [error, setError] = useState(null)
   const [inputText, setInputText] = useState('')
   const [listening, setListening] = useState(false)
+  const [ended, setEnded] = useState(false)
 
   useEffect(() => {
     initChat()
@@ -97,11 +100,11 @@ export function ChatIA() {
     setLumiState('thinking')
     try {
       const res = await chatApi.sendMessage(conversationId, content)
-      const { message, options: newOpts, lumi_state, ended } = res.data
+      const { message, options: newOpts, lumi_state, ended: endedFlag } = res.data
       setMessages((prev) => [...prev, { role: 'assistant', content: message }])
       setLumiState(lumi_state)
-      if (ended) {
-        setTimeout(() => navigate('/inicio'), 1500)
+      if (endedFlag) {
+        setEnded(true)
       } else {
         setOptions(newOpts)
       }
@@ -134,6 +137,29 @@ export function ChatIA() {
     )
   }
 
+  if (ended) {
+    return (
+      <PageWrapper className="items-center justify-center px-6 py-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col items-center gap-6 text-center"
+        >
+          <LumiCharacter state="happy" size={90} />
+          <div className="bg-calm-surface rounded-3xl p-5">
+            <p className="text-base text-text-primary">
+              ¡Fue un gusto charlar contigo! Hasta la próxima. 🌟
+            </p>
+          </div>
+          <Button variant="primary" onClick={() => navigate('/inicio')}>
+            Volver al inicio
+          </Button>
+        </motion.div>
+      </PageWrapper>
+    )
+  }
+
   return (
     <PageWrapper className="px-0 py-0">
       <div className="flex flex-col h-screen max-w-lg mx-auto w-full">
@@ -160,9 +186,7 @@ export function ChatIA() {
           ))}
           {sending && (
             <div className="flex justify-start">
-              <div className="bg-primary-50 border-2 border-primary-200 rounded-3xl rounded-tl-sm px-5 py-4">
-                <p className="text-base text-text-muted">Lumi está escribiendo...</p>
-              </div>
+              <TypingIndicator />
             </div>
           )}
           <div ref={bottomRef} />

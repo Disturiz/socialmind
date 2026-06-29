@@ -90,11 +90,11 @@ describe('ChatIA', () => {
     })
   })
 
-  it('al recibir ended:true navega a /inicio', async () => {
+  it('al recibir ended:true muestra pantalla de cierre con botón para volver', async () => {
     chatApi.sendMessage.mockResolvedValueOnce({
       data: {
         message: '¡Hasta la próxima!',
-        options: ['Terminar'],
+        options: [],
         lumi_state: 'happy',
         ended: true,
       },
@@ -103,8 +103,13 @@ describe('ChatIA', () => {
     await waitFor(() => screen.getByText('Terminar'))
     await userEvent.click(screen.getByText('Terminar'))
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/inicio')
-    }, { timeout: 3000 })
+      expect(
+        screen.getByText('¡Fue un gusto charlar contigo! Hasta la próxima. 🌟')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /volver al inicio/i })
+      ).toBeInTheDocument()
+    })
   })
 
   it('error de red muestra mensaje de reintento en español', async () => {
@@ -114,5 +119,33 @@ describe('ChatIA', () => {
       expect(screen.getByText(/Algo salió mal/i)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /reintentar/i })).toBeInTheDocument()
     })
+  })
+
+  it('muestra el indicador de escritura animado mientras Lumi responde', async () => {
+    let resolveMessage
+    chatApi.sendMessage.mockReturnValueOnce(
+      new Promise((resolve) => { resolveMessage = resolve })
+    )
+    renderChat()
+    await waitFor(() => screen.getByText('Sí, quiero hablar'))
+    await userEvent.click(screen.getByText('Sí, quiero hablar'))
+    await waitFor(() => {
+      expect(screen.getByLabelText('Lumi está escribiendo')).toBeInTheDocument()
+    })
+    resolveMessage({
+      data: { message: '¡Gracias!', options: ['Ok'], lumi_state: 'happy', ended: false },
+    })
+  })
+
+  it('botón "Volver al inicio" en pantalla de cierre navega a /inicio', async () => {
+    chatApi.sendMessage.mockResolvedValueOnce({
+      data: { message: '¡Hasta!', options: [], lumi_state: 'happy', ended: true },
+    })
+    renderChat()
+    await waitFor(() => screen.getByText('Terminar'))
+    await userEvent.click(screen.getByText('Terminar'))
+    await waitFor(() => screen.getByRole('button', { name: /volver al inicio/i }))
+    await userEvent.click(screen.getByRole('button', { name: /volver al inicio/i }))
+    expect(mockNavigate).toHaveBeenCalledWith('/inicio')
   })
 })
