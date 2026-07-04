@@ -10,6 +10,7 @@ class ChildSummaryOut(BaseModel):
     last_emotion_key: str | None
     total_calm_sessions: int
     total_chats: int
+    total_scenarios_completed: int
 
 
 class EmotionEntryOut(BaseModel):
@@ -48,6 +49,13 @@ class GamificationProgressOut(BaseModel):
     badges_earned: int
 
 
+class ScenarioCompletedOut(BaseModel):
+    scenario_id: int
+    emoji: str
+    title: str
+    completed_at: datetime
+
+
 class ChildDetailOut(BaseModel):
     child_profile_id: int
     name: str
@@ -56,6 +64,7 @@ class ChildDetailOut(BaseModel):
     emotions: list[EmotionEntryOut]
     calm_sessions: list[CalmEntryOut]
     conversations: list[ConversationOut]
+    scenarios_completed: list[ScenarioCompletedOut]
     specialist_note: str | None
     gamification_progress: GamificationProgressOut | None = None
 

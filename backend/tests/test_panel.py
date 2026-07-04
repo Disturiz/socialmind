@@ -252,3 +252,53 @@ def test_child_detail_includes_gamification(client, db):
     assert "gamification_progress" in data
     assert data["gamification_progress"]["total_stars"] == 0
     assert data["gamification_progress"]["level_key"] == "explorador"
+
+
+def test_child_detail_includes_scenarios_completed(client, db):
+    from datetime import datetime, timezone
+    from app.models.scenario_completion import ScenarioCompletion
+
+    spec_token = _login(client, "spec_sc1@test.com", "specialist")
+    parent_token = _login(client, "parent_sc1@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    child = _make_child(db, parent_id, name="María", age=11)
+    now = datetime.now(timezone.utc)
+
+    db.add(ScenarioCompletion(user_id=parent_id, scenario_id=1, completed_at=now))
+    db.commit()
+
+    response = client.get(
+        f"/api/v1/panel/children/{child.id}",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "scenarios_completed" in data
+    assert len(data["scenarios_completed"]) == 1
+    sc = data["scenarios_completed"][0]
+    assert sc["scenario_id"] == 1
+    assert sc["emoji"]
+    assert sc["title"]
+    assert "completed_at" in sc
+
+
+def test_list_children_includes_total_scenarios_completed(client, db):
+    from app.models.scenario_completion import ScenarioCompletion
+
+    spec_token = _login(client, "spec_sc2@test.com", "specialist")
+    parent_token = _login(client, "parent_sc2@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    _make_child(db, parent_id, name="Sofía", age=9)
+
+    db.add(ScenarioCompletion(user_id=parent_id, scenario_id=1))
+    db.add(ScenarioCompletion(user_id=parent_id, scenario_id=2))
+    db.commit()
+
+    response = client.get(
+        "/api/v1/panel/children",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["total_scenarios_completed"] == 2

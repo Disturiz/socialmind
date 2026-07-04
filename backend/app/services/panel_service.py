@@ -7,6 +7,8 @@ from app.models.calm_session import CalmSession
 from app.models.chat_conversation import ChatConversation
 from app.models.chat_message import ChatMessage
 from app.models.specialist_note import SpecialistNote
+from app.models.scenario_completion import ScenarioCompletion
+from app.services.scenario_service import _SCENARIO_MAP
 from app.gamification.service import get_progress as get_gamification_progress
 
 
@@ -23,6 +25,9 @@ def list_children(db: Session) -> list[dict]:
         )
         total_calm = db.query(CalmSession).filter(CalmSession.user_id == pid).count()
         total_chats = db.query(ChatConversation).filter(ChatConversation.user_id == pid).count()
+        total_scenarios = (
+            db.query(ScenarioCompletion).filter(ScenarioCompletion.user_id == pid).count()
+        )
         result.append({
             "child_profile_id": profile.id,
             "name": profile.name,
@@ -31,6 +36,7 @@ def list_children(db: Session) -> list[dict]:
             "last_emotion_key": last_emotion.emotion_key if last_emotion else None,
             "total_calm_sessions": total_calm,
             "total_chats": total_chats,
+            "total_scenarios_completed": total_scenarios,
         })
     return result
 
@@ -63,6 +69,12 @@ def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
         .limit(10)
         .all()
     )
+    completions = (
+        db.query(ScenarioCompletion)
+        .filter(ScenarioCompletion.user_id == pid)
+        .order_by(ScenarioCompletion.completed_at.desc())
+        .all()
+    )
 
     conv_details = []
     for conv in conversations:
@@ -83,6 +95,18 @@ def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
                 for m in messages
             ],
         })
+
+    scenarios_completed = [
+        {
+            "scenario_id": c.scenario_id,
+            "emoji": _SCENARIO_MAP[c.scenario_id].emoji
+                     if c.scenario_id in _SCENARIO_MAP else "🌟",
+            "title": _SCENARIO_MAP[c.scenario_id].title
+                     if c.scenario_id in _SCENARIO_MAP else f"Escenario {c.scenario_id}",
+            "completed_at": c.completed_at,
+        }
+        for c in completions
+    ]
 
     note = (
         db.query(SpecialistNote)
@@ -114,6 +138,7 @@ def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
             for s in calm_sessions
         ],
         "conversations": conv_details,
+        "scenarios_completed": scenarios_completed,
         "specialist_note": note.content if note else None,
         "gamification_progress": {
             "total_stars": gamification["total_stars"],
