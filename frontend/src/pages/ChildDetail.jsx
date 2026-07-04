@@ -232,8 +232,8 @@ export function ChildDetail() {
             {child.scenarios_completed.length === 0 ? (
               <p className="text-base text-text-secondary text-center py-6">Sin escenarios completados.</p>
             ) : (
-              child.scenarios_completed.map((s, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-calm-surface border border-calm-border">
+              child.scenarios_completed.map((s) => (
+                <div key={s.scenario_id} className="flex items-center justify-between p-4 rounded-2xl bg-calm-surface border border-calm-border">
                   <p className="text-base font-bold text-text-primary">
                     {s.emoji} {s.title}
                   </p>
