@@ -40,6 +40,7 @@ const mockChildren = [
     last_emotion_key: 'nervioso',
     total_calm_sessions: 3,
     total_chats: 2,
+    total_scenarios_completed: 2,
   },
 ]
 
@@ -85,6 +86,13 @@ describe('PanelProfesional', () => {
       expect(screen.queryByText(/Hoy:.*nervioso/)).not.toBeInTheDocument()
       // Verify emoji appears alongside the label
       expect(screen.getByText(/😰.*Nervioso/)).toBeInTheDocument()
+    })
+  })
+
+  it('muestra total de escenarios completados en la tarjeta del niño', async () => {
+    renderPanel()
+    await waitFor(() => {
+      expect(screen.getByText(/2 escenarios/)).toBeInTheDocument()
     })
   })
 })

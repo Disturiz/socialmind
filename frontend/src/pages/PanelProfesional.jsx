@@ -76,7 +76,7 @@ export function PanelProfesional() {
                     </p>
                   )}
                   <p className="text-base text-text-muted">
-                    {child.total_chats} chats · {child.total_calm_sessions} calma
+                    {child.total_chats} chats · {child.total_calm_sessions} calma · {child.total_scenarios_completed} escenarios
                   </p>
                 </div>
                 <span className="text-text-muted text-xl">›</span>

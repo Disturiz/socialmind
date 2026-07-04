@@ -24,7 +24,7 @@ function formatDate(iso) {
   })
 }
 
-const TABS = ['Emociones', 'Calma', 'Conversaciones']
+const TABS = ['Emociones', 'Calma', 'Conversaciones', 'Escenarios']
 
 export function ChildDetail() {
   const { childId }       = useParams()
@@ -220,6 +220,24 @@ export function ChildDetail() {
                       ))}
                     </div>
                   )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Tab: Escenarios */}
+        {activeTab === 'Escenarios' && (
+          <div className="flex flex-col gap-3">
+            {child.scenarios_completed.length === 0 ? (
+              <p className="text-base text-text-secondary text-center py-6">Sin escenarios completados.</p>
+            ) : (
+              child.scenarios_completed.map((s, i) => (
+                <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-calm-surface border border-calm-border">
+                  <p className="text-base font-bold text-text-primary">
+                    {s.emoji} {s.title}
+                  </p>
+                  <p className="text-base text-text-secondary">{formatDate(s.completed_at)}</p>
                 </div>
               ))
             )}

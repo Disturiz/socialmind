@@ -73,6 +73,14 @@ const mockChild = {
     progress_pct: 30,
     badges_earned: 1,
   },
+  scenarios_completed: [
+    {
+      scenario_id: 1,
+      emoji: '🤝',
+      title: 'Saludar a alguien nuevo',
+      completed_at: '2026-07-01T10:00:00Z',
+    },
+  ],
 }
 
 function renderDetail() {
@@ -174,6 +182,16 @@ describe('ChildDetail', () => {
     await waitFor(() => {
       expect(screen.queryByText('nervioso')).not.toBeInTheDocument()
       expect(screen.getAllByText(/Nervioso/i).length).toBeGreaterThan(0)
+    })
+  })
+
+  it('tab Escenarios muestra escenarios completados con emoji, título y fecha', async () => {
+    renderDetail()
+    await waitFor(() => screen.getByText('Escenarios'))
+    await userEvent.click(screen.getByText('Escenarios'))
+    await waitFor(() => {
+      expect(screen.getByText(/Saludar a alguien nuevo/)).toBeInTheDocument()
+      expect(screen.getByText(/01\/07\/2026/)).toBeInTheDocument()
     })
   })
 })
