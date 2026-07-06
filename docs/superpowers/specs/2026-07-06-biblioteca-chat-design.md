@@ -102,11 +102,20 @@ Si los fragmentos no contienen la respuesta, dilo con empatía.
 - Estilo visual cálido, consistente con el diseño para padres
 - Placeholder: *"¿Tienes alguna pregunta sobre el autismo?"*
 
+### Respuesta con voz
+
+Después de cada respuesta aparece un botón **"🔊 Escuchar respuesta"**. Al hacer clic:
+- Lee en voz alta un resumen de la respuesta usando `window.speechSynthesis` (Web Speech API)
+- Mientras habla, el botón cambia a **"⏹ Detener"**
+- Al terminar, vuelve a **"🔊 Escuchar respuesta"**
+- El idioma se fija en `es-419` (español latinoamericano)
+- No requiere backend ni API externa
+
 ### Estados de UI
 
 - **Cargando:** spinner mientras se espera respuesta
 - **Sin documentos:** mensaje informativo, sin campo de consulta
-- **Con respuesta:** texto de respuesta + fuentes (máx. 3, truncadas a 150 chars)
+- **Con respuesta:** texto de respuesta + fuentes (máx. 3, truncadas a 150 chars) + botón de voz
 - **Error:** mensaje amigable genérico
 
 ---
