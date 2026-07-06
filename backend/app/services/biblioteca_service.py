@@ -1,24 +1,16 @@
-import json
 import os
 import re
 import uuid
 from datetime import datetime, timezone
 
-import numpy as np
-import openai
 import pdfplumber
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.config import settings
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 
 DATA_DIR = os.environ.get("BIBLIOTECA_DATA_DIR", "/data/biblioteca")
-
-# Singleton patcheable en tests via:
-# patch("app.services.biblioteca_service.openai_client", mock_openai)
-openai_client = openai.OpenAI(api_key=settings.openai_api_key)
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 CHUNK_MAX_WORDS = 400
@@ -50,7 +42,6 @@ def _chunk_text(text: str) -> list[str]:
             if len(words) <= CHUNK_MAX_WORDS:
                 current = overlap + words
             else:
-                # párrafo largo: dividir por oraciones
                 current = overlap
                 for sent in re.split(r"(?<=[.!?])\s+", para):
                     sent_words = sent.split()
@@ -64,13 +55,13 @@ def _chunk_text(text: str) -> list[str]:
     return [c for c in chunks if c.strip()]
 
 
-def _cosine_similarity(a: list[float], b: list[float]) -> float:
-    va = np.array(a, dtype=np.float32)
-    vb = np.array(b, dtype=np.float32)
-    denom = np.linalg.norm(va) * np.linalg.norm(vb)
-    if denom == 0:
+def _keyword_score(query: str, text: str) -> float:
+    query_words = set(re.findall(r"\w+", query.lower()))
+    text_words = re.findall(r"\w+", text.lower())
+    if not query_words or not text_words:
         return 0.0
-    return float(np.dot(va, vb) / denom)
+    matches = sum(1 for w in text_words if w in query_words)
+    return matches / len(text_words)
 
 
 def upload_and_process(
@@ -105,16 +96,11 @@ def upload_and_process(
         chunks = _chunk_text(text)
 
         for i, chunk_content in enumerate(chunks):
-            resp = openai_client.embeddings.create(
-                model="text-embedding-3-small",
-                input=chunk_content,
-            )
-            embedding = resp.data[0].embedding
             db.add(DocumentChunk(
                 document_id=doc.id,
                 chunk_index=i,
                 content=chunk_content,
-                embedding=json.dumps(embedding),
+                embedding="[]",
                 created_at=datetime.now(timezone.utc),
             ))
 
@@ -166,18 +152,10 @@ def search(db: Session, query: str, top_k: int = 3) -> str:
     if not rows:
         return ""
 
-    query_resp = openai_client.embeddings.create(
-        model="text-embedding-3-small",
-        input=query,
-    )
-    query_emb = query_resp.data[0].embedding
-
-    scored = []
-    for chunk, original_name in rows:
-        chunk_emb = json.loads(chunk.embedding)
-        sim = _cosine_similarity(query_emb, chunk_emb)
-        scored.append((sim, chunk, original_name))
-
+    scored = [
+        (_keyword_score(query, chunk.content), chunk, original_name)
+        for chunk, original_name in rows
+    ]
     scored.sort(key=lambda x: x[0], reverse=True)
     top = scored[:top_k]
 
