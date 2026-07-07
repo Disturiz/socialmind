@@ -18,6 +18,10 @@ export function BibliotecaChat() {
 
   const handleAsk = async () => {
     if (!question.trim()) return
+    if (speaking) {
+      window.speechSynthesis.cancel()
+      setSpeaking(false)
+    }
     setLoading(true)
     setError(null)
     setResult(null)
@@ -47,6 +51,7 @@ export function BibliotecaChat() {
     const utterance = new SpeechSynthesisUtterance(result.answer)
     utterance.lang = 'es-419'
     utterance.onend = () => setSpeaking(false)
+    utterance.onerror = () => setSpeaking(false)
     utteranceRef.current = utterance
     setSpeaking(true)
     window.speechSynthesis.speak(utterance)
