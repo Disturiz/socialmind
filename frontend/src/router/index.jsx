@@ -16,6 +16,7 @@ import { ChildDetail }       from '../pages/ChildDetail'
 import { Biblioteca }        from '../pages/Biblioteca'
 import { MiAventura }        from '../pages/MiAventura'
 import { ChildProfileForm }  from '../pages/ChildProfileForm'
+import { BibliotecaChatPage } from '../pages/BibliotecaChatPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -156,5 +157,9 @@ export const router = createBrowserRouter([
   {
     path: '/biblioteca',
     element: <SpecialistRoute><Biblioteca /></SpecialistRoute>,
+  },
+  {
+    path: '/biblioteca/consultar',
+    element: <ProtectedRoute><BibliotecaChatPage /></ProtectedRoute>,
   },
 ])

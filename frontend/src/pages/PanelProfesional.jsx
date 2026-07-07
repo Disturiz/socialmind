@@ -42,6 +42,22 @@ export function PanelProfesional() {
           <h1 className="text-xl font-extrabold text-primary-700">Panel Profesional</h1>
         </div>
 
+        <button
+          onClick={() => navigate('/biblioteca/consultar')}
+          className="
+            w-full flex items-center gap-4 p-5 rounded-3xl text-left
+            bg-calm-surface border-2 border-calm-border
+            hover:border-primary-500 hover:bg-primary-50
+            transition-all font-semibold text-base text-text-primary
+          "
+        >
+          <span className="text-3xl">📖</span>
+          <div>
+            <div className="font-bold text-text-primary">Consultar Biblioteca</div>
+            <div className="text-sm text-text-secondary">Consulta los documentos clínicos con IA</div>
+          </div>
+        </button>
+
         {children.length === 0 ? (
           <p className="text-base text-text-secondary text-center py-10">
             Aún no hay niños registrados en la plataforma.

@@ -50,6 +50,13 @@ const MODULE_CARDS = [
     available: true,
     path: '/mi-aventura',
   },
+  {
+    emoji: '📖',
+    title: 'Consultar Biblioteca',
+    desc: 'Pregunta sobre el autismo a la IA',
+    available: true,
+    path: '/biblioteca/consultar',
+  },
 ]
 
 const SPECIALIST_CARDS = [
@@ -66,6 +73,13 @@ const SPECIALIST_CARDS = [
     desc: 'Documentos educativos para Lumi',
     available: true,
     path: '/biblioteca',
+  },
+  {
+    emoji: '📖',
+    title: 'Consultar Biblioteca',
+    desc: 'Consulta los documentos educativos',
+    available: true,
+    path: '/biblioteca/consultar',
   },
 ]
 
