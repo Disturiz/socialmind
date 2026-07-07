@@ -68,8 +68,9 @@ export const bibliotecaApi = {
     api.post('/biblioteca/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-  list:   ()      => api.get('/biblioteca/documents'),
-  delete: (docId) => api.delete(`/biblioteca/documents/${docId}`),
+  list:     ()         => api.get('/biblioteca/documents'),
+  delete:   (docId)    => api.delete(`/biblioteca/documents/${docId}`),
+  ask:      (question) => api.post('/biblioteca/ask', { question }),
 }
 
 export const gamificationApi = {
