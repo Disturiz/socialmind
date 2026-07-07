@@ -3,10 +3,12 @@ import re
 import uuid
 from datetime import datetime, timezone
 
+import anthropic
 import pdfplumber
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 
@@ -15,6 +17,22 @@ DATA_DIR = os.environ.get("BIBLIOTECA_DATA_DIR", "/data/biblioteca")
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 CHUNK_MAX_WORDS = 400
 CHUNK_OVERLAP_WORDS = 40
+
+SYSTEM_SPECIALIST = (
+    "Eres un asistente clínico especializado en trastornos del desarrollo. "
+    "Responde con precisión técnica basándote en los fragmentos de documentos provistos. "
+    "Usa terminología profesional. Sé conciso. "
+    "Si los fragmentos no contienen la respuesta, indícalo claramente."
+)
+
+SYSTEM_PARENT = (
+    "Eres un asistente amable que ayuda a padres de niños con autismo. "
+    "Explica en lenguaje simple y cálido, sin términos médicos. "
+    "Basa tu respuesta en los fragmentos provistos. Da consejos prácticos cuando sea posible. "
+    "Si los fragmentos no contienen la respuesta, dilo con empatía."
+)
+
+anthropic_client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
 
 def _extract_text(file_path: str) -> str:
@@ -62,6 +80,24 @@ def _keyword_score(query: str, text: str) -> float:
         return 0.0
     matches = sum(1 for w in text_words if w in query_words)
     return matches / len(text_words)
+
+
+def _search_chunks(db: Session, query: str, top_k: int = 3) -> list[tuple[str, str]]:
+    """Returns list of (content, original_name) tuples sorted by relevance."""
+    rows = (
+        db.query(DocumentChunk, Document.original_name)
+        .join(Document, DocumentChunk.document_id == Document.id)
+        .filter(Document.status == "ready")
+        .all()
+    )
+    if not rows:
+        return []
+    scored = [
+        (_keyword_score(query, chunk.content), chunk, original_name)
+        for chunk, original_name in rows
+    ]
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [(chunk.content, original_name) for _, chunk, original_name in scored[:top_k]]
 
 
 def upload_and_process(
@@ -143,24 +179,50 @@ def delete_document(db: Session, specialist_id: int, doc_id: int) -> None:
 
 
 def search(db: Session, query: str, top_k: int = 3) -> str:
-    rows = (
-        db.query(DocumentChunk, Document.original_name)
-        .join(Document, DocumentChunk.document_id == Document.id)
-        .filter(Document.status == "ready")
-        .all()
-    )
-    if not rows:
+    chunks = _search_chunks(db, query, top_k)
+    if not chunks:
         return ""
-
-    scored = [
-        (_keyword_score(query, chunk.content), chunk, original_name)
-        for chunk, original_name in rows
+    parts = [
+        f'[Fragmento {i} de "{name}"]:\n{content}'
+        for i, (content, name) in enumerate(chunks, 1)
     ]
-    scored.sort(key=lambda x: x[0], reverse=True)
-    top = scored[:top_k]
-
-    parts = []
-    for i, (_, chunk, original_name) in enumerate(top, 1):
-        parts.append(f'[Fragmento {i} de "{original_name}"]:\n{chunk.content}')
-
     return "\n\n".join(parts)
+
+
+def ask(db: Session, question: str, role: str) -> dict:
+    chunks = _search_chunks(db, question, top_k=3)
+
+    if not chunks:
+        return {
+            "answer": "Aún no hay documentos en la biblioteca. Un especialista debe subir documentos primero.",
+            "sources": [],
+        }
+
+    context = "\n\n".join(
+        f'[Fragmento {i} de "{name}"]:\n{content}'
+        for i, (content, name) in enumerate(chunks, 1)
+    )
+    system = SYSTEM_SPECIALIST if role == "specialist" else SYSTEM_PARENT
+
+    try:
+        response = anthropic_client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=system,
+            messages=[{
+                "role": "user",
+                "content": f"Fragmentos de documentos:\n\n{context}\n\nPregunta: {question}",
+            }],
+        )
+        answer = response.content[0].text
+    except Exception:
+        raise HTTPException(
+            status_code=503,
+            detail="Servicio de IA no disponible. Intenta de nuevo.",
+        )
+
+    sources = [
+        {"doc_name": name, "fragment": content[:150]}
+        for content, name in chunks
+    ]
+    return {"answer": answer, "sources": sources}

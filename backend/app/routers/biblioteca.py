@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.dependencies import get_current_user, require_specialist
 from app.database import get_db
 from app.models.user import User
-from app.schemas.biblioteca import DocumentOut
+from app.schemas.biblioteca import BibliotecaAskRequest, BibliotecaAskResponse, DocumentOut
 from app.services import biblioteca_service
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -58,3 +58,13 @@ def delete_document(
     db: Session = Depends(get_db),
 ):
     biblioteca_service.delete_document(db, current_user.id, doc_id)
+
+
+@router.post("/ask", response_model=BibliotecaAskResponse)
+def ask_document(
+    body: BibliotecaAskRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    result = biblioteca_service.ask(db, body.question, current_user.role)
+    return result

@@ -32,18 +32,11 @@ def test_upload_document_creates_record_and_chunks(client, db, tmp_path, monkeyp
     mock_page = MagicMock()
     mock_page.extract_text.return_value = "Texto sobre autismo y regulación emocional en niños. " * 20
 
-    mock_embedding_data = MagicMock()
-    mock_embedding_data.embedding = [0.1] * 1536
-
-    with patch("pdfplumber.open") as mock_pdfplumber, \
-         patch("app.services.biblioteca_service.openai_client") as mock_openai:
+    with patch("pdfplumber.open") as mock_pdfplumber:
         mock_pdfplumber.return_value.__enter__ = MagicMock(
             return_value=MagicMock(pages=[mock_page])
         )
         mock_pdfplumber.return_value.__exit__ = MagicMock(return_value=False)
-        mock_openai.embeddings.create.return_value = MagicMock(
-            data=[mock_embedding_data]
-        )
 
         files = {"file": ("guia.pdf", io.BytesIO(b"%PDF-1.4 fake"), "application/pdf")}
         response = client.post(
@@ -187,3 +180,86 @@ def test_delete_document_other_specialist_returns_404(client, db, tmp_path, monk
         headers={"Authorization": f"Bearer {other_token}"},
     )
     assert response.status_code == 404
+
+
+def test_ask_no_documents_returns_default_message(client):
+    token = _login(client, "parent_ask_empty@test.com", role="parent")
+    response = client.post(
+        "/api/v1/biblioteca/ask",
+        json={"question": "¿Qué es el autismo?"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "especialista" in data["answer"].lower()
+    assert data["sources"] == []
+
+
+def test_ask_with_documents_calls_claude(client, db, tmp_path, monkeypatch):
+    import app.services.biblioteca_service as bs
+    monkeypatch.setattr(bs, "DATA_DIR", str(tmp_path))
+
+    spec_token = _login(client, "spec_ask@test.com")
+    parent_token = _login(client, "parent_ask@test.com", role="parent")
+    spec_id = _me(client, spec_token)["id"]
+
+    from datetime import datetime, timezone
+    from app.models.document import Document
+    from app.models.document_chunk import DocumentChunk
+
+    doc = Document(
+        specialist_id=spec_id,
+        filename="test.pdf",
+        original_name="guia_autismo.pdf",
+        file_size_bytes=100,
+        status="ready",
+        chunk_count=1,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(doc)
+    db.commit()
+    db.refresh(doc)
+    db.add(DocumentChunk(
+        document_id=doc.id,
+        chunk_index=0,
+        content="Las rutinas predecibles son fundamentales para niños con autismo.",
+        embedding="[]",
+        created_at=datetime.now(timezone.utc),
+    ))
+    db.commit()
+
+    mock_response = MagicMock()
+    mock_response.content = [MagicMock(text="Las rutinas ayudan a reducir la ansiedad.")]
+
+    with patch("app.services.biblioteca_service.anthropic_client") as mock_claude:
+        mock_claude.messages.create.return_value = mock_response
+        response = client.post(
+            "/api/v1/biblioteca/ask",
+            json={"question": "rutinas autismo"},
+            headers={"Authorization": f"Bearer {parent_token}"},
+        )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["answer"] == "Las rutinas ayudan a reducir la ansiedad."
+    assert len(data["sources"]) == 1
+    assert data["sources"][0]["doc_name"] == "guia_autismo.pdf"
+    assert len(data["sources"][0]["fragment"]) <= 150
+
+
+def test_ask_empty_question_returns_422(client):
+    token = _login(client, "parent_ask_empty2@test.com", role="parent")
+    response = client.post(
+        "/api/v1/biblioteca/ask",
+        json={"question": ""},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 422
+
+
+def test_ask_unauthenticated_returns_401(client):
+    response = client.post(
+        "/api/v1/biblioteca/ask",
+        json={"question": "¿Qué es el autismo?"},
+    )
+    assert response.status_code == 401
