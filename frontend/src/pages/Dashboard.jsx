@@ -117,6 +117,12 @@ export function Dashboard() {
               <div>
                 <h1 className="text-xl font-extrabold text-primary-700">{child.name}</h1>
                 <p className="text-base text-text-secondary">{child.age} años</p>
+                <button
+                  onClick={() => navigate(`/perfil/nino/${child.id}/especialistas`)}
+                  className="text-xs text-primary-600 font-semibold hover:underline mt-1"
+                >
+                  Gestionar especialistas
+                </button>
               </div>
             </>
           ) : (

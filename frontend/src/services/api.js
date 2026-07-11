@@ -81,3 +81,13 @@ export const profilesApi = {
   getMe:       () => api.get('/profiles/me'),
   createChild: (data) => api.post('/profiles/children', data),
 }
+
+export const assignmentsApi = {
+  listSpecialists: () => api.get('/assignments/specialists'),
+  listAssigned: (childId) => api.get(`/assignments/children/${childId}/specialists`),
+  assign: (childId, specialistId) =>
+    api.post(`/assignments/children/${childId}/specialists/${specialistId}`),
+  unassign: (childId, specialistId) =>
+    api.delete(`/assignments/children/${childId}/specialists/${specialistId}`),
+  myParents: () => api.get('/assignments/my-parents'),
+}

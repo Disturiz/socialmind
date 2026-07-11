@@ -17,6 +17,7 @@ import { Biblioteca }        from '../pages/Biblioteca'
 import { MiAventura }        from '../pages/MiAventura'
 import { ChildProfileForm }  from '../pages/ChildProfileForm'
 import { BibliotecaChatPage } from '../pages/BibliotecaChatPage'
+import { ManageSpecialistsPage } from '../pages/ManageSpecialistsPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
   {
     path: '/perfil/nuevo-nino',
     element: <ProtectedRoute><ChildProfileForm /></ProtectedRoute>,
+  },
+  {
+    path: '/perfil/nino/:childId/especialistas',
+    element: <ProtectedRoute><ManageSpecialistsPage /></ProtectedRoute>,
   },
   {
     path: '/inicio',
