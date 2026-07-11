@@ -16,6 +16,8 @@ import app.models.document
 import app.models.document_chunk
 import app.models.reward_event
 import app.models.user_rewards
+import app.models.adult_conversation
+import app.models.adult_message
 
 app = FastAPI(
     title="SocialMind API",
