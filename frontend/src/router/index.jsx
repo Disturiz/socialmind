@@ -18,6 +18,7 @@ import { MiAventura }        from '../pages/MiAventura'
 import { ChildProfileForm }  from '../pages/ChildProfileForm'
 import { BibliotecaChatPage } from '../pages/BibliotecaChatPage'
 import { ManageSpecialistsPage } from '../pages/ManageSpecialistsPage'
+import { LumiChatAdultosPage } from '../pages/LumiChatAdultosPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -166,5 +167,9 @@ export const router = createBrowserRouter([
   {
     path: '/biblioteca/consultar',
     element: <ProtectedRoute><BibliotecaChatPage /></ProtectedRoute>,
+  },
+  {
+    path: '/lumi-chat',
+    element: <ProtectedRoute><LumiChatAdultosPage /></ProtectedRoute>,
   },
 ])

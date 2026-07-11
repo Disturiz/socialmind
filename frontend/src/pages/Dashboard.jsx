@@ -57,6 +57,13 @@ const MODULE_CARDS = [
     available: true,
     path: '/biblioteca/consultar',
   },
+  {
+    emoji: '🦉',
+    title: 'Chat adultos con Lumi',
+    desc: 'Consultas sobre el espectro autista',
+    available: true,
+    path: '/lumi-chat',
+  },
 ]
 
 const SPECIALIST_CARDS = [
@@ -80,6 +87,13 @@ const SPECIALIST_CARDS = [
     desc: 'Consulta los documentos educativos',
     available: true,
     path: '/biblioteca/consultar',
+  },
+  {
+    emoji: '🦉',
+    title: 'Chat con Lumi',
+    desc: 'Consultas sobre el espectro autista',
+    available: true,
+    path: '/lumi-chat',
   },
 ]
 

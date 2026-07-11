@@ -65,6 +65,22 @@ export function PanelProfesional() {
           </div>
         </button>
 
+        <button
+          onClick={() => navigate('/lumi-chat')}
+          className="
+            w-full flex items-center gap-4 p-5 rounded-3xl text-left
+            bg-calm-surface border-2 border-calm-border
+            hover:border-primary-500 hover:bg-primary-50
+            transition-all font-semibold text-base text-text-primary
+          "
+        >
+          <span className="text-3xl">🦉</span>
+          <div>
+            <div className="font-bold text-text-primary">Chat con Lumi</div>
+            <div className="text-sm text-text-secondary">Consultas sobre el espectro autista</div>
+          </div>
+        </button>
+
         {parents.length > 0 && (
           <div className="flex flex-col gap-2">
             <p className="text-sm font-bold text-text-secondary">Familias que te asignaron</p>
