@@ -11,6 +11,7 @@ import app.models.chat_conversation
 import app.models.chat_message
 import app.models.calm_session
 import app.models.specialist_note
+import app.models.specialist_assignment
 import app.models.document
 import app.models.document_chunk
 import app.models.reward_event
