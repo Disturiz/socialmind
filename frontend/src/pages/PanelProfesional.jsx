@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { panelApi } from '../services/api'
+import { panelApi, assignmentsApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
 import { EMOTION_META } from '../components/panel/EmotionDistributionChart'
@@ -9,11 +9,18 @@ import { EMOTION_META } from '../components/panel/EmotionDistributionChart'
 export function PanelProfesional() {
   const navigate = useNavigate()
   const [children, setChildren] = useState([])
+  const [parents, setParents]   = useState([])
   const [loading, setLoading]   = useState(true)
 
   useEffect(() => {
-    panelApi.listChildren()
-      .then((res) => setChildren(res.data))
+    Promise.all([
+      panelApi.listChildren(),
+      assignmentsApi.myParents(),
+    ])
+      .then(([childrenRes, parentsRes]) => {
+        setChildren(childrenRes.data)
+        setParents(parentsRes.data)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -58,9 +65,25 @@ export function PanelProfesional() {
           </div>
         </button>
 
+        {parents.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-bold text-text-secondary">Familias que te asignaron</p>
+            <div className="flex flex-wrap gap-2">
+              {parents.map(parent => (
+                <span
+                  key={parent.id}
+                  className="px-3 py-1 rounded-full bg-calm-surface border border-calm-border text-sm text-text-primary"
+                >
+                  👨‍👩‍👧 {parent.full_name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {children.length === 0 ? (
           <p className="text-base text-text-secondary text-center py-10">
-            Aún no hay niños registrados en la plataforma.
+            Aún no tienes niños asignados. Pide a un padre que te agregue desde el perfil de su hijo.
           </p>
         ) : (
           <div className="flex flex-col gap-4">
