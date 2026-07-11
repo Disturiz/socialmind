@@ -12,7 +12,7 @@ export function SpecialistAssignments({ childProfileId }) {
   useEffect(() => {
     assignmentsApi.listAssigned(childProfileId)
       .then(res => setAssigned(res.data))
-      .catch(() => {})
+      .catch(() => setError('No se pudo cargar los especialistas.'))
       .finally(() => setLoading(false))
   }, [childProfileId])
 
