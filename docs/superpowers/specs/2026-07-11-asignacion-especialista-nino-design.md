@@ -51,6 +51,7 @@ class SpecialistAssignment(Base):
 | `GET` | `/children/{child_id}/specialists` | `parent` | Lista especialistas asignados al niño |
 | `POST` | `/children/{child_id}/specialists/{specialist_id}` | `parent` | Crea asignación |
 | `DELETE` | `/children/{child_id}/specialists/{specialist_id}` | `parent` | Elimina asignación |
+| `GET` | `/my-parents` | `specialist` | Lista los padres únicos que asignaron sus hijos a este especialista |
 
 **Seguridad:**
 - Todos los endpoints de padre verifican que `child_id` pertenezca al usuario autenticado (`ChildProfile.parent_id == current_user.id`). Retorna 404 si no es su hijo.
@@ -62,6 +63,12 @@ class SpecialistAssignment(Base):
 ```python
 # SpecialistOut — usado en GET /specialists y GET /children/{id}/specialists
 class SpecialistOut(BaseModel):
+    id: int
+    full_name: str
+    email: str
+
+# ParentOut — usado en GET /my-parents
+class ParentOut(BaseModel):
     id: int
     full_name: str
     email: str
@@ -149,11 +156,16 @@ export const assignmentsApi = {
 }
 ```
 
-### Panel Profesional — sin cambios de UI
+### Panel Profesional — cambios de UI
 
-El cambio es transparente para el especialista. Si no tiene asignaciones, la lista muestra:
-
+**Lista de niños:** sin cambios visuales — el filtro es transparente. Si no tiene asignaciones:
 > "Aún no tienes niños asignados. Pide a un padre que te agregue desde el perfil de su hijo."
+
+**Nuevo: sección "Mis familias"** — debajo de los botones de acceso rápido (Biblioteca), antes de la lista de niños:
+- Llama a `GET /assignments/my-parents` al montar
+- Muestra los nombres de los padres que lo asignaron como chips pequeños: `👨‍👩‍👧 Familia García · Familia López`
+- Si no hay asignaciones aún: sección oculta
+- Si hay asignaciones: título "Familias que te asignaron" + chips de nombres
 
 ---
 
@@ -172,6 +184,5 @@ El cambio es transparente para el especialista. Si no tiene asignaciones, la lis
 ## Lo que queda fuera de este spec
 
 - Notificaciones al especialista cuando se le asigna un niño
-- El especialista puede ver qué padres lo asignaron
 - Solicitudes de acceso por parte del especialista (flujo inverso)
 - Panel de administración de asignaciones
