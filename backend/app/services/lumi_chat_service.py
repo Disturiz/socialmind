@@ -1,7 +1,10 @@
+import logging
 import anthropic
 from datetime import datetime, timezone
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app.config import settings
 from app.models.adult_conversation import AdultConversation
@@ -56,6 +59,7 @@ def send_message(
 ) -> AdultMessage:
     get_conversation(db, conv_id, user_id)   # 404 if not owned
 
+    # 1. Save user message — flush only (visible in this transaction, not committed yet)
     user_msg = AdultMessage(
         conversation_id=conv_id,
         role="user",
@@ -63,22 +67,24 @@ def send_message(
         created_at=datetime.now(timezone.utc),
     )
     db.add(user_msg)
-    db.commit()
-    db.refresh(user_msg)
+    db.flush()  # assigns ID, visible within this transaction, not committed
 
+    # 2. Build history (includes the flushed user message)
     history = (
         db.query(AdultMessage)
         .filter(AdultMessage.conversation_id == conv_id)
-        .order_by(AdultMessage.created_at)
+        .order_by(AdultMessage.created_at, AdultMessage.id)
         .all()
     )
     messages = [{"role": m.role, "content": m.content} for m in history]
 
+    # 3. RAG context
     context = biblioteca_service.search(db, content, top_k=3)
     system = SYSTEM_SPECIALIST if role == "specialist" else SYSTEM_PARENT
     if context:
         system += f"\n\nFragmentos de documentos relevantes:\n\n{context}"
 
+    # 4. Call Claude — if it fails, rollback discards the user message too
     try:
         response = anthropic_client.messages.create(
             model="claude-haiku-4-5-20251001",
@@ -88,11 +94,14 @@ def send_message(
         )
         answer = response.content[0].text
     except Exception:
+        logger.exception("Claude API error in lumi_chat_service")
+        db.rollback()
         raise HTTPException(
             status_code=503,
             detail="Servicio de IA no disponible. Intenta de nuevo.",
         )
 
+    # 5. Save assistant message and commit both messages atomically
     assistant_msg = AdultMessage(
         conversation_id=conv_id,
         role="assistant",
@@ -101,5 +110,6 @@ def send_message(
     )
     db.add(assistant_msg)
     db.commit()
+    db.refresh(user_msg)
     db.refresh(assistant_msg)
     return assistant_msg
