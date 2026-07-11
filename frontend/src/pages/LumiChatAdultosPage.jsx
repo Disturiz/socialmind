@@ -32,13 +32,18 @@ export function LumiChatAdultosPage() {
   }, [messages, loading])
 
   const handleSend = async () => {
+    if (listening) {
+      recognitionRef.current?.stop()
+      setListening(false)
+    }
     if (!input.trim() || !convId || loading) return
     if (speaking !== null) {
       window.speechSynthesis.cancel()
       setSpeaking(null)
     }
     const userContent = input.trim()
-    setMessages(prev => [...prev, { id: `u-${Date.now()}`, role: 'user', content: userContent }])
+    const tempId = `u-${Date.now()}`
+    setMessages(prev => [...prev, { id: tempId, role: 'user', content: userContent }])
     setInput('')
     setLoading(true)
     setError(null)
@@ -46,6 +51,7 @@ export function LumiChatAdultosPage() {
       const res = await lumiChatApi.sendMessage(convId, userContent)
       setMessages(prev => [...prev, res.data])
     } catch {
+      setMessages(prev => prev.filter(m => m.id !== tempId))
       setError('No se pudo enviar el mensaje. Intenta de nuevo.')
     } finally {
       setLoading(false)
