@@ -12,8 +12,15 @@ from app.services.scenario_service import _SCENARIO_MAP
 from app.gamification.service import get_progress as get_gamification_progress
 
 
-def list_children(db: Session) -> list[dict]:
-    profiles = db.query(ChildProfile).order_by(ChildProfile.name).all()
+def list_children(db: Session, specialist_id: int) -> list[dict]:
+    from app.models.specialist_assignment import SpecialistAssignment
+    profiles = (
+        db.query(ChildProfile)
+        .join(SpecialistAssignment, SpecialistAssignment.child_profile_id == ChildProfile.id)
+        .filter(SpecialistAssignment.specialist_id == specialist_id)
+        .order_by(ChildProfile.name)
+        .all()
+    )
     result = []
     for profile in profiles:
         pid = profile.parent_id
@@ -42,9 +49,20 @@ def list_children(db: Session) -> list[dict]:
 
 
 def get_child_detail(db: Session, child_id: int, specialist_id: int) -> dict:
+    from app.models.specialist_assignment import SpecialistAssignment
     profile = db.query(ChildProfile).filter(ChildProfile.id == child_id).first()
     if not profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Niño no encontrado.")
+
+    assignment = db.query(SpecialistAssignment).filter(
+        SpecialistAssignment.specialist_id == specialist_id,
+        SpecialistAssignment.child_profile_id == child_id,
+    ).first()
+    if not assignment:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes acceso a este niño.",
+        )
 
     pid = profile.parent_id
 

@@ -5,6 +5,8 @@ from app.models.emotion_log import EmotionLog
 from app.models.calm_session import CalmSession
 from app.models.chat_conversation import ChatConversation
 from app.models.chat_message import ChatMessage
+from app.models.specialist_assignment import SpecialistAssignment
+from datetime import datetime, timezone
 
 
 def _login(client, email, role="parent"):
@@ -27,11 +29,23 @@ def _make_child(db, parent_id, name="Juan", age=10):
     return child
 
 
+def _assign_child(db, specialist_id, child_profile_id):
+    a = SpecialistAssignment(
+        specialist_id=specialist_id,
+        child_profile_id=child_profile_id,
+        assigned_at=datetime.now(timezone.utc),
+    )
+    db.add(a)
+    db.commit()
+
+
 def test_list_children_returns_child_profiles(client, db):
     spec_token = _login(client, "spec1@test.com", "specialist")
+    spec_id = _me(client, spec_token)["id"]
     parent_token = _login(client, "parent1@test.com", "parent")
     parent_id = _me(client, parent_token)["id"]
-    _make_child(db, parent_id, name="Juan", age=10)
+    child = _make_child(db, parent_id, name="Juan", age=10)
+    _assign_child(db, spec_id, child.id)
 
     response = client.get(
         "/api/v1/panel/children",
@@ -64,9 +78,11 @@ def test_list_children_unauthenticated_returns_401(client):
 def test_get_child_detail_returns_emotions_calm_chats(client, db):
     from datetime import datetime, timezone
     spec_token = _login(client, "spec2@test.com", "specialist")
+    spec_id = _me(client, spec_token)["id"]
     parent_token = _login(client, "parent3@test.com", "parent")
     parent_id = _me(client, parent_token)["id"]
     child = _make_child(db, parent_id, name="Ana", age=12)
+    _assign_child(db, spec_id, child.id)
     now = datetime.now(timezone.utc)
 
     db.add(EmotionLog(user_id=parent_id, emotion_key="feliz", logged_at=now))
@@ -97,10 +113,14 @@ def test_get_child_detail_returns_emotions_calm_chats(client, db):
 
 def test_get_child_detail_other_specialist_sees_same_child(client, db):
     spec1_token = _login(client, "spec3@test.com", "specialist")
+    spec1_id = _me(client, spec1_token)["id"]
     spec2_token = _login(client, "spec4@test.com", "specialist")
+    spec2_id = _me(client, spec2_token)["id"]
     parent_token = _login(client, "parent4@test.com", "parent")
     parent_id = _me(client, parent_token)["id"]
     child = _make_child(db, parent_id, name="Pedro", age=9)
+    _assign_child(db, spec1_id, child.id)
+    _assign_child(db, spec2_id, child.id)
 
     r1 = client.get(f"/api/v1/panel/children/{child.id}",
                     headers={"Authorization": f"Bearer {spec1_token}"})
@@ -237,6 +257,8 @@ def test_child_detail_includes_gamification(client, db):
     db.commit()
     db.refresh(child)
 
+    _assign_child(db, spec.id, child.id)
+
     spec_login = client.post(
         "/api/v1/auth/login",
         json={"email": "spec_gami@test.com", "password": "Password123!"},
@@ -259,9 +281,11 @@ def test_child_detail_includes_scenarios_completed(client, db):
     from app.models.scenario_completion import ScenarioCompletion
 
     spec_token = _login(client, "spec_sc1@test.com", "specialist")
+    spec_id = _me(client, spec_token)["id"]
     parent_token = _login(client, "parent_sc1@test.com", "parent")
     parent_id = _me(client, parent_token)["id"]
     child = _make_child(db, parent_id, name="María", age=11)
+    _assign_child(db, spec_id, child.id)
     now = datetime.now(timezone.utc)
 
     db.add(ScenarioCompletion(user_id=parent_id, scenario_id=1, completed_at=now))
@@ -286,9 +310,11 @@ def test_list_children_includes_total_scenarios_completed(client, db):
     from app.models.scenario_completion import ScenarioCompletion
 
     spec_token = _login(client, "spec_sc2@test.com", "specialist")
+    spec_id = _me(client, spec_token)["id"]
     parent_token = _login(client, "parent_sc2@test.com", "parent")
     parent_id = _me(client, parent_token)["id"]
-    _make_child(db, parent_id, name="Sofía", age=9)
+    child = _make_child(db, parent_id, name="Sofía", age=9)
+    _assign_child(db, spec_id, child.id)
 
     db.add(ScenarioCompletion(user_id=parent_id, scenario_id=1))
     db.add(ScenarioCompletion(user_id=parent_id, scenario_id=2))
@@ -302,3 +328,49 @@ def test_list_children_includes_total_scenarios_completed(client, db):
     data = response.json()
     assert len(data) == 1
     assert data[0]["total_scenarios_completed"] == 2
+
+
+def test_list_children_only_shows_assigned_children(client, db):
+    spec_token = _login(client, "spec_filter1@test.com", "specialist")
+    spec_id = _me(client, spec_token)["id"]
+    parent_token = _login(client, "parent_filter1@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    child1 = _make_child(db, parent_id, name="Asignado", age=10)
+    _make_child(db, parent_id, name="NoAsignado", age=11)
+    _assign_child(db, spec_id, child1.id)
+
+    response = client.get(
+        "/api/v1/panel/children",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["name"] == "Asignado"
+
+
+def test_get_child_detail_not_assigned_returns_403(client, db):
+    spec_token = _login(client, "spec_403@test.com", "specialist")
+    parent_token = _login(client, "parent_403@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    child = _make_child(db, parent_id, name="Bloqueado", age=9)
+
+    response = client.get(
+        f"/api/v1/panel/children/{child.id}",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert response.status_code == 403
+
+
+def test_list_children_empty_if_no_assignments(client, db):
+    spec_token = _login(client, "spec_empty@test.com", "specialist")
+    parent_token = _login(client, "parent_empty@test.com", "parent")
+    parent_id = _me(client, parent_token)["id"]
+    _make_child(db, parent_id, name="Tomás", age=10)
+
+    response = client.get(
+        "/api/v1/panel/children",
+        headers={"Authorization": f"Bearer {spec_token}"},
+    )
+    assert response.status_code == 200
+    assert response.json() == []

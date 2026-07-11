@@ -14,7 +14,7 @@ def list_children(
     current_user: User = Depends(require_specialist),
     db: Session = Depends(get_db),
 ):
-    return panel_service.list_children(db)
+    return panel_service.list_children(db, current_user.id)
 
 
 @router.get("/children/{child_id}", response_model=ChildDetailOut)
