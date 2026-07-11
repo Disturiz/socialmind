@@ -125,3 +125,6 @@ def test_send_message_claude_error_raises_503(db):
         with patch("app.services.lumi_chat_service.anthropic_client", mock_client):
             lumi_chat_service.send_message(db, conv.id, user.id, "Hola", "parent")
     assert exc.value.status_code == 503
+    # rollback must leave no messages persisted
+    msgs = db.query(AdultMessage).filter(AdultMessage.conversation_id == conv.id).all()
+    assert len(msgs) == 0
