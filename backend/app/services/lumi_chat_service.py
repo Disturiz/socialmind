@@ -78,14 +78,12 @@ def send_message(
     )
     messages = [{"role": m.role, "content": m.content} for m in history]
 
-    # 3. RAG context
-    context = biblioteca_service.search(db, content, top_k=3)
-    system = SYSTEM_SPECIALIST if role == "specialist" else SYSTEM_PARENT
-    if context:
-        system += f"\n\nFragmentos de documentos relevantes:\n\n{context}"
-
-    # 4. Call Claude — if it fails, rollback discards the user message too
+    # 3. RAG context + 4. Call Claude — if either fails, rollback discards the user message too
     try:
+        context = biblioteca_service.search(db, content, top_k=3)
+        system = SYSTEM_SPECIALIST if role == "specialist" else SYSTEM_PARENT
+        if context:
+            system += f"\n\nFragmentos de documentos relevantes:\n\n{context}"
         response = anthropic_client.messages.create(
             model="claude-haiku-4-5-20251001",
             max_tokens=1024,

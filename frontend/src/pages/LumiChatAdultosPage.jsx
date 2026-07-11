@@ -20,6 +20,7 @@ export function LumiChatAdultosPage() {
 
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition
   const hasSpeech = Boolean(SpeechRec)
+  const hasSpeechSynthesis = 'speechSynthesis' in window
 
   useEffect(() => {
     lumiChatApi.createConversation()
@@ -38,7 +39,7 @@ export function LumiChatAdultosPage() {
     }
     if (!input.trim() || !convId || loading) return
     if (speaking !== null) {
-      window.speechSynthesis.cancel()
+      if (hasSpeechSynthesis) window.speechSynthesis.cancel()
       setSpeaking(null)
     }
     const userContent = input.trim()
@@ -84,10 +85,11 @@ export function LumiChatAdultosPage() {
 
   const handleSpeak = (msgId, text) => {
     if (speaking === msgId) {
-      window.speechSynthesis.cancel()
+      if (hasSpeechSynthesis) window.speechSynthesis.cancel()
       setSpeaking(null)
       return
     }
+    if (!hasSpeechSynthesis) return
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'es-419'
@@ -145,7 +147,7 @@ export function LumiChatAdultosPage() {
               >
                 {msg.content}
               </div>
-              {msg.role === 'assistant' && (
+              {msg.role === 'assistant' && hasSpeechSynthesis && (
                 <button
                   type="button"
                   onClick={() => handleSpeak(msg.id, msg.content)}
