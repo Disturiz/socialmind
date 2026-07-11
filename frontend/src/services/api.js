@@ -91,3 +91,10 @@ export const assignmentsApi = {
     api.delete(`/assignments/children/${childId}/specialists/${specialistId}`),
   myParents: () => api.get('/assignments/my-parents'),
 }
+
+export const lumiChatApi = {
+  createConversation: () => api.post('/lumi-chat/conversations'),
+  sendMessage: (convId, content) =>
+    api.post(`/lumi-chat/conversations/${convId}/messages`, { content }),
+  getConversation: (convId) => api.get(`/lumi-chat/conversations/${convId}`),
+}
