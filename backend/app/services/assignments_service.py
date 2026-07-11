@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from app.models.user import User, UserRole
 from app.models.child_profile import ChildProfile
@@ -71,7 +72,14 @@ def assign_specialist(
         assigned_at=datetime.now(timezone.utc),
     )
     db.add(assignment)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Este especialista ya está asignado a este niño.",
+        )
     db.refresh(assignment)
     return assignment
 
