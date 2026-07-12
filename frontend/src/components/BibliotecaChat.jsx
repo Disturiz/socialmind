@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { bibliotecaApi } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { speak } from '../utils/tts'
+import { MarkdownMessage } from './MarkdownMessage'
 
 export function BibliotecaChat() {
   const { user } = useAuth()
@@ -84,9 +85,9 @@ export function BibliotecaChat() {
 
       {result && (
         <div className="flex flex-col gap-3 p-5 rounded-3xl bg-calm-surface border-2 border-calm-border">
-          <p className="text-base text-text-primary whitespace-pre-wrap leading-relaxed">
-            {result.answer}
-          </p>
+          <div className="text-base text-text-primary leading-relaxed">
+            <MarkdownMessage>{result.answer}</MarkdownMessage>
+          </div>
 
           <button
             onClick={handleSpeak}

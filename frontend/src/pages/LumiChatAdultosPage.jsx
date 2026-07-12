@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
 import { speak } from '../utils/tts'
+import { MarkdownMessage } from '../components/MarkdownMessage'
 
 export function LumiChatAdultosPage() {
   const { user } = useAuth()
@@ -141,7 +142,9 @@ export function LumiChatAdultosPage() {
                     : 'bg-calm-surface border-2 border-calm-border text-text-primary rounded-bl-sm'}
                 `}
               >
-                {msg.content}
+                {msg.role === 'assistant'
+                  ? <MarkdownMessage>{msg.content}</MarkdownMessage>
+                  : msg.content}
               </div>
               {msg.role === 'assistant' && hasSpeechSynthesis && (
                 <button
