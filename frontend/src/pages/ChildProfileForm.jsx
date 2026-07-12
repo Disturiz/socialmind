@@ -36,7 +36,8 @@ export function ChildProfileForm() {
       await profilesApi.createChild({ name: trimmedName, age: ageNum, avatar_emoji: avatarEmoji })
       navigate('/inicio')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Algo salió mal. Inténtalo de nuevo.')
+      const detail = err.response?.data?.detail
+      setError(Array.isArray(detail) ? detail[0]?.msg || 'Algo salió mal.' : detail || 'Algo salió mal. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }

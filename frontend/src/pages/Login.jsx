@@ -25,7 +25,8 @@ export function Login() {
       await login(form.email, form.password)
       navigate('/inicio')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Hubo un error. Inténtalo de nuevo.')
+      const detail = err.response?.data?.detail
+      setError(Array.isArray(detail) ? detail[0]?.msg || 'Hubo un error.' : detail || 'Hubo un error. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }
