@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { bibliotecaApi } from '../services/api'
 import { useAuth } from '../context/AuthContext'
+import { speak } from '../utils/tts'
 
 export function BibliotecaChat() {
   const { user } = useAuth()
@@ -9,7 +10,6 @@ export function BibliotecaChat() {
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState(null)
   const [speaking, setSpeaking] = useState(false)
-  const utteranceRef            = useRef(null)
 
   const isSpecialist = user?.role === 'specialist'
   const placeholder  = isSpecialist
@@ -48,13 +48,8 @@ export function BibliotecaChat() {
       setSpeaking(false)
       return
     }
-    const utterance = new SpeechSynthesisUtterance(result.answer)
-    utterance.lang = 'es-419'
-    utterance.onend = () => setSpeaking(false)
-    utterance.onerror = () => setSpeaking(false)
-    utteranceRef.current = utterance
     setSpeaking(true)
-    window.speechSynthesis.speak(utterance)
+    speak({ text: result.answer, onEnd: () => setSpeaking(false), onError: () => setSpeaking(false) })
   }
 
   return (

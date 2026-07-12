@@ -4,6 +4,7 @@ import { lumiChatApi } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { speak } from '../utils/tts'
 
 export function LumiChatAdultosPage() {
   const { user } = useAuth()
@@ -90,13 +91,8 @@ export function LumiChatAdultosPage() {
       return
     }
     if (!hasSpeechSynthesis) return
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'es-419'
-    utterance.onend  = () => setSpeaking(null)
-    utterance.onerror = () => setSpeaking(null)
     setSpeaking(msgId)
-    window.speechSynthesis.speak(utterance)
+    speak({ text, onEnd: () => setSpeaking(null), onError: () => setSpeaking(null) })
   }
 
   return (
