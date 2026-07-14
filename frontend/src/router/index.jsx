@@ -19,6 +19,8 @@ import { ChildProfileForm }  from '../pages/ChildProfileForm'
 import { BibliotecaChatPage } from '../pages/BibliotecaChatPage'
 import { ManageSpecialistsPage } from '../pages/ManageSpecialistsPage'
 import { LumiChatAdultosPage } from '../pages/LumiChatAdultosPage'
+import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
+import { ResetPasswordPage }  from '../pages/ResetPasswordPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -88,6 +90,8 @@ export const router = createBrowserRouter([
   { path: '/',         element: <Welcome /> },
   { path: '/login',    element: <Login /> },
   { path: '/registro', element: <Register /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage /> },
+  { path: '/reset-password',  element: <ResetPasswordPage /> },
   {
     path: '/perfil/nuevo-nino',
     element: <ProtectedRoute><ChildProfileForm /></ProtectedRoute>,

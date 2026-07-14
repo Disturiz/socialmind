@@ -82,6 +82,11 @@ export function Login() {
               <Button type="submit" disabled={loading} className="w-full mt-2">
                 {loading ? 'Entrando...' : 'Entrar'}
               </Button>
+              <div className="text-center">
+                <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
             </form>
 
             <p className="text-center text-sm text-text-secondary">
