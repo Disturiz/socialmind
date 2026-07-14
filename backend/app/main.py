@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, emotions, scenarios, chat, calm, panel, biblioteca, profiles, assignments, lumi_chat
+from app.routers import auth, emotions, scenarios, chat, calm, panel, biblioteca, profiles, assignments, lumi_chat, admin as admin_router
 from app.gamification import router as gamification_router
 import app.models.user
 import app.models.child_profile
@@ -45,6 +45,7 @@ app.include_router(profiles.router,           prefix="/api/v1/profiles",     tag
 app.include_router(gamification_router.router, prefix="/api/v1/gamification", tags=["gamificación"])
 app.include_router(assignments.router, prefix="/api/v1/assignments", tags=["asignaciones"])
 app.include_router(lumi_chat.router, prefix="/api/v1/lumi-chat", tags=["lumi-chat-adultos"])
+app.include_router(admin_router.router, prefix="/api/v1/admin", tags=["administración"])
 
 
 @app.get("/health", tags=["sistema"])

@@ -168,3 +168,104 @@ def test_delete_user_not_found_raises_404(db):
     with pytest.raises(HTTPException) as exc:
         delete_user(db, 99999, admin.id)
     assert exc.value.status_code == 404
+
+
+# --- Endpoint integration tests ---
+
+def test_list_users_endpoint_returns_200(client, db):
+    token, admin = _admin_token(client, db)
+    _make_user(db, email="p@example.com")
+    res = client.get("/api/v1/admin/users", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 200
+    data = res.json()
+    # El admin + el parent creado
+    emails = [u["email"] for u in data]
+    assert "p@example.com" in emails
+
+
+def test_list_users_requires_admin(client, db):
+    parent = _make_user(db)
+    res_login = client.post("/api/v1/auth/login", json={"email": parent.email, "password": "Password123!"})
+    token = res_login.json()["access_token"]
+    res = client.get("/api/v1/admin/users", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 403
+
+
+def test_list_users_filter_by_role_endpoint(client, db):
+    token, admin = _admin_token(client, db)
+    _make_user(db, email="p@example.com", role=UserRole.parent)
+    _make_user(db, email="s@example.com", role=UserRole.specialist)
+    res = client.get("/api/v1/admin/users?role=parent", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 200
+    roles = [u["role"] for u in res.json()]
+    assert all(r == "parent" for r in roles)
+
+
+def test_update_user_endpoint_changes_role(client, db):
+    token, admin = _admin_token(client, db)
+    user = _make_user(db)
+    res = client.patch(
+        f"/api/v1/admin/users/{user.id}",
+        json={"role": "specialist"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 200
+    assert res.json()["role"] == "specialist"
+
+
+def test_update_user_endpoint_self_returns_400(client, db):
+    token, admin = _admin_token(client, db)
+    res = client.patch(
+        f"/api/v1/admin/users/{admin.id}",
+        json={"is_active": False},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 400
+
+
+def test_update_user_endpoint_not_found(client, db):
+    token, admin = _admin_token(client, db)
+    res = client.patch(
+        "/api/v1/admin/users/99999",
+        json={"is_active": False},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 404
+
+
+def test_delete_user_endpoint_returns_204(client, db):
+    token, admin = _admin_token(client, db)
+    user = _make_user(db)
+    res = client.delete(
+        f"/api/v1/admin/users/{user.id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 204
+    assert db.get(User, user.id) is None
+
+
+def test_delete_user_endpoint_self_returns_400(client, db):
+    token, admin = _admin_token(client, db)
+    res = client.delete(
+        f"/api/v1/admin/users/{admin.id}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 400
+
+
+def test_delete_user_endpoint_not_found(client, db):
+    token, admin = _admin_token(client, db)
+    res = client.delete(
+        "/api/v1/admin/users/99999",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 404
+
+
+def test_delete_user_endpoint_requires_admin(client, db):
+    parent = _make_user(db, email="p@example.com")
+    res_login = client.post("/api/v1/auth/login", json={"email": parent.email, "password": "Password123!"})
+    token = res_login.json()["access_token"]
+    other = _make_user(db, email="other@example.com")
+    res = client.delete(f"/api/v1/admin/users/{other.id}", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 403
