@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { adminApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
@@ -100,6 +101,13 @@ export function AdminPage() {
   return (
     <PageWrapper className="px-6 py-10">
       <div className="max-w-4xl mx-auto w-full flex flex-col gap-6">
+
+        <Link
+          to="/inicio"
+          className="text-sm text-text-secondary hover:text-primary-600 flex items-center gap-1 w-fit"
+        >
+          ← Volver al panel
+        </Link>
 
         <h1 className="text-xl font-extrabold text-primary-700">Panel de administración</h1>
 
