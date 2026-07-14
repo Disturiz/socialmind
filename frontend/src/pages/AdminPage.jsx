@@ -25,14 +25,16 @@ export function AdminPage() {
   const [search, setSearch]             = useState('')
   const [roleFilter, setRoleFilter]     = useState('')
   const [activeFilter, setActiveFilter] = useState('')
-  const [confirmDelete, setConfirmDelete] = useState(null)
-  const [loadingRow, setLoadingRow]     = useState({})
+  const [confirmDelete, setConfirmDelete]       = useState(null)
+  const [pendingRoleChange, setPendingRoleChange] = useState(null)
+  const [loadingRow, setLoadingRow]             = useState({})
 
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
       setConfirmDelete(null)
+      setPendingRoleChange(null)
       const params = {}
       if (search)               params.search    = search
       if (roleFilter)           params.role      = roleFilter
@@ -65,6 +67,7 @@ export function AdminPage() {
 
   async function handleRoleChange(userId, newRole) {
     setLoadingRow(prev => ({ ...prev, [userId]: true }))
+    setPendingRoleChange(null)
     try {
       const res = await adminApi.updateUser(userId, { role: newRole })
       setUsers(prev => prev.map(x => x.id === userId ? res.data : x))
@@ -193,15 +196,42 @@ export function AdminPage() {
 
                         {/* Cambiar rol */}
                         <select
-                          value={u.role}
+                          value={pendingRoleChange?.userId === u.id ? pendingRoleChange.newRole : u.role}
                           disabled={isSelf(u) || loadingRow[u.id]}
-                          onChange={e => handleRoleChange(u.id, e.target.value)}
-                          className="text-xs px-2 py-1.5 rounded-xl border-2 border-calm-border focus:outline-none focus:border-primary-500 bg-calm-surface disabled:opacity-40 disabled:cursor-not-allowed"
+                          onChange={e => {
+                            if (e.target.value !== u.role) {
+                              setPendingRoleChange({ userId: u.id, newRole: e.target.value })
+                            }
+                          }}
+                          className={`text-xs px-2 py-1.5 rounded-xl border-2 focus:outline-none focus:border-primary-500 bg-calm-surface disabled:opacity-40 disabled:cursor-not-allowed ${
+                            pendingRoleChange?.userId === u.id
+                              ? 'border-amber-400'
+                              : 'border-calm-border'
+                          }`}
                         >
                           <option value="parent">Padre/Madre</option>
                           <option value="specialist">Especialista</option>
                           <option value="admin">Admin</option>
                         </select>
+
+                        {/* Confirmación cambio de rol */}
+                        {pendingRoleChange?.userId === u.id && (
+                          <>
+                            <button
+                              onClick={() => handleRoleChange(u.id, pendingRoleChange.newRole)}
+                              disabled={loadingRow[u.id]}
+                              className="text-xs px-3 py-1.5 rounded-xl border-2 border-amber-400 bg-amber-50 text-amber-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            >
+                              ¿Cambiar?
+                            </button>
+                            <button
+                              onClick={() => setPendingRoleChange(null)}
+                              className="text-xs text-text-secondary hover:text-text-primary"
+                            >
+                              Cancelar
+                            </button>
+                          </>
+                        )}
 
                         {/* Eliminar */}
                         <button
