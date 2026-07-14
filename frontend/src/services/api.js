@@ -100,3 +100,9 @@ export const lumiChatApi = {
     api.post(`/lumi-chat/conversations/${convId}/messages`, { content }),
   getConversation: (convId) => api.get(`/lumi-chat/conversations/${convId}`),
 }
+
+export const adminApi = {
+  listUsers:  (params) => api.get('/admin/users', { params }),
+  updateUser: (id, data) => api.patch(`/admin/users/${id}`, data),
+  deleteUser: (id)       => api.delete(`/admin/users/${id}`),
+}

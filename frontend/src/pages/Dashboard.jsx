@@ -97,6 +97,16 @@ const SPECIALIST_CARDS = [
   },
 ]
 
+const ADMIN_CARDS = [
+  {
+    emoji: '⚙️',
+    title: 'Panel de administración',
+    desc: 'Gestionar usuarios de la plataforma',
+    available: true,
+    path: '/admin',
+  },
+]
+
 export function Dashboard() {
   const { user, logout } = useAuth()
   const navigate         = useNavigate()
@@ -110,7 +120,9 @@ export function Dashboard() {
     }
   }, [user?.role])
 
-  const cards = user?.role === 'specialist' ? SPECIALIST_CARDS : MODULE_CARDS
+  const cards = user?.role === 'specialist' ? SPECIALIST_CARDS
+    : user?.role === 'admin' ? ADMIN_CARDS
+    : MODULE_CARDS
 
   const handleLogout = () => {
     logout()

@@ -21,6 +21,7 @@ import { ManageSpecialistsPage } from '../pages/ManageSpecialistsPage'
 import { LumiChatAdultosPage } from '../pages/LumiChatAdultosPage'
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
 import { ResetPasswordPage }  from '../pages/ResetPasswordPage'
+import { AdminPage } from '../pages/AdminPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -50,6 +51,22 @@ function SpecialistRoute({ children }) {
 
   if (!user) return <Navigate to="/login" replace />
   if (user.role !== 'specialist') return <Navigate to="/inicio" replace />
+  return children
+}
+
+function AdminRoute({ children }) {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-calm-bg flex items-center justify-center">
+        <p className="text-text-secondary text-base">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'admin') return <Navigate to="/inicio" replace />
   return children
 }
 
@@ -92,6 +109,7 @@ export const router = createBrowserRouter([
   { path: '/registro', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
+  { path: '/admin', element: <AdminRoute><AdminPage /></AdminRoute> },
   {
     path: '/perfil/nuevo-nino',
     element: <ProtectedRoute><ChildProfileForm /></ProtectedRoute>,
