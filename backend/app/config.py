@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     app_env: str = "development"
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    resend_api_key: str = ""
+    frontend_url: str = "https://socialmind.it.com"
 
     class Config:
         env_file = ".env"
