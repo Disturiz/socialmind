@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi import HTTPException, status
-from app.models.user import User, UserRole
+from app.models.user import User
 from app.schemas.admin import AdminUserUpdate
 
 
