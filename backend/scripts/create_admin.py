@@ -30,9 +30,14 @@ def main():
             role=UserRole.admin,
         )
         db.add(admin)
-        db.commit()
-        db.refresh(admin)
-        print(f"Admin creado: {admin.email} (id={admin.id})")
+        try:
+            db.commit()
+            db.refresh(admin)
+            print(f"Admin creado: {admin.email} (id={admin.id})")
+        except Exception as e:
+            db.rollback()
+            print(f"Error al guardar en la base de datos: {e}", file=sys.stderr)
+            sys.exit(1)
     finally:
         db.close()
 

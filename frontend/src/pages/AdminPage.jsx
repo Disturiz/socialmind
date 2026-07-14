@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { adminApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
-import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 
 const ROLE_LABELS = {
@@ -33,6 +32,7 @@ export function AdminPage() {
     setLoading(true)
     setError('')
     try {
+      setConfirmDelete(null)
       const params = {}
       if (search)               params.search    = search
       if (roleFilter)           params.role      = roleFilter

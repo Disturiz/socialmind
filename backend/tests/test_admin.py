@@ -269,3 +269,16 @@ def test_delete_user_endpoint_requires_admin(client, db):
     other = _make_user(db, email="other@example.com")
     res = client.delete(f"/api/v1/admin/users/{other.id}", headers={"Authorization": f"Bearer {token}"})
     assert res.status_code == 403
+
+
+def test_update_user_endpoint_requires_admin(client, db):
+    parent = _make_user(db, email="p@example.com")
+    res_login = client.post("/api/v1/auth/login", json={"email": parent.email, "password": "Password123!"})
+    token = res_login.json()["access_token"]
+    other = _make_user(db, email="other@example.com")
+    res = client.patch(
+        f"/api/v1/admin/users/{other.id}",
+        json={"is_active": False},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res.status_code == 403
