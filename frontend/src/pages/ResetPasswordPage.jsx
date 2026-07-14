@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { PageWrapper } from '../components/layout/PageWrapper'
@@ -18,10 +18,10 @@ export function ResetPasswordPage() {
   const [error, setError]     = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (!token) {
-    navigate('/forgot-password', { replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (!token) navigate('/forgot-password', { replace: true })
+  }, [token, navigate])
+  if (!token) return null
 
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
