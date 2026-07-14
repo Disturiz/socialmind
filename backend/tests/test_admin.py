@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from app.models.user import User, UserRole
 from app.core.security import hash_password
 from app.schemas.admin import AdminUserOut, AdminUserUpdate
+from app.services.admin_service import list_users, update_user
 
 
 def _make_user(db, email="u@example.com", role=UserRole.parent):
@@ -50,9 +51,6 @@ def test_admin_user_update_accepts_role_only():
     data = AdminUserUpdate(role=UserRole.specialist)
     assert data.role == UserRole.specialist
     assert data.is_active is None
-
-
-from app.services.admin_service import list_users, update_user
 
 
 # --- list_users ---

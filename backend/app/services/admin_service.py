@@ -2,20 +2,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi import HTTPException, status
 from app.models.user import User, UserRole
-from app.models.child_profile import ChildProfile
-from app.models.specialist_note import SpecialistNote
-from app.models.specialist_assignment import SpecialistAssignment
-from app.models.document import Document
-from app.models.adult_conversation import AdultConversation
-from app.models.adult_message import AdultMessage
-from app.models.chat_conversation import ChatConversation
-from app.models.chat_message import ChatMessage
-from app.models.calm_session import CalmSession
-from app.models.scenario_completion import ScenarioCompletion
-from app.models.emotion_log import EmotionLog
-from app.models.reward_event import RewardEvent
-from app.models.user_rewards import UserRewards
-from app.models.password_reset_token import PasswordResetToken
 from app.schemas.admin import AdminUserUpdate
 
 

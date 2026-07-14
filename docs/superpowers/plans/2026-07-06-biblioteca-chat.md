@@ -22,11 +22,13 @@
 ### Task 1: Schemas + refactor service + función `ask()`
 
 **Files:**
+
 - Modify: `backend/app/schemas/biblioteca.py`
 - Modify: `backend/app/services/biblioteca_service.py`
 - Modify: `backend/tests/test_biblioteca.py`
 
 **Interfaces:**
+
 - Produces:
   - `BibliotecaAskRequest(question: str)` — Pydantic model
   - `SourceFragment(doc_name: str, fragment: str)` — Pydantic model
@@ -442,9 +444,11 @@ git commit -m "feat: schemas y servicio ask() para chat con documentos de biblio
 ### Task 2: Endpoint `POST /api/v1/biblioteca/ask`
 
 **Files:**
+
 - Modify: `backend/app/routers/biblioteca.py`
 
 **Interfaces:**
+
 - Consumes: `BibliotecaAskRequest`, `BibliotecaAskResponse`, `SourceFragment` (de Task 1); `biblioteca_service.ask(db, question, role)` (de Task 1)
 - Produces: `POST /api/v1/biblioteca/ask` → `BibliotecaAskResponse`
 
@@ -553,10 +557,12 @@ git commit -m "feat: endpoint POST /api/v1/biblioteca/ask"
 ### Task 3: Frontend — API client + componente `BibliotecaChat`
 
 **Files:**
+
 - Modify: `frontend/src/services/api.js`
 - Create: `frontend/src/components/BibliotecaChat.jsx`
 
 **Interfaces:**
+
 - Produces:
   - `bibliotecaApi.ask(question: string)` → Promise con `{ answer, sources }`
   - `<BibliotecaChat />` — componente sin props (lee `user.role` del contexto)
@@ -568,13 +574,13 @@ En `frontend/src/services/api.js`, reemplaza el bloque `bibliotecaApi`:
 ```js
 export const bibliotecaApi = {
   upload: (formData) =>
-    api.post('/biblioteca/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    api.post("/biblioteca/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     }),
-  list:    ()         => api.get('/biblioteca/documents'),
-  delete:  (docId)    => api.delete(`/biblioteca/documents/${docId}`),
-  ask:     (question) => api.post('/biblioteca/ask', { question }),
-}
+  list: () => api.get("/biblioteca/documents"),
+  delete: (docId) => api.delete(`/biblioteca/documents/${docId}`),
+  ask: (question) => api.post("/biblioteca/ask", { question }),
+};
 ```
 
 - [ ] **Step 2: Crear componente `BibliotecaChat.jsx`**
@@ -582,59 +588,59 @@ export const bibliotecaApi = {
 Crea `frontend/src/components/BibliotecaChat.jsx`:
 
 ```jsx
-import { useState, useRef } from 'react'
-import { bibliotecaApi } from '../services/api'
-import { useAuth } from '../context/AuthContext'
+import { useState, useRef } from "react";
+import { bibliotecaApi } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export function BibliotecaChat() {
-  const { user } = useAuth()
-  const [question, setQuestion] = useState('')
-  const [result, setResult]     = useState(null)
-  const [loading, setLoading]   = useState(false)
-  const [error, setError]       = useState(null)
-  const [speaking, setSpeaking] = useState(false)
-  const utteranceRef            = useRef(null)
+  const { user } = useAuth();
+  const [question, setQuestion] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [speaking, setSpeaking] = useState(false);
+  const utteranceRef = useRef(null);
 
-  const isSpecialist = user?.role === 'specialist'
-  const placeholder  = isSpecialist
-    ? 'Escribe tu consulta clínica...'
-    : '¿Tienes alguna pregunta sobre el autismo?'
+  const isSpecialist = user?.role === "specialist";
+  const placeholder = isSpecialist
+    ? "Escribe tu consulta clínica..."
+    : "¿Tienes alguna pregunta sobre el autismo?";
 
   const handleAsk = async () => {
-    if (!question.trim()) return
-    setLoading(true)
-    setError(null)
-    setResult(null)
+    if (!question.trim()) return;
+    setLoading(true);
+    setError(null);
+    setResult(null);
     try {
-      const res = await bibliotecaApi.ask(question)
-      setResult(res.data)
+      const res = await bibliotecaApi.ask(question);
+      setResult(res.data);
     } catch {
-      setError('Ocurrió un error al consultar. Intenta de nuevo.')
+      setError("Ocurrió un error al consultar. Intenta de nuevo.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleAsk()
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleAsk();
     }
-  }
+  };
 
   const handleSpeak = () => {
     if (speaking) {
-      window.speechSynthesis.cancel()
-      setSpeaking(false)
-      return
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
     }
-    const utterance = new SpeechSynthesisUtterance(result.answer)
-    utterance.lang = 'es-419'
-    utterance.onend = () => setSpeaking(false)
-    utteranceRef.current = utterance
-    setSpeaking(true)
-    window.speechSynthesis.speak(utterance)
-  }
+    const utterance = new SpeechSynthesisUtterance(result.answer);
+    utterance.lang = "es-419";
+    utterance.onend = () => setSpeaking(false);
+    utteranceRef.current = utterance;
+    setSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -659,12 +665,10 @@ export function BibliotecaChat() {
           transition-colors
         "
       >
-        {loading ? 'Consultando...' : 'Consultar'}
+        {loading ? "Consultando..." : "Consultar"}
       </button>
 
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
       {result && (
         <div className="flex flex-col gap-3 p-5 rounded-3xl bg-calm-surface border-2 border-calm-border">
@@ -680,7 +684,7 @@ export function BibliotecaChat() {
               text-sm font-medium hover:bg-primary-100 transition-colors
             "
           >
-            {speaking ? '⏹ Detener' : '🔊 Escuchar respuesta'}
+            {speaking ? "⏹ Detener" : "🔊 Escuchar respuesta"}
           </button>
 
           {result.sources.length > 0 && (
@@ -690,8 +694,13 @@ export function BibliotecaChat() {
               </summary>
               <div className="flex flex-col gap-2 mt-3">
                 {result.sources.map((s, i) => (
-                  <div key={i} className="p-3 rounded-xl bg-surface border border-calm-border">
-                    <p className="text-xs font-bold text-text-secondary mb-1">{s.doc_name}</p>
+                  <div
+                    key={i}
+                    className="p-3 rounded-xl bg-surface border border-calm-border"
+                  >
+                    <p className="text-xs font-bold text-text-secondary mb-1">
+                      {s.doc_name}
+                    </p>
                     <p className="text-sm text-text-primary">{s.fragment}…</p>
                   </div>
                 ))}
@@ -701,7 +710,7 @@ export function BibliotecaChat() {
         </div>
       )}
     </div>
-  )
+  );
 }
 ```
 
@@ -717,12 +726,14 @@ git commit -m "feat: componente BibliotecaChat y método ask en bibliotecaApi"
 ### Task 4: Frontend — página, rutas y puntos de entrada en Dashboard y Panel
 
 **Files:**
+
 - Create: `frontend/src/pages/BibliotecaChatPage.jsx`
 - Modify: `frontend/src/router/index.jsx`
 - Modify: `frontend/src/pages/Dashboard.jsx`
 - Modify: `frontend/src/pages/PanelProfesional.jsx`
 
 **Interfaces:**
+
 - Consumes: `<BibliotecaChat />` (de Task 3)
 - Produces: ruta `/biblioteca/consultar` accesible para cualquier usuario autenticado
 
@@ -731,16 +742,16 @@ git commit -m "feat: componente BibliotecaChat y método ask en bibliotecaApi"
 Crea `frontend/src/pages/BibliotecaChatPage.jsx`:
 
 ```jsx
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { PageWrapper } from '../components/layout/PageWrapper'
-import { BibliotecaChat } from '../components/BibliotecaChat'
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { PageWrapper } from "../components/layout/PageWrapper";
+import { BibliotecaChat } from "../components/BibliotecaChat";
 
 export function BibliotecaChatPage() {
-  const navigate     = useNavigate()
-  const { user }     = useAuth()
-  const isSpecialist = user?.role === 'specialist'
-  const backPath     = isSpecialist ? '/panel' : '/inicio'
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const isSpecialist = user?.role === "specialist";
+  const backPath = isSpecialist ? "/panel" : "/inicio";
 
   return (
     <PageWrapper>
@@ -759,8 +770,8 @@ export function BibliotecaChatPage() {
             </h1>
             <p className="text-sm text-text-secondary">
               {isSpecialist
-                ? 'Consulta los documentos clínicos subidos a la biblioteca'
-                : 'Encuentra información sobre el autismo en los documentos educativos'}
+                ? "Consulta los documentos clínicos subidos a la biblioteca"
+                : "Encuentra información sobre el autismo en los documentos educativos"}
             </p>
           </div>
         </div>
@@ -768,7 +779,7 @@ export function BibliotecaChatPage() {
         <BibliotecaChat />
       </div>
     </PageWrapper>
-  )
+  );
 }
 ```
 
@@ -777,7 +788,7 @@ export function BibliotecaChatPage() {
 En `frontend/src/router/index.jsx`, agrega el import:
 
 ```js
-import { BibliotecaChatPage } from '../pages/BibliotecaChatPage'
+import { BibliotecaChatPage } from "../pages/BibliotecaChatPage";
 ```
 
 Y agrega la ruta antes del cierre del array `createBrowserRouter([...])`:
@@ -820,6 +831,7 @@ Y en el array `SPECIALIST_CARDS`, agrega al final:
 En `frontend/src/pages/PanelProfesional.jsx`, agrega el import de `useNavigate` si no está (ya está en el archivo). Luego, después del botón "← Volver" y el título, agrega un botón de acceso rápido a la biblioteca. Localiza el bloque del header y agrégalo así:
 
 Busca el bloque:
+
 ```jsx
         <div className="flex items-center gap-4">
           <button
@@ -829,21 +841,23 @@ Busca el bloque:
 Y después del cierre del `</div>` de ese bloque, agrega:
 
 ```jsx
-        <button
-          onClick={() => navigate('/biblioteca/consultar')}
-          className="
+<button
+  onClick={() => navigate("/biblioteca/consultar")}
+  className="
             w-full flex items-center gap-4 p-5 rounded-3xl text-left
             bg-calm-surface border-2 border-calm-border
             hover:border-primary-500 hover:bg-primary-50
             transition-all font-semibold text-base text-text-primary
           "
-        >
-          <span className="text-3xl">📖</span>
-          <div>
-            <div className="font-bold text-text-primary">Consultar Biblioteca</div>
-            <div className="text-sm text-text-secondary">Consulta los documentos clínicos con IA</div>
-          </div>
-        </button>
+>
+  <span className="text-3xl">📖</span>
+  <div>
+    <div className="font-bold text-text-primary">Consultar Biblioteca</div>
+    <div className="text-sm text-text-secondary">
+      Consulta los documentos clínicos con IA
+    </div>
+  </div>
+</button>
 ```
 
 - [ ] **Step 5: Commit**
