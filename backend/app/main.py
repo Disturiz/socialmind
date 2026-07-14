@@ -18,6 +18,7 @@ import app.models.reward_event
 import app.models.user_rewards
 import app.models.adult_conversation
 import app.models.adult_message
+import app.models.password_reset_token
 
 app = FastAPI(
     title="SocialMind API",

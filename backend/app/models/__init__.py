@@ -8,6 +8,7 @@ from app.models.calm_session import CalmSession
 from app.models.specialist_note import SpecialistNote
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
+from app.models.password_reset_token import PasswordResetToken
 
 __all__ = [
     "User", "UserRole", "ChildProfile",
@@ -15,4 +16,5 @@ __all__ = [
     "ChatConversation", "ChatMessage",
     "CalmSession", "SpecialistNote",
     "Document", "DocumentChunk",
+    "PasswordResetToken",
 ]
