@@ -132,3 +132,83 @@ def test_reset_password_expired_token(db):
     with pytest.raises(HTTPException) as exc_info:
         reset_password(db, token_value, "NuevaPassword123!")
     assert exc_info.value.status_code == 400
+
+
+# ---------------------------------------------------------------------------
+# Endpoint integration tests
+# ---------------------------------------------------------------------------
+
+def test_forgot_password_known_email_returns_200(client, db):
+    client.post("/api/v1/auth/register", json={
+        "email": "padre@example.com",
+        "password": "Password123!",
+        "full_name": "Juan García",
+        "role": "parent",
+    })
+    with patch("app.routers.auth.request_password_reset") as mock_req:
+        response = client.post("/api/v1/auth/forgot-password", json={"email": "padre@example.com"})
+    assert response.status_code == 200
+    assert "recibirás un enlace" in response.json()["message"]
+    mock_req.assert_called_once()
+
+
+def test_forgot_password_unknown_email_also_returns_200(client):
+    with patch("app.routers.auth.request_password_reset"):
+        response = client.post("/api/v1/auth/forgot-password", json={"email": "noexiste@x.com"})
+    assert response.status_code == 200
+    assert "recibirás un enlace" in response.json()["message"]
+
+
+def test_forgot_password_invalid_email_returns_422(client):
+    response = client.post("/api/v1/auth/forgot-password", json={"email": "no-es-un-email"})
+    assert response.status_code == 422
+
+
+def test_reset_password_valid_flow(client, db):
+    client.post("/api/v1/auth/register", json={
+        "email": "padre@example.com",
+        "password": "Password123!",
+        "full_name": "Juan García",
+        "role": "parent",
+    })
+    from app.models.user import User
+    from app.models.password_reset_token import PasswordResetToken
+    user = db.query(User).filter_by(email="padre@example.com").first()
+    token_value = secrets.token_urlsafe(32)
+    reset_tok = PasswordResetToken(
+        user_id=user.id,
+        token=token_value,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+    )
+    db.add(reset_tok)
+    db.commit()
+
+    response = client.post("/api/v1/auth/reset-password", json={
+        "token": token_value,
+        "new_password": "NuevaPassword456!",
+    })
+    assert response.status_code == 200
+    assert "actualizada" in response.json()["message"]
+
+    login = client.post("/api/v1/auth/login", json={
+        "email": "padre@example.com",
+        "password": "NuevaPassword456!",
+    })
+    assert login.status_code == 200
+
+
+def test_reset_password_invalid_token_returns_400(client):
+    response = client.post("/api/v1/auth/reset-password", json={
+        "token": "token_inventado_xyz",
+        "new_password": "NuevaPassword456!",
+    })
+    assert response.status_code == 400
+    assert "inválido" in response.json()["detail"]
+
+
+def test_reset_password_short_password_returns_422(client):
+    response = client.post("/api/v1/auth/reset-password", json={
+        "token": "cualquier_token",
+        "new_password": "corta",
+    })
+    assert response.status_code == 422
