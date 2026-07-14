@@ -4,6 +4,9 @@ from app.models.user import User, UserRole
 from app.core.security import hash_password
 from app.schemas.admin import AdminUserOut, AdminUserUpdate
 from app.services.admin_service import list_users, update_user
+from app.services.admin_service import delete_user
+from app.models.child_profile import ChildProfile
+from app.models.specialist_assignment import SpecialistAssignment
 
 
 def _make_user(db, email="u@example.com", role=UserRole.parent):
@@ -117,4 +120,51 @@ def test_update_user_not_found_raises_404(db):
     admin = _make_admin(db)
     with pytest.raises(HTTPException) as exc:
         update_user(db, 99999, AdminUserUpdate(is_active=False), admin.id)
+    assert exc.value.status_code == 404
+
+
+def test_delete_user_removes_from_db(db):
+    admin = _make_admin(db)
+    user = _make_user(db)
+    delete_user(db, user.id, admin.id)
+    assert db.get(User, user.id) is None
+
+
+def test_delete_user_cascades_child_profiles(db):
+    admin = _make_admin(db)
+    parent = _make_user(db, email="parent@example.com", role=UserRole.parent)
+    child = ChildProfile(parent_id=parent.id, name="Niño", age=8)
+    db.add(child)
+    db.commit()
+    child_id = child.id
+    delete_user(db, parent.id, admin.id)
+    assert db.get(ChildProfile, child_id) is None
+
+
+def test_delete_user_cascades_specialist_assignments(db):
+    admin = _make_admin(db)
+    parent = _make_user(db, email="parent@example.com", role=UserRole.parent)
+    specialist = _make_user(db, email="spec@example.com", role=UserRole.specialist)
+    child = ChildProfile(parent_id=parent.id, name="Niño", age=8)
+    db.add(child)
+    db.commit()
+    assignment = SpecialistAssignment(specialist_id=specialist.id, child_profile_id=child.id)
+    db.add(assignment)
+    db.commit()
+    assignment_id = assignment.id
+    delete_user(db, specialist.id, admin.id)
+    assert db.get(SpecialistAssignment, assignment_id) is None
+
+
+def test_delete_self_raises_400(db):
+    admin = _make_admin(db)
+    with pytest.raises(HTTPException) as exc:
+        delete_user(db, admin.id, admin.id)
+    assert exc.value.status_code == 400
+
+
+def test_delete_user_not_found_raises_404(db):
+    admin = _make_admin(db)
+    with pytest.raises(HTTPException) as exc:
+        delete_user(db, 99999, admin.id)
     assert exc.value.status_code == 404
