@@ -73,13 +73,26 @@ def _chunk_text(text: str) -> list[str]:
     return [c for c in chunks if c.strip()]
 
 
+_STOP_WORDS = {
+    "qué", "que", "es", "el", "la", "los", "las", "de", "del", "en", "y",
+    "o", "a", "un", "una", "unos", "unas", "se", "su", "sus", "con", "por",
+    "para", "como", "me", "te", "le", "nos", "les", "mi", "tu", "lo", "al",
+    "hay", "más", "pero", "si", "no", "también", "esto", "esta", "este",
+    "ese", "esa", "esos", "esas", "son", "ser", "fue", "era", "han", "has",
+    "he", "del", "al", "sobre", "entre", "desde", "hasta", "hacia", "sin",
+}
+
+
 def _keyword_score(query: str, text: str) -> float:
-    query_words = set(re.findall(r"\w+", query.lower()))
-    text_words = re.findall(r"\w+", text.lower())
-    if not query_words or not text_words:
+    all_query_words = set(re.findall(r"\w+", query.lower()))
+    query_words = all_query_words - _STOP_WORDS
+    if not query_words:
+        query_words = all_query_words  # fallback si todo son stop words
+    text_word_set = set(re.findall(r"\w+", text.lower()))
+    if not query_words or not text_word_set:
         return 0.0
-    matches = sum(1 for w in text_words if w in query_words)
-    return matches / len(text_words)
+    matches = sum(1 for w in query_words if w in text_word_set)
+    return matches / len(query_words)
 
 
 def _search_chunks(db: Session, query: str, top_k: int = 3) -> list[tuple[str, str]]:
