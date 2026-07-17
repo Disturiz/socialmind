@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { profilesApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
@@ -28,6 +28,7 @@ export function WelcomePage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [childName, setChildName] = useState('')
+  const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     profilesApi.getMe()
@@ -51,7 +52,7 @@ export function WelcomePage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
             className="w-full bg-calm-surface border-2 border-calm-border rounded-3xl p-6 text-center"
           >
             <p className="text-lg text-text-primary leading-relaxed">
