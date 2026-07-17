@@ -21,6 +21,7 @@ import { ManageSpecialistsPage } from '../pages/ManageSpecialistsPage'
 import { LumiChatAdultosPage } from '../pages/LumiChatAdultosPage'
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
 import { ResetPasswordPage }  from '../pages/ResetPasswordPage'
+import { WelcomePage } from '../pages/WelcomePage'
 import { AdminPage } from '../pages/AdminPage'
 
 function ProtectedRoute({ children }) {
@@ -109,6 +110,7 @@ export const router = createBrowserRouter([
   { path: '/registro', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
+  { path: '/bienvenida', element: <ProtectedRoute><WelcomePage /></ProtectedRoute> },
   { path: '/admin', element: <AdminRoute><AdminPage /></AdminRoute> },
   {
     path: '/perfil/nuevo-nino',
