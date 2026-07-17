@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { PanelProfesional } from '../pages/PanelProfesional'
-import { panelApi } from '../services/api'
+import { panelApi, assignmentsApi } from '../services/api'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -17,6 +17,7 @@ vi.mock('../services/api', () => ({
     getChild: vi.fn(),
     saveNote: vi.fn(),
   },
+  assignmentsApi: { myParents: vi.fn() },
   authApi:     { register: vi.fn(), login: vi.fn(), getMe: vi.fn() },
   emotionsApi: { list: vi.fn(), log: vi.fn(), today: vi.fn() },
   scenariosApi: { list: vi.fn(), get: vi.fn(), complete: vi.fn() },
@@ -52,6 +53,7 @@ describe('PanelProfesional', () => {
   beforeEach(() => {
     mockNavigate.mockClear()
     panelApi.listChildren.mockResolvedValue({ data: mockChildren })
+    assignmentsApi.myParents.mockResolvedValue({ data: [] })
   })
 
   it('muestra tarjetas de niños al cargar', async () => {
@@ -67,7 +69,7 @@ describe('PanelProfesional', () => {
     renderPanel()
     await waitFor(() => {
       expect(
-        screen.getByText('Aún no hay niños registrados en la plataforma.')
+        screen.getByText(/Aún no tienes niños asignados/)
       ).toBeInTheDocument()
     })
   })
