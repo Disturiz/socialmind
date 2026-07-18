@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 
 // Lumi — búho simpático, mascota de SocialMind
 // states: idle (flotando suave), happy (salta con brillos), thinking (ladea la cabeza), encouraging (flota más alto)
@@ -6,12 +6,13 @@ export function LumiCharacter({ state = 'idle', size = 120, className = '' }) {
   const isHappy = state === 'happy' || state === 'encouraging'
   const floatAmount = isHappy ? -10 : -6
   const floatDuration = isHappy ? 2.5 : 3.5
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <motion.div
       className={`inline-flex items-center justify-center select-none ${className}`}
-      animate={{ y: [0, floatAmount, 0] }}
-      transition={{ duration: floatDuration, repeat: Infinity, ease: 'easeInOut' }}
+      animate={shouldReduceMotion ? { y: 0 } : { y: [0, floatAmount, 0] }}
+      transition={shouldReduceMotion ? { duration: 0 } : { duration: floatDuration, repeat: Infinity, ease: 'easeInOut' }}
       role="img"
       aria-label="Lumi, tu compañero de SocialMind"
     >
@@ -72,7 +73,7 @@ export function LumiCharacter({ state = 'idle', size = 120, className = '' }) {
             fontSize="18"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
           >
             🤔
           </motion.text>
@@ -83,7 +84,7 @@ export function LumiCharacter({ state = 'idle', size = 120, className = '' }) {
           <motion.g
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
           >
             <text x="6" y="28" fontSize="16">✨</text>
             <text x="90" y="28" fontSize="16">✨</text>
