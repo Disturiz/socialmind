@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
 
 export function Welcome() {
   const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <PageWrapper className="items-center justify-center px-6 py-12">
@@ -14,7 +15,7 @@ export function Welcome() {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: 'easeOut' }}
         >
           <LumiCharacter state="happy" size={160} />
         </motion.div>
@@ -22,7 +23,7 @@ export function Welcome() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : 0.2 }}
           className="flex flex-col gap-3"
         >
           <h1 className="text-3xl font-extrabold text-primary-700">
@@ -36,7 +37,7 @@ export function Welcome() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : 0.4 }}
           className="flex flex-col gap-4 w-full"
         >
           <Button onClick={() => navigate('/registro')} className="w-full text-lg">
