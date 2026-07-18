@@ -29,6 +29,13 @@ def send_password_reset_email(to_email: str, full_name: str, token: str) -> None
           <p>Si no solicitaste este cambio, ignora este mensaje. Tu contraseña no cambiará.</p>
         </div>
         """,
+            "text": (
+                f"Hola, {full_name}\n\n"
+                "Recibimos una solicitud para restablecer tu contraseña en SocialMind.\n\n"
+                f"Abre este enlace para restablecerla: {reset_url}\n\n"
+                "Este enlace expira en 1 hora.\n\n"
+                "Si no solicitaste este cambio, ignora este mensaje. Tu contraseña no cambiará."
+            ),
         })
     except Exception:
         raise HTTPException(status_code=503, detail="El servicio de email no está disponible.")
