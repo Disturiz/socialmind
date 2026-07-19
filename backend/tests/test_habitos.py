@@ -35,3 +35,126 @@ def test_detect_file_type_rejects_mismatched_signature():
 
 def test_detect_file_type_rejects_unsupported_content_type():
     assert detect_file_type("application/zip", b"PK\x03\x04") is None
+
+
+import io
+
+
+def _login_habitos(client, email, role="specialist"):
+    client.post("/api/v1/auth/register", json={
+        "email": email, "password": "Password123!", "full_name": "Test User", "role": role,
+    })
+    resp = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
+    return resp.json()["access_token"]
+
+
+def _me_habitos(client, token):
+    return client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}).json()
+
+
+def _login_admin_habitos(client, db, email="admin_habito_upload@test.com"):
+    # register_user() restricts self-registration to parent/specialist (see
+    # app/services/auth_service.py), matching the pattern in test_admin.py:
+    # admin test users are inserted directly via the db fixture.
+    from app.core.security import hash_password
+    from app.models.user import User, UserRole
+
+    user = User(
+        email=email,
+        hashed_password=hash_password("Password123!"),
+        full_name="Test User",
+        role=UserRole.admin,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    resp = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
+    return resp.json()["access_token"]
+
+
+def test_upload_infographic_creates_record(client, tmp_path, monkeypatch):
+    import app.services.habitos_service as hs
+    monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
+
+    token = _login_habitos(client, "spec_habito_upload@test.com")
+    files = {"file": ("saludo.png", io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"fakepngcontent"), "image/png")}
+    data = {"title": "Cómo saludar", "category": "Saludar", "description": "Pasos simples"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+    body = response.json()
+    assert body["title"] == "Cómo saludar"
+    assert body["category"] == "Saludar"
+    assert body["file_type"] == "image"
+    assert body["original_name"] == "saludo.png"
+
+
+def test_upload_infographic_pdf_admin_allowed(client, db, tmp_path, monkeypatch):
+    import app.services.habitos_service as hs
+    monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
+
+    token = _login_admin_habitos(client, db)
+    files = {"file": ("guia.pdf", io.BytesIO(b"%PDF-1.4 fake"), "application/pdf")}
+    data = {"title": "Guía en PDF", "category": "Esperar turno"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+    assert response.json()["file_type"] == "pdf"
+
+
+def test_upload_infographic_invalid_type_returns_422(client):
+    token = _login_habitos(client, "spec_habito_badtype@test.com")
+    files = {"file": ("archivo.zip", io.BytesIO(b"PK\x03\x04"), "application/zip")}
+    data = {"title": "Test", "category": "Otros"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 422
+
+
+def test_upload_infographic_bad_signature_returns_422(client):
+    token = _login_habitos(client, "spec_habito_badsig@test.com")
+    files = {"file": ("fake.png", io.BytesIO(b"this is not a real png"), "image/png")}
+    data = {"title": "Test", "category": "Otros"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 422
+
+
+def test_upload_infographic_too_large_returns_413(client, tmp_path, monkeypatch):
+    import app.services.habitos_service as hs
+    monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
+
+    token = _login_habitos(client, "spec_habito_toolarge@test.com")
+    large_bytes = b"\x89PNG\r\n\x1a\n" + b"X" * (10 * 1024 * 1024 + 1)
+    files = {"file": ("big.png", io.BytesIO(large_bytes), "image/png")}
+    data = {"title": "Test", "category": "Otros"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 413
+
+
+def test_upload_infographic_parent_role_returns_403(client):
+    token = _login_habitos(client, "parent_habito_noupload@test.com", role="parent")
+    files = {"file": ("saludo.png", io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"fakepngcontent"), "image/png")}
+    data = {"title": "Test", "category": "Otros"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 403
