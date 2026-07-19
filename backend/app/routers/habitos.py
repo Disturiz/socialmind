@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, require_specialist_or_admin
 from app.database import get_db
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.habitos import HabitInfographicOut
 from app.services import habitos_service
 
@@ -79,3 +79,17 @@ def get_infographic_file(
     if not os.path.exists(file_path):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Archivo no encontrado.")
     return FileResponse(file_path, media_type=infographic.mime_type)
+
+
+@router.delete("/{infographic_id}", status_code=204)
+def delete_infographic(
+    infographic_id: int,
+    current_user: User = Depends(require_specialist_or_admin),
+    db: Session = Depends(get_db),
+):
+    habitos_service.delete_infographic(
+        db=db,
+        current_user_id=current_user.id,
+        is_admin=current_user.role == UserRole.admin,
+        infographic_id=infographic_id,
+    )
