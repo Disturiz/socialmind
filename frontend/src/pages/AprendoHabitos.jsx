@@ -14,6 +14,8 @@ export function AprendoHabitos() {
   const [loading, setLoading]             = useState(true)
   const [modalItem, setModalItem]         = useState(null)
   const [modalUrl, setModalUrl]           = useState(null)
+  const [openError, setOpenError]         = useState('')
+  const [listError, setListError]         = useState('')
 
   useEffect(() => {
     habitosApi.categorias()
@@ -23,21 +25,30 @@ export function AprendoHabitos() {
 
   useEffect(() => {
     setLoading(true)
+    setListError('')
     habitosApi.list(categoriaActiva || undefined)
       .then((res) => setInfografias(res.data))
-      .catch(() => setInfografias([]))
+      .catch(() => {
+        setInfografias([])
+        setListError('No se pudo cargar. Inténtalo de nuevo.')
+      })
       .finally(() => setLoading(false))
   }, [categoriaActiva])
 
   async function handleOpen(item) {
-    const res = await habitosApi.getArchivo(item.id)
-    const url = URL.createObjectURL(res.data)
-    if (item.file_type === 'pdf') {
-      window.open(url, '_blank')
-      return
+    setOpenError('')
+    try {
+      const res = await habitosApi.getArchivo(item.id)
+      const url = URL.createObjectURL(res.data)
+      if (item.file_type === 'pdf') {
+        window.open(url, '_blank')
+        return
+      }
+      setModalUrl(url)
+      setModalItem(item)
+    } catch {
+      setOpenError('No se pudo abrir la infografía. Intenta de nuevo.')
     }
-    setModalUrl(url)
-    setModalItem(item)
   }
 
   function closeModal() {
@@ -92,11 +103,15 @@ export function AprendoHabitos() {
           </div>
         )}
 
+        {openError && (
+          <p className="text-base text-red-600">{openError}</p>
+        )}
+
         {loading ? (
           <p className="text-text-muted text-base text-center py-8">Cargando...</p>
         ) : infografias.length === 0 ? (
           <p className="text-base text-text-secondary text-center py-4">
-            Aún no hay infografías disponibles.
+            {listError || 'Aún no hay infografías disponibles.'}
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-4">
