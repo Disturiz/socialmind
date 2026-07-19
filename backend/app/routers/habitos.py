@@ -1,4 +1,7 @@
+import os
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, require_specialist_or_admin
@@ -63,3 +66,16 @@ def list_categorias(
     db: Session = Depends(get_db),
 ):
     return habitos_service.list_categorias(db)
+
+
+@router.get("/{infographic_id}/archivo")
+def get_infographic_file(
+    infographic_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    infographic = habitos_service.get_infographic(db, infographic_id)
+    file_path = os.path.join(habitos_service.DATA_DIR, infographic.filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Archivo no encontrado.")
+    return FileResponse(file_path, media_type=infographic.mime_type)

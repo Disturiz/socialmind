@@ -244,3 +244,78 @@ def test_get_categorias_returns_distinct_sorted(client, db):
     response = client.get("/api/v1/habitos/categorias", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.json() == ["Esperar turno", "Saludar"]
+
+
+def test_get_archivo_returns_file_with_correct_content_type(client, db, tmp_path, monkeypatch):
+    import app.services.habitos_service as hs
+    monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
+
+    token = _login_habitos(client, "spec_habito_archivo@test.com")
+    spec_id = _me_habitos(client, token)["id"]
+
+    filename = "abc123.png"
+    (tmp_path / filename).write_bytes(b"\x89PNG\r\n\x1a\n" + b"fakepngcontent")
+
+    from datetime import datetime, timezone
+    from app.models.habit_infographic import HabitInfographic
+    infographic = HabitInfographic(
+        uploaded_by=spec_id,
+        title="Test",
+        description=None,
+        category="Saludar",
+        file_type="image",
+        filename=filename,
+        original_name="saludo.png",
+        mime_type="image/png",
+        file_size_bytes=20,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(infographic)
+    db.commit()
+    db.refresh(infographic)
+
+    response = client.get(
+        f"/api/v1/habitos/{infographic.id}/archivo",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+    assert response.content.startswith(b"\x89PNG")
+
+
+def test_get_archivo_requires_auth(client, db, tmp_path, monkeypatch):
+    import app.services.habitos_service as hs
+    monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
+
+    token = _login_habitos(client, "spec_habito_archivo_noauth@test.com")
+    spec_id = _me_habitos(client, token)["id"]
+
+    filename = "def456.png"
+    (tmp_path / filename).write_bytes(b"\x89PNG\r\n\x1a\n" + b"fakepngcontent")
+
+    from datetime import datetime, timezone
+    from app.models.habit_infographic import HabitInfographic
+    infographic = HabitInfographic(
+        uploaded_by=spec_id,
+        title="Test",
+        description=None,
+        category="Saludar",
+        file_type="image",
+        filename=filename,
+        original_name="saludo.png",
+        mime_type="image/png",
+        file_size_bytes=20,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(infographic)
+    db.commit()
+    db.refresh(infographic)
+
+    response = client.get(f"/api/v1/habitos/{infographic.id}/archivo")
+    assert response.status_code == 401
+
+
+def test_get_archivo_unknown_id_returns_404(client):
+    token = _login_habitos(client, "spec_habito_archivo_404@test.com")
+    response = client.get("/api/v1/habitos/99999/archivo", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 404
