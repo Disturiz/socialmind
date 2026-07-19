@@ -24,6 +24,7 @@ export function GestionHabitos() {
   const [description, setDescription] = useState('')
   const [uploading, setUploading]     = useState(false)
   const [uploadError, setUploadError] = useState('')
+  const [deleteError, setDeleteError] = useState('')
   const [confirmId, setConfirmId]     = useState(null)
 
   async function loadAll() {
@@ -91,12 +92,13 @@ export function GestionHabitos() {
   }
 
   async function handleDelete(id) {
+    setDeleteError('')
     try {
       await habitosApi.delete(id)
       setConfirmId(null)
       await loadAll()
     } catch {
-      // silent
+      setDeleteError('No se pudo eliminar la infografía. Intenta de nuevo.')
     }
   }
 
@@ -124,7 +126,7 @@ export function GestionHabitos() {
             accept="image/png,image/jpeg,image/webp,.pdf"
             onChange={handleFileChange}
             disabled={uploading}
-            className="text-base text-text-primary"
+            className="text-base text-text-primary min-h-[44px]"
           />
 
           <input
@@ -180,6 +182,10 @@ export function GestionHabitos() {
             <p className="text-base text-red-600">{uploadError}</p>
           )}
         </form>
+
+        {deleteError && (
+          <p className="text-base text-red-600">{deleteError}</p>
+        )}
 
         {infografias.length === 0 ? (
           <p className="text-base text-text-secondary text-center py-4">
