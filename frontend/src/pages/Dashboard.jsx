@@ -64,6 +64,13 @@ const MODULE_CARDS = [
     available: true,
     path: '/lumi-chat',
   },
+  {
+    emoji: '🌱',
+    title: 'Aprendo Hábitos',
+    desc: 'Infografías para practicar buenos hábitos',
+    available: true,
+    path: '/habitos',
+  },
 ]
 
 const SPECIALIST_CARDS = [
@@ -95,6 +102,13 @@ const SPECIALIST_CARDS = [
     available: true,
     path: '/lumi-chat',
   },
+  {
+    emoji: '🖼️',
+    title: 'Gestionar Aprendo Hábitos',
+    desc: 'Subir y administrar infografías',
+    available: true,
+    path: '/habitos/gestionar',
+  },
 ]
 
 const ADMIN_CARDS = [
@@ -104,6 +118,13 @@ const ADMIN_CARDS = [
     desc: 'Gestionar usuarios de la plataforma',
     available: true,
     path: '/admin',
+  },
+  {
+    emoji: '🖼️',
+    title: 'Gestionar Aprendo Hábitos',
+    desc: 'Subir y administrar infografías',
+    available: true,
+    path: '/habitos/gestionar',
   },
 ]
 
