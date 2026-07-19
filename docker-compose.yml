@@ -34,6 +34,7 @@ services:
       - socialmind_net
     volumes:
       - ./backend:/app
+      - uploads_data:/data
     command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
@@ -56,6 +57,7 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
 
 networks:
   socialmind_net:
