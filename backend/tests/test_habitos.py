@@ -158,3 +158,89 @@ def test_upload_infographic_parent_role_returns_403(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 403
+
+
+def test_list_infographics_returns_all(client, db):
+    spec_token = _login_habitos(client, "spec_habito_list@test.com")
+    parent_token = _login_habitos(client, "parent_habito_list@test.com", role="parent")
+    spec_id = _me_habitos(client, spec_token)["id"]
+
+    from datetime import datetime, timezone
+    from app.models.habit_infographic import HabitInfographic
+    for i, cat in enumerate(["Saludar", "Esperar turno"]):
+        db.add(HabitInfographic(
+            uploaded_by=spec_id,
+            title=f"Infografía {i}",
+            description=None,
+            category=cat,
+            file_type="image",
+            filename=f"f{i}.png",
+            original_name=f"f{i}.png",
+            mime_type="image/png",
+            file_size_bytes=100,
+            created_at=datetime.now(timezone.utc),
+        ))
+    db.commit()
+
+    for token in [spec_token, parent_token]:
+        response = client.get("/api/v1/habitos", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 200
+        assert len(response.json()) == 2
+
+
+def test_list_infographics_filters_by_category(client, db):
+    token = _login_habitos(client, "spec_habito_filter@test.com")
+    spec_id = _me_habitos(client, token)["id"]
+
+    from datetime import datetime, timezone
+    from app.models.habit_infographic import HabitInfographic
+    for i, cat in enumerate(["Saludar", "Esperar turno"]):
+        db.add(HabitInfographic(
+            uploaded_by=spec_id,
+            title=f"Infografía {i}",
+            description=None,
+            category=cat,
+            file_type="image",
+            filename=f"f{i}.png",
+            original_name=f"f{i}.png",
+            mime_type="image/png",
+            file_size_bytes=100,
+            created_at=datetime.now(timezone.utc),
+        ))
+    db.commit()
+
+    response = client.get(
+        "/api/v1/habitos",
+        params={"category": "Saludar"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body) == 1
+    assert body[0]["category"] == "Saludar"
+
+
+def test_get_categorias_returns_distinct_sorted(client, db):
+    token = _login_habitos(client, "spec_habito_cats@test.com")
+    spec_id = _me_habitos(client, token)["id"]
+
+    from datetime import datetime, timezone
+    from app.models.habit_infographic import HabitInfographic
+    for cat in ["Saludar", "Esperar turno", "Saludar"]:
+        db.add(HabitInfographic(
+            uploaded_by=spec_id,
+            title="Infografía",
+            description=None,
+            category=cat,
+            file_type="image",
+            filename="f.png",
+            original_name="f.png",
+            mime_type="image/png",
+            file_size_bytes=100,
+            created_at=datetime.now(timezone.utc),
+        ))
+    db.commit()
+
+    response = client.get("/api/v1/habitos/categorias", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.json() == ["Esperar turno", "Saludar"]

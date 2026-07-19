@@ -46,3 +46,20 @@ def upload_infographic(
         description=description,
         original_name=file.filename,
     )
+
+
+@router.get("", response_model=list[HabitInfographicOut])
+def list_infographics(
+    category: str | None = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return habitos_service.list_infographics(db, category=category)
+
+
+@router.get("/categorias", response_model=list[str])
+def list_categorias(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return habitos_service.list_categorias(db)
