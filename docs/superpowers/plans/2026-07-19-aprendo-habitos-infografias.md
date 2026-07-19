@@ -1018,7 +1018,7 @@ def test_delete_infographic_by_admin_succeeds(client, db, tmp_path, monkeypatch)
     monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
 
     owner_token = _login_habitos(client, "spec_habito_del_owner2@test.com")
-    admin_token = _login_habitos(client, "admin_habito_del@test.com", role="admin")
+    admin_token = _login_admin_habitos(client, db, email="admin_habito_del@test.com")
     owner_id = _me_habitos(client, owner_token)["id"]
 
     filename = "admindel.png"
