@@ -1018,7 +1018,7 @@ def test_delete_infographic_by_admin_succeeds(client, db, tmp_path, monkeypatch)
     monkeypatch.setattr(hs, "DATA_DIR", str(tmp_path))
 
     owner_token = _login_habitos(client, "spec_habito_del_owner2@test.com")
-    admin_token = _login_habitos(client, "admin_habito_del@test.com", role="admin")
+    admin_token = _login_admin_habitos(client, db, email="admin_habito_del@test.com")
     owner_id = _me_habitos(client, owner_token)["id"]
 
     filename = "admindel.png"
@@ -1456,7 +1456,7 @@ Create `frontend/src/pages/GestionHabitos.jsx`:
 ```jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { habitosApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { InfographicThumbnail } from '../components/habitos/InfographicThumbnail'
@@ -1470,6 +1470,7 @@ const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'application/pdf
 
 export function GestionHabitos() {
   const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
   const [infografias, setInfografias] = useState([])
   const [categorias, setCategorias]   = useState([])
   const [file, setFile]               = useState(null)
@@ -1647,7 +1648,7 @@ export function GestionHabitos() {
                 key={item.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.3, delay: shouldReduceMotion ? 0 : i * 0.05 }}
                 className="bg-calm-surface border-2 border-calm-border rounded-2xl p-4 flex gap-3"
               >
                 <InfographicThumbnail infographic={item} className="w-16 h-16 rounded-xl shrink-0" />
@@ -1726,13 +1727,14 @@ Create `frontend/src/pages/AprendoHabitos.jsx`:
 ```jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { habitosApi } from '../services/api'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { InfographicThumbnail } from '../components/habitos/InfographicThumbnail'
 
 export function AprendoHabitos() {
   const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
   const [categorias, setCategorias]       = useState([])
   const [categoriaActiva, setCategoriaActiva] = useState('')
   const [infografias, setInfografias]     = useState([])
@@ -1830,7 +1832,7 @@ export function AprendoHabitos() {
                 key={item.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.3, delay: shouldReduceMotion ? 0 : i * 0.05 }}
                 onClick={() => handleOpen(item)}
                 className="flex flex-col rounded-3xl overflow-hidden bg-calm-surface border-2 border-calm-border hover:border-primary-500 transition-colors text-left min-h-[44px]"
                 aria-label={`Ver infografía: ${item.title}`}

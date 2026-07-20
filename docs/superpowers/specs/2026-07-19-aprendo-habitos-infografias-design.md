@@ -212,7 +212,7 @@ export const habitosApi = {
 - Al montar: `habitosApi.categorias()` → pastillas de filtro (+ "Todas") · `habitosApi.list()` → grilla de tarjetas
 - Cada tarjeta de tipo `image` pide su blob con `habitosApi.getArchivo(id)` al montar y muestra la miniatura vía object URL; se revoca al desmontar el componente
 - Tarjetas tipo `pdf` muestran un ícono genérico de documento (no se pide el blob hasta que se abre, para no descargar PDFs completos solo para listar)
-- Tap en una infografía tipo `image`: abre modal de pantalla completa reusando el mismo object URL ya cargado
+- Tap en una infografía tipo `image`: pide el blob otra vez (no reutiliza el de la miniatura) y abre modal de pantalla completa — implementación real más simple que el diseño original (que planteaba reusar el object URL de la miniatura); costo aceptado: una descarga extra por apertura, insignificante para el volumen esperado de infografías
 - Tap en una infografía tipo `pdf`: pide el blob en ese momento, crea el object URL y llama `window.open(objectUrl)`
 - Filtro por categoría: recarga la lista con `habitosApi.list(category)`
 - Estado vacío: `"Aún no hay infografías disponibles."`

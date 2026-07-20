@@ -24,6 +24,8 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file: .env.prod
+    volumes:
+      - uploads_data:/data
     depends_on:
       db:
         condition: service_healthy
@@ -56,6 +58,7 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
 
 networks:
   socialmind_net:

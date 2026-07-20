@@ -75,6 +75,17 @@ export const bibliotecaApi = {
   ask:      (question) => api.post('/biblioteca/ask', { question }),
 }
 
+export const habitosApi = {
+  upload: (formData) =>
+    api.post('/habitos/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  list:        (category) => api.get('/habitos', { params: category ? { category } : {} }),
+  categorias:  ()          => api.get('/habitos/categorias'),
+  getArchivo:  (id)        => api.get(`/habitos/${id}/archivo`, { responseType: 'blob' }),
+  delete:      (id)        => api.delete(`/habitos/${id}`),
+}
+
 export const gamificationApi = {
   getProgress: () => api.get('/gamification/progreso'),
 }

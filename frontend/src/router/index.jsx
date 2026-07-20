@@ -23,6 +23,8 @@ import { ForgotPasswordPage } from '../pages/ForgotPasswordPage'
 import { ResetPasswordPage }  from '../pages/ResetPasswordPage'
 import { WelcomePage } from '../pages/WelcomePage'
 import { AdminPage } from '../pages/AdminPage'
+import { AprendoHabitos } from '../pages/AprendoHabitos'
+import { GestionHabitos } from '../pages/GestionHabitos'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -68,6 +70,22 @@ function AdminRoute({ children }) {
 
   if (!user) return <Navigate to="/login" replace />
   if (user.role !== 'admin') return <Navigate to="/inicio" replace />
+  return children
+}
+
+function SpecialistOrAdminRoute({ children }) {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-calm-bg flex items-center justify-center">
+        <p className="text-text-secondary text-base">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'specialist' && user.role !== 'admin') return <Navigate to="/inicio" replace />
   return children
 }
 
@@ -195,5 +213,17 @@ export const router = createBrowserRouter([
   {
     path: '/lumi-chat',
     element: <ProtectedRoute><LumiChatAdultosPage /></ProtectedRoute>,
+  },
+  {
+    path: '/habitos',
+    element: (
+      <ProtectedRoute>
+        <ParentOnboardingGuard><AprendoHabitos /></ParentOnboardingGuard>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/habitos/gestionar',
+    element: <SpecialistOrAdminRoute><GestionHabitos /></SpecialistOrAdminRoute>,
   },
 ])

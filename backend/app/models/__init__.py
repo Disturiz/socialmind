@@ -9,6 +9,7 @@ from app.models.specialist_note import SpecialistNote
 from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 from app.models.password_reset_token import PasswordResetToken
+from app.models.habit_infographic import HabitInfographic
 
 __all__ = [
     "User", "UserRole", "ChildProfile",
@@ -17,4 +18,5 @@ __all__ = [
     "CalmSession", "SpecialistNote",
     "Document", "DocumentChunk",
     "PasswordResetToken",
+    "HabitInfographic",
 ]
