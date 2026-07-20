@@ -38,12 +38,15 @@ export function AprendoHabitos() {
   async function handleOpen(item) {
     setOpenError('')
     try {
-      const res = await habitosApi.getArchivo(item.id)
-      const url = URL.createObjectURL(res.data)
       if (item.file_type === 'pdf') {
-        window.open(url, '_blank')
+        const newTab = window.open('', '_blank')
+        const res = await habitosApi.getArchivo(item.id)
+        const url = URL.createObjectURL(res.data)
+        if (newTab) newTab.location.href = url
         return
       }
+      const res = await habitosApi.getArchivo(item.id)
+      const url = URL.createObjectURL(res.data)
       setModalUrl(url)
       setModalItem(item)
     } catch {

@@ -24,6 +24,13 @@ def upload_infographic(
     current_user: User = Depends(require_specialist_or_admin),
     db: Session = Depends(get_db),
 ):
+    title = title.strip()
+    category = category.strip()
+    if not title or not category:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="El título y la categoría no pueden estar vacíos.",
+        )
     file_bytes = file.file.read()
     if len(file_bytes) > MAX_FILE_SIZE:
         raise HTTPException(

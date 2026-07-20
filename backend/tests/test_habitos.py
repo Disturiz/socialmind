@@ -457,3 +457,15 @@ def test_delete_infographic_parent_role_returns_403(client, db):
         headers={"Authorization": f"Bearer {parent_token}"},
     )
     assert response.status_code == 403
+
+
+def test_upload_infographic_whitespace_title_returns_422(client):
+    token = _login_habitos(client, "spec_habito_blanktitle@test.com")
+    files = {"file": ("saludo.png", io.BytesIO(b"\x89PNG\r\n\x1a\n" + b"fakepngcontent"), "image/png")}
+    data = {"title": "   ", "category": "Saludar"}
+    response = client.post(
+        "/api/v1/habitos/upload",
+        files=files, data=data,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 422

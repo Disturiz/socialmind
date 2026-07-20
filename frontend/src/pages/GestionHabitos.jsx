@@ -26,14 +26,17 @@ export function GestionHabitos() {
   const [uploadError, setUploadError] = useState('')
   const [deleteError, setDeleteError] = useState('')
   const [confirmId, setConfirmId]     = useState(null)
+  const [listError, setListError]     = useState('')
 
   async function loadAll() {
+    setListError('')
     try {
       const [listRes, catsRes] = await Promise.all([habitosApi.list(), habitosApi.categorias()])
       setInfografias(listRes.data)
       setCategorias(catsRes.data)
     } catch {
-      // silent — lista vacía si falla
+      setInfografias([])
+      setListError('No se pudo cargar. Inténtalo de nuevo.')
     }
   }
 
@@ -189,7 +192,7 @@ export function GestionHabitos() {
 
         {infografias.length === 0 ? (
           <p className="text-base text-text-secondary text-center py-4">
-            Aún no hay infografías.
+            {listError || 'Aún no hay infografías.'}
           </p>
         ) : (
           <div className="flex flex-col gap-3">
