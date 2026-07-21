@@ -1,0 +1,376 @@
+<title>Guía SocialMind para Padres, Madres y Tutores</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 20mm 15mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    color: #2D2D2D;
+    background: #FFFFFF;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { font-weight: 800; color: #3E72AB; margin: 0 0 6px 0; }
+  p { margin: 0 0 10px 0; }
+  .muted { color: #8C8C8C; }
+  .secondary { color: #6EB190; }
+
+  /* Cover */
+  .cover {
+    height: 258mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #EEF4FB 0%, #F8F6F0 60%, #FFFFFF 100%);
+    border-radius: 0;
+    page-break-after: always;
+  }
+  .cover .owl { font-size: 90px; margin-bottom: 10px; }
+  .cover .kicker {
+    display: inline-block;
+    background: #3E72AB;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 42px; color: #2D2D2D; max-width: 480px; line-height: 1.2; }
+  .cover .role-badge {
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #3E72AB;
+    background: #fff;
+    border: 2px solid #E8E4DC;
+    padding: 10px 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(62,114,171,0.12);
+  }
+  .cover .subtitle { max-width: 420px; color: #5C5C5C; font-size: 15px; margin-top: 22px; }
+  .cover .footer-mark { position: absolute; bottom: 16mm; color: #8C8C8C; font-size: 11px; }
+
+  /* Section headers */
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: #3E72AB;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .section-title-row { display: flex; align-items: center; margin-bottom: 4px; }
+  .section-title-row h2 { font-size: 21px; }
+  .section-intro { color: #5C5C5C; margin: 8px 0 14px 44px; font-size: 12.5px; }
+  section.step { page-break-inside: avoid; margin-bottom: 22px; }
+
+  /* Screenshot frame */
+  .shot-row {
+    display: flex;
+    gap: 14px;
+    margin: 34px auto 4px auto;
+    max-width: 94%;
+  }
+  .shot-row .shot { margin: 0; max-width: 100%; flex: 1; min-width: 0; }
+  .shot-row .caption { margin-left: 0; }
+  .shot {
+    margin: 44px auto 12px auto;
+    max-width: 92%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(45,45,45,0.14);
+    border: 1px solid #E8E4DC;
+  }
+  .shot .bar {
+    background: #F0EEE7;
+    padding: 7px 10px;
+    display: flex;
+    gap: 5px;
+  }
+  .shot .bar span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .shot .bar span:nth-child(1) { background: #F49878; }
+  .shot .bar span:nth-child(2) { background: #F4C878; }
+  .shot .bar span:nth-child(3) { background: #8BC4A8; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .caption { text-align: center; color: #8C8C8C; font-size: 11px; margin: 6px 0 0 44px; font-style: italic; }
+
+  /* Tip box */
+  .tip {
+    background: #EDF6F1;
+    border-left: 4px solid #6EB190;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0 12px 44px;
+    font-size: 12px;
+  }
+  .tip .tip-label { font-weight: 800; color: #6EB190; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .warn {
+    background: #FDF3EC;
+    border-left: 4px solid #F49878;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0 12px 44px;
+    font-size: 12px;
+  }
+  .warn .warn-label { font-weight: 800; color: #F49878; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+  .content-body { margin-left: 44px; }
+  ul.checklist { margin: 6px 0 6px 44px; padding-left: 18px; }
+  ul.checklist li { margin-bottom: 5px; }
+
+  .toc { margin: 20px 0; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 4px;
+    border-bottom: 1px dashed #E8E4DC;
+    font-size: 13px;
+  }
+  .toc-item .num { color: #3E72AB; font-weight: 800; margin-right: 10px; }
+
+  .page-break { page-break-before: always; }
+
+  .header-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    margin-bottom: 22px;
+    border-bottom: 2px solid #EEF4FB;
+  }
+  .header-strip .brand { font-weight: 800; color: #3E72AB; font-size: 13px; }
+  .header-strip .role { color: #6EB190; font-weight: 700; font-size: 12px; }
+
+  .closing {
+    background: #EEF4FB;
+    border-radius: 16px;
+    padding: 22px 26px;
+    margin-top: 10px;
+  }
+  .closing h2 { color: #3E72AB; }
+
+  .faq-item { margin-bottom: 12px; }
+  .faq-q { font-weight: 800; color: #2D2D2D; margin-bottom: 2px; }
+  .faq-a { color: #5C5C5C; }
+</style>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover">
+  <div class="owl">🦉</div>
+  <div class="kicker">SocialMind</div>
+  <h1>Guía práctica para acompañar a tu hijo/a en SocialMind</h1>
+  <div class="role-badge">👨‍👩‍👧 Para Padres, Madres y Tutores</div>
+  <p class="subtitle">Una plataforma pensada para ayudar a niños y adolescentes en el espectro autista (grado 1) a practicar habilidades sociales y emocionales, paso a paso y a su propio ritmo.</p>
+</div>
+
+<!-- ===================== INTRO + TOC ===================== -->
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+
+<h2>¿Qué es SocialMind?</h2>
+<p class="content-body">SocialMind es una plataforma digital creada para apoyar a niños y adolescentes en el espectro autista (grado 1) en el desarrollo de habilidades sociales y emocionales. No es una herramienta de diagnóstico ni reemplaza la terapia profesional: es un espacio de práctica calmado, estructurado y sin presión, guiado por <strong>Lumi</strong>, un búho amigable que acompaña a tu hijo/a en cada actividad.</p>
+
+<div class="tip">
+  <div class="tip-label">Filosofía de SocialMind</div>
+  Todo en la plataforma está diseñado con accesibilidad cognitiva en mente: colores suaves, frases cortas, botones grandes y sin sobresaltos visuales. El objetivo es que tu hijo/a se sienta seguro/a mientras aprende.
+</div>
+
+<h2 style="margin-top:22px;">En esta guía encontrarás</h2>
+<div class="toc">
+  <div class="toc-item"><span><span class="num">1</span>Crear tu cuenta</span><span class="muted">Registro</span></div>
+  <div class="toc-item"><span><span class="num">2</span>Iniciar sesión</span><span class="muted">Acceso</span></div>
+  <div class="toc-item"><span><span class="num">3</span>Crear el perfil de tu hijo/a</span><span class="muted">Onboarding</span></div>
+  <div class="toc-item"><span><span class="num">4</span>Tu panel principal</span><span class="muted">Dashboard</span></div>
+  <div class="toc-item"><span><span class="num">5</span>Selector emocional</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">6</span>Escenarios sociales</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">7</span>Chat con Lumi</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">8</span>Zona de calma</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">9</span>Mi aventura</span><span class="muted">Progreso</span></div>
+  <div class="toc-item"><span><span class="num">10</span>Consultar Biblioteca</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">11</span>Aprendo Hábitos</span><span class="muted">Módulo</span></div>
+  <div class="toc-item"><span><span class="num">12</span>Vincular un especialista</span><span class="muted">Colaboración</span></div>
+  <div class="toc-item"><span><span class="num">13</span>Consejos para acompañar</span><span class="muted">Recomendaciones</span></div>
+  <div class="toc-item"><span><span class="num">14</span>Preguntas frecuentes</span><span class="muted">Soporte</span></div>
+</div>
+
+<!-- ===================== PASO 1: REGISTRO ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+
+<section class="step">
+  <div class="section-title-row"><span class="section-num">1</span><h2>Crea tu cuenta</h2></div>
+  <p class="section-intro">Entra a <strong>socialmind.it.com</strong> y selecciona "Comenzar" desde la pantalla de bienvenida, o ve directo a "Crear cuenta".</p>
+  <div class="shot-row">
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03-registro.jpg"></div><p class="caption">Pantalla de registro</p></div>
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03b-registro-roles.jpg"></div><p class="caption">Elige tu rol y confirma</p></div>
+  </div>
+  <ul class="checklist">
+    <li>Escribe tu nombre completo.</li>
+    <li>Ingresa un correo electrónico válido — lo usarás para iniciar sesión.</li>
+    <li>Elige una contraseña de al menos 8 caracteres.</li>
+    <li>En "Soy...", selecciona <strong>Padre / Madre / Tutor</strong>.</li>
+  </ul>
+  <div class="tip"><div class="tip-label">Consejo</div>Usa un correo que revises con frecuencia: ahí llegará el enlace si alguna vez necesitas recuperar tu contraseña.</div>
+</section>
+
+<!-- ===================== PASO 2: LOGIN ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">2</span><h2>Inicia sesión</h2></div>
+  <p class="section-intro">Cada vez que quieras volver, entra con el correo y la contraseña que registraste.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/02-login.jpg"></div>
+  <p class="caption">Pantalla de inicio de sesión</p>
+</section>
+
+<!-- ===================== PASO 3: PERFIL NIÑO ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">3</span><h2>Crea el perfil de tu hijo/a</h2></div>
+  <p class="section-intro">La primera vez que entres, SocialMind te pedirá crear el perfil del niño o niña que usará la plataforma.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/00b-crear-perfil-nino.jpg"></div>
+  <p class="caption">Formulario "¿Cómo se llama tu niño/a?"</p>
+  <ul class="checklist">
+    <li>Elige un avatar entre los 8 disponibles — a tu hijo/a le encantará escogerlo.</li>
+    <li>Escribe su nombre.</li>
+    <li>Indica su edad (entre 1 y 17 años).</li>
+  </ul>
+  <div class="tip"><div class="tip-label">Consejo pedagógico</div>Deja que tu hijo/a elija su propio avatar si es posible. Sentir que la plataforma es "suya" ayuda a que la reciba con más confianza.</div>
+</section>
+
+<!-- ===================== PASO 4: DASHBOARD ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">4</span><h2>Tu panel principal</h2></div>
+  <p class="section-intro">Aquí verás el nombre y avatar de tu hijo/a, y todos los módulos disponibles para practicar.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/04-dashboard-padre.jpg"></div>
+  <p class="caption">Panel principal — vista de familia</p>
+</section>
+
+<!-- ===================== MODULO: SELECTOR EMOCIONAL ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">5</span><h2>Selector emocional</h2></div>
+  <p class="section-intro">Un espacio simple donde tu hijo/a elige, con un solo toque, la emoción que más se parece a cómo se siente: Feliz, Nervioso, Confundido, Frustrado o Cansado.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/05-selector-emocional.jpg"></div>
+  <p class="caption">Selector emocional con 5 opciones</p>
+  <div class="tip"><div class="tip-label">¿Por qué es importante?</div>Nombrar la propia emoción es un primer paso clave en la regulación emocional. Muchos niños en el espectro autista encuentran más fácil señalar un ícono que expresarlo con palabras. Practicar esto a diario, sin juzgar la respuesta, fortalece su vocabulario emocional.</div>
+</section>
+
+<!-- ===================== MODULO: ESCENARIOS ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">6</span><h2>Escenarios sociales</h2></div>
+  <p class="section-intro">Situaciones cotidianas explicadas paso a paso: saludar, hablar con un compañero, pedir ayuda, esperar el turno y manejar la frustración.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/06-escenarios-lista.jpg"></div>
+  <p class="caption">Lista de escenarios disponibles</p>
+  <div class="shot" style="margin-top:16px;"><div class="bar"><span></span><span></span><span></span></div><img src="images/07-escenario-flujo.jpg"></div>
+  <p class="caption">Cada escenario explica el objetivo antes de practicar</p>
+  <div class="tip"><div class="tip-label">Cómo acompañar</div>Siéntate junto a tu hijo/a la primera vez que use un escenario nuevo. Comenta juntos lo que Lumi explica y, si es posible, practiquen la situación en la vida real poco después — la repetición en distintos contextos ayuda a generalizar la habilidad.</div>
+</section>
+
+<!-- ===================== MODULO: CHAT CON LUMI ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">7</span><h2>Chat con Lumi</h2></div>
+  <p class="section-intro">Una conversación guiada con Lumi sobre cómo se siente tu hijo/a. No es un chat libre: Lumi ofrece opciones de respuesta para mantener la conversación simple, predecible y segura.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/08-chat-lumi.jpg"></div>
+  <p class="caption">Chat con Lumi — respuestas guiadas</p>
+  <div class="warn"><div class="warn-label">Importante</div>Lumi acompaña y escucha, pero no diagnostica ni da consejos clínicos. Si notas señales de malestar frecuente en las conversaciones, coméntalo con un especialista vinculado al perfil de tu hijo/a.</div>
+</section>
+
+<!-- ===================== MODULO: ZONA DE CALMA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">8</span><h2>Zona de calma</h2></div>
+  <p class="section-intro">Herramientas de autorregulación: respiración guiada, una pausa de 3 minutos, o una frase calmada de Lumi.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/09-zona-calma.jpg"></div>
+  <p class="caption">Zona de calma — sugerida según la emoción registrada</p>
+  <div class="tip"><div class="tip-label">Consejo</div>Anima a tu hijo/a a usar la Zona de calma <em>antes</em> de que la frustración escale, no solo cuando ya está alterado/a. Con la práctica, aprenderá a reconocer el momento adecuado para hacer una pausa por sí mismo/a.</div>
+</section>
+
+<!-- ===================== MODULO: MI AVENTURA ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">9</span><h2>Mi aventura</h2></div>
+  <p class="section-intro">Un resumen visual y motivador del progreso de tu hijo/a: estrellas ganadas, racha de días activos, nivel actual e insignias por desbloquear.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/10-mi-aventura.jpg"></div>
+  <p class="caption">Mi aventura — progreso y niveles</p>
+  <div class="tip"><div class="tip-label">Consejo</div>Celebra los avances sin comparar a tu hijo/a con otros niños ni con expectativas externas. El sistema de niveles está pensado para reforzar el esfuerzo propio, a su propio ritmo — no para generar presión.</div>
+</section>
+
+<!-- ===================== MODULO: BIBLIOTECA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">10</span><h2>Consultar Biblioteca</h2></div>
+  <p class="section-intro">Un espacio para ti: hazle preguntas a la IA sobre el autismo, y las respuestas se basan en documentos educativos subidos por especialistas verificados.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/11-consultar-biblioteca.jpg"></div>
+  <p class="caption">Consultar Biblioteca</p>
+</section>
+
+<!-- ===================== MODULO: APRENDO HABITOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">11</span><h2>Aprendo Hábitos</h2></div>
+  <p class="section-intro">Una galería de infografías subidas por especialistas y administradores, organizadas por categoría, para ayudar a formar buenos hábitos.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/12-aprendo-habitos-galeria.jpg"></div>
+  <p class="caption">Galería con filtro por categoría</p>
+  <div class="shot" style="margin-top:16px;"><div class="bar"><span></span><span></span><span></span></div><img src="images/13-aprendo-habitos-modal.jpg"></div>
+  <p class="caption">Toca una infografía para verla en pantalla completa</p>
+  <div class="tip"><div class="tip-label">Consejo</div>Imprime o muestra en pantalla las infografías junto a tu hijo/a y conversen sobre ellas. Muchas familias las usan como apoyo visual para rutinas diarias.</div>
+</section>
+
+<!-- ===================== VINCULAR ESPECIALISTA ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">12</span><h2>Vincular un especialista</h2></div>
+  <p class="section-intro">Si tu hijo/a tiene un terapeuta, psicólogo o docente que también usa SocialMind, puedes vincularlo desde "Gestionar especialistas" en tu panel principal.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/14-especialistas-nino.jpg"></div>
+  <p class="caption">Especialistas asignados al perfil de tu hijo/a</p>
+  <ul class="checklist">
+    <li>Toca "+ Agregar especialista" y busca por correo electrónico.</li>
+    <li>El especialista podrá ver un <strong>resumen</strong> de actividad (cuántos chats, pausas de calma y escenarios completó), no el contenido detallado de las conversaciones.</li>
+    <li>Puedes quitar el acceso en cualquier momento con el ícono ✕.</li>
+  </ul>
+</section>
+
+<!-- ===================== CONSEJOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Padres, Madres y Tutores</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">13</span><h2>Consejos para acompañar a tu hijo/a</h2></div>
+  <div class="content-body">
+    <ul class="checklist">
+      <li><strong>Rutina antes que frecuencia:</strong> es mejor usar SocialMind unos minutos, a la misma hora cada día, que sesiones largas e irregulares.</li>
+      <li><strong>Sin presión ni comparación:</strong> cada niño/a avanza a su propio ritmo. Celebra el intento, no solo el resultado.</li>
+      <li><strong>Acompaña las primeras veces:</strong> siéntate junto a tu hijo/a al probar un módulo nuevo, luego dale espacio para practicar solo/a si se siente cómodo/a.</li>
+      <li><strong>Conecta con la vida real:</strong> lo aprendido en un Escenario social se refuerza cuando lo practican juntos fuera de la pantalla.</li>
+      <li><strong>Involucra a los especialistas:</strong> si tu hijo/a tiene terapeuta o psicólogo, vincúlalo para que el acompañamiento sea conjunto.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">14</span><h2>Preguntas frecuentes</h2></div>
+  <div class="content-body">
+    <div class="faq-item"><div class="faq-q">¿SocialMind reemplaza la terapia?</div><div class="faq-a">No. Es una herramienta de práctica y acompañamiento pedagógico, complementaria al trabajo de especialistas.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Puedo tener más de un hijo/a en la plataforma?</div><div class="faq-a">Cada cuenta de padre/madre gestiona el perfil de un niño/a. Si tienes más de uno, contacta a soporte para orientación.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Olvidé mi contraseña, qué hago?</div><div class="faq-a">En la pantalla de inicio de sesión, toca "¿Olvidaste tu contraseña?" y sigue las instrucciones que llegarán a tu correo.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Es seguro para mi hijo/a?</div><div class="faq-a">Sí. El Chat con Lumi usa respuestas guiadas (no es una conversación libre e impredecible), y todo el diseño sigue principios de accesibilidad cognitiva y seguridad emocional.</div></div>
+  </div>
+</section>
+
+<div class="closing">
+  <h2>🦉 Gracias por acompañar a tu hijo/a con SocialMind</h2>
+  <p style="margin-bottom:0;">Cada paso pequeño cuenta. Estamos aquí para apoyar ese camino, contigo.</p>
+</div>

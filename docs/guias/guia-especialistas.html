@@ -1,0 +1,281 @@
+<title>Guía SocialMind para Especialistas</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 20mm 15mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    color: #2D2D2D;
+    background: #FFFFFF;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { font-weight: 800; color: #3E72AB; margin: 0 0 6px 0; }
+  p { margin: 0 0 10px 0; }
+  .muted { color: #8C8C8C; }
+
+  .cover {
+    height: 258mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #EEF4FB 0%, #F8F6F0 60%, #FFFFFF 100%);
+    page-break-after: always;
+  }
+  .cover .owl { font-size: 90px; margin-bottom: 10px; }
+  .cover .kicker {
+    display: inline-block;
+    background: #3E72AB;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 42px; color: #2D2D2D; max-width: 480px; line-height: 1.2; }
+  .cover .role-badge {
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #3E72AB;
+    background: #fff;
+    border: 2px solid #E8E4DC;
+    padding: 10px 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(62,114,171,0.12);
+  }
+  .cover .subtitle { max-width: 440px; color: #5C5C5C; font-size: 15px; margin-top: 22px; }
+
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: #3E72AB;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .section-title-row { display: flex; align-items: center; margin-bottom: 4px; }
+  .section-title-row h2 { font-size: 21px; }
+  .section-intro { color: #5C5C5C; margin: 8px 0 14px 44px; font-size: 12.5px; }
+  section.step { page-break-inside: avoid; margin-bottom: 22px; }
+
+  .shot-row {
+    display: flex;
+    gap: 14px;
+    margin: 34px auto 4px auto;
+    max-width: 94%;
+  }
+  .shot-row .shot { margin: 0; max-width: 100%; flex: 1; min-width: 0; }
+  .shot-row .caption { margin-left: 0; }
+  .shot {
+    margin: 44px auto 12px auto;
+    max-width: 92%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(45,45,45,0.14);
+    border: 1px solid #E8E4DC;
+  }
+  .shot .bar { background: #F0EEE7; padding: 7px 10px; display: flex; gap: 5px; }
+  .shot .bar span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .shot .bar span:nth-child(1) { background: #F49878; }
+  .shot .bar span:nth-child(2) { background: #F4C878; }
+  .shot .bar span:nth-child(3) { background: #8BC4A8; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .caption { text-align: center; color: #8C8C8C; font-size: 11px; margin: 6px 0 0 44px; font-style: italic; }
+
+  .tip { background: #EDF6F1; border-left: 4px solid #6EB190; border-radius: 10px; padding: 12px 16px; margin: 12px 0 12px 44px; font-size: 12px; }
+  .tip .tip-label { font-weight: 800; color: #6EB190; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .warn { background: #FDF3EC; border-left: 4px solid #F49878; border-radius: 10px; padding: 12px 16px; margin: 12px 0 12px 44px; font-size: 12px; }
+  .warn .warn-label { font-weight: 800; color: #F49878; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+  .content-body { margin-left: 44px; }
+  ul.checklist { margin: 6px 0 6px 44px; padding-left: 18px; }
+  ul.checklist li { margin-bottom: 5px; }
+
+  .toc { margin: 20px 0; }
+  .toc-item { display: flex; justify-content: space-between; padding: 9px 4px; border-bottom: 1px dashed #E8E4DC; font-size: 13px; }
+  .toc-item .num { color: #3E72AB; font-weight: 800; margin-right: 10px; }
+
+  .page-break { page-break-before: always; }
+
+  .header-strip { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 22px; border-bottom: 2px solid #EEF4FB; }
+  .header-strip .brand { font-weight: 800; color: #3E72AB; font-size: 13px; }
+  .header-strip .role { color: #3E72AB; font-weight: 700; font-size: 12px; }
+
+  .closing { background: #EEF4FB; border-radius: 16px; padding: 22px 26px; margin-top: 10px; }
+  .closing h2 { color: #3E72AB; }
+
+  .faq-item { margin-bottom: 12px; }
+  .faq-q { font-weight: 800; color: #2D2D2D; margin-bottom: 2px; }
+  .faq-a { color: #5C5C5C; }
+</style>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover">
+  <div class="owl">🦉</div>
+  <div class="kicker">SocialMind</div>
+  <h1>Guía práctica para integrar SocialMind en tu práctica profesional</h1>
+  <div class="role-badge">🩺 Para Especialistas</div>
+  <p class="subtitle">Terapeutas, psicólogos y otros profesionales que acompañan a niños y adolescentes en el espectro autista (grado 1).</p>
+</div>
+
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+
+<h2>Tu rol en SocialMind</h2>
+<p class="content-body">Como especialista, tienes dos funciones dentro de la plataforma: hacer seguimiento del progreso de los niños que las familias te asignen, y <strong>enriquecer la plataforma</strong> subiendo documentos educativos e infografías basadas en evidencia. SocialMind no es una herramienta clínica ni diagnóstica — es un espacio de práctica pedagógica que complementa tu trabajo terapéutico.</p>
+
+<div class="tip"><div class="tip-label">Nota sobre roles</div>En el registro, la plataforma agrupa a terapeutas, psicólogos y docentes bajo un mismo rol: <strong>"Especialista"</strong>. Todos comparten las mismas herramientas de seguimiento y aporte de contenido.</div>
+
+<h2 style="margin-top:22px;">En esta guía encontrarás</h2>
+<div class="toc">
+  <div class="toc-item"><span><span class="num">1</span>Regístrate como especialista</span><span class="muted">Registro</span></div>
+  <div class="toc-item"><span><span class="num">2</span>Iniciar sesión</span><span class="muted">Acceso</span></div>
+  <div class="toc-item"><span><span class="num">3</span>Tu panel principal</span><span class="muted">Dashboard</span></div>
+  <div class="toc-item"><span><span class="num">4</span>Panel Profesional</span><span class="muted">Seguimiento</span></div>
+  <div class="toc-item"><span><span class="num">5</span>Cómo te vinculan las familias</span><span class="muted">Colaboración</span></div>
+  <div class="toc-item"><span><span class="num">6</span>Biblioteca educativa</span><span class="muted">Aportar contenido</span></div>
+  <div class="toc-item"><span><span class="num">7</span>Aprendo Hábitos</span><span class="muted">Aportar contenido</span></div>
+  <div class="toc-item"><span><span class="num">8</span>Buenas prácticas de contenido</span><span class="muted">Recomendaciones</span></div>
+  <div class="toc-item"><span><span class="num">9</span>Ética y límites</span><span class="muted">Importante</span></div>
+  <div class="toc-item"><span><span class="num">10</span>Preguntas frecuentes</span><span class="muted">Soporte</span></div>
+</div>
+
+<!-- ===================== PASO 1: REGISTRO ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">1</span><h2>Regístrate como especialista</h2></div>
+  <p class="section-intro">Entra a <strong>socialmind.it.com</strong> y selecciona "Crear cuenta".</p>
+  <div class="shot-row">
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03-registro.jpg"></div><p class="caption">Pantalla de registro</p></div>
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03b-registro-roles.jpg"></div><p class="caption">Elige "Especialista" y confirma</p></div>
+  </div>
+  <ul class="checklist">
+    <li>Completa tu nombre completo y correo profesional.</li>
+    <li>Crea una contraseña de al menos 8 caracteres.</li>
+    <li>En "Soy...", selecciona <strong>Especialista (Terapeuta, Psicólogo, Docente)</strong>.</li>
+  </ul>
+</section>
+
+<section class="step">
+  <div class="section-title-row"><span class="section-num">2</span><h2>Inicia sesión</h2></div>
+  <p class="section-intro">Con tu correo y contraseña registrados, entra cuando lo necesites.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/02-login.jpg"></div>
+  <p class="caption">Pantalla de inicio de sesión</p>
+</section>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">3</span><h2>Tu panel principal</h2></div>
+  <p class="section-intro">Al iniciar sesión verás cuatro módulos: Panel Profesional, Biblioteca, Consultar Biblioteca y Chat con Lumi.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/15-dashboard-especialista.jpg"></div>
+  <p class="caption">Panel principal — vista de especialista</p>
+</section>
+
+<!-- ===================== PANEL PROFESIONAL ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">4</span><h2>Panel Profesional</h2></div>
+  <p class="section-intro">Aquí ves un resumen de las familias que te asignaron y la actividad de cada niño/a: cuántos chats, sesiones de calma y escenarios completó.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/16-panel-profesional.jpg"></div>
+  <p class="caption">Panel Profesional con familias y niños asignados</p>
+  <div class="warn"><div class="warn-label">Privacidad</div>El panel muestra <strong>conteos de actividad</strong>, no el contenido literal de las conversaciones del niño/a con Lumi. Esto protege su privacidad mientras te da una señal útil de participación y constancia.</div>
+</section>
+
+<!-- ===================== VINCULACIÓN ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">5</span><h2>Cómo te vinculan las familias</h2></div>
+  <p class="section-intro">Tú no invitas directamente a una familia: es el padre, madre o tutor quien te agrega desde el perfil de su hijo/a, buscándote por tu correo electrónico registrado.</p>
+  <ul class="checklist">
+    <li>Comparte tu correo de SocialMind con las familias que atiendes.</li>
+    <li>Una vez que te agreguen, el niño/a aparecerá automáticamente en tu Panel Profesional.</li>
+    <li>La familia puede quitarte el acceso en cualquier momento — es una relación de confianza mutua.</li>
+  </ul>
+</section>
+
+<!-- ===================== BIBLIOTECA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">6</span><h2>Biblioteca educativa</h2></div>
+  <p class="section-intro">Sube documentos PDF con información basada en evidencia sobre el autismo. Estos alimentan a la IA que responde las preguntas de las familias en "Consultar Biblioteca".</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/17-biblioteca-gestion.jpg"></div>
+  <p class="caption">Gestión de la Biblioteca educativa</p>
+  <ul class="checklist">
+    <li>Solo se aceptan archivos <strong>PDF</strong>.</li>
+    <li>El sistema procesa el documento en fragmentos para que la IA pueda citarlo con precisión.</li>
+    <li>Puedes eliminar un documento en cualquier momento con "Eliminar".</li>
+  </ul>
+</section>
+
+<!-- ===================== APRENDO HABITOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">7</span><h2>Aprendo Hábitos</h2></div>
+  <p class="section-intro">Sube infografías (imágenes o PDF) organizadas por categoría para ayudar a las familias a reforzar buenos hábitos en casa.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/18-habitos-gestion.jpg"></div>
+  <p class="caption">Gestión de Aprendo Hábitos</p>
+  <ul class="checklist">
+    <li>Formatos aceptados: <strong>PNG, JPEG, WebP y PDF</strong>, hasta 10 MB.</li>
+    <li>Escribe un título claro y elige una categoría existente o crea una nueva con "Otra...".</li>
+    <li>La descripción es opcional, pero ayuda a las familias a entender el contexto de uso.</li>
+  </ul>
+  <div class="tip"><div class="tip-label">Consejo</div>Las infografías que suben especialistas y docentes son visibles para <strong>todas</strong> las familias de la plataforma, no solo las tuyas. Prioriza contenido general y reutilizable.</div>
+</section>
+
+<!-- ===================== BUENAS PRACTICAS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">8</span><h2>Buenas prácticas para el contenido que subas</h2></div>
+  <div class="content-body">
+    <ul class="checklist">
+      <li><strong>Basado en evidencia:</strong> prioriza fuentes académicas, guías clínicas reconocidas o material propio validado profesionalmente.</li>
+      <li><strong>Lenguaje accesible:</strong> las familias que leerán tus documentos no siempre tienen formación clínica — evita jerga innecesaria.</li>
+      <li><strong>Imágenes respetuosas:</strong> evita representaciones estigmatizantes del autismo; prioriza un enfoque de neurodiversidad y fortalezas.</li>
+      <li><strong>Cita tus fuentes:</strong> ayuda a que la IA y las familias puedan verificar la información.</li>
+      <li><strong>Actualiza cuando sea necesario:</strong> elimina documentos desactualizados y sube versiones revisadas.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== ETICA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">9</span><h2>Ética y límites de la plataforma</h2></div>
+  <div class="content-body">
+    <div class="warn">
+      <div class="warn-label">Recuerda siempre</div>
+      SocialMind es una herramienta de apoyo pedagógico, <strong>no un servicio clínico ni de diagnóstico</strong>. El Panel Profesional te da señales de participación, no un historial clínico. Cualquier decisión terapéutica debe basarse en tu evaluación profesional directa, no únicamente en los datos de la plataforma.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Especialistas</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">10</span><h2>Preguntas frecuentes</h2></div>
+  <div class="content-body">
+    <div class="faq-item"><div class="faq-q">¿Puedo atender a varias familias a la vez?</div><div class="faq-a">Sí. Todas las familias que te vinculen aparecerán en tu Panel Profesional.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Veo las conversaciones completas del niño/a con Lumi?</div><div class="faq-a">No. Por privacidad, solo ves conteos de actividad (chats, calma, escenarios), no el contenido textual.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Qué pasa si subo un documento por error?</div><div class="faq-a">Puedes eliminarlo en cualquier momento desde la Biblioteca o desde Aprendo Hábitos con el botón "Eliminar".</div></div>
+    <div class="faq-item"><div class="faq-q">¿Hay límite de tamaño para los archivos?</div><div class="faq-a">Sí, 10 MB por archivo tanto en la Biblioteca como en Aprendo Hábitos.</div></div>
+  </div>
+</section>
+
+<div class="closing">
+  <h2>🦉 Gracias por enriquecer SocialMind con tu experiencia</h2>
+  <p style="margin-bottom:0;">Tu conocimiento profesional ayuda a que más familias encuentren apoyo confiable y accesible.</p>
+</div>

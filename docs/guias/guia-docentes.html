@@ -1,0 +1,279 @@
+<title>Guía SocialMind para Docentes</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 20mm 15mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    color: #2D2D2D;
+    background: #FFFFFF;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { font-weight: 800; color: #3E72AB; margin: 0 0 6px 0; }
+  p { margin: 0 0 10px 0; }
+  .muted { color: #8C8C8C; }
+
+  .cover {
+    height: 258mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #EEF4FB 0%, #F8F6F0 60%, #FFFFFF 100%);
+    page-break-after: always;
+  }
+  .cover .owl { font-size: 90px; margin-bottom: 10px; }
+  .cover .kicker {
+    display: inline-block;
+    background: #3E72AB;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 42px; color: #2D2D2D; max-width: 480px; line-height: 1.2; }
+  .cover .role-badge {
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #3E72AB;
+    background: #fff;
+    border: 2px solid #E8E4DC;
+    padding: 10px 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(62,114,171,0.12);
+  }
+  .cover .subtitle { max-width: 440px; color: #5C5C5C; font-size: 15px; margin-top: 22px; }
+
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: #3E72AB;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .section-title-row { display: flex; align-items: center; margin-bottom: 4px; }
+  .section-title-row h2 { font-size: 21px; }
+  .section-intro { color: #5C5C5C; margin: 8px 0 14px 44px; font-size: 12.5px; }
+  section.step { page-break-inside: avoid; margin-bottom: 22px; }
+
+  .shot-row {
+    display: flex;
+    gap: 14px;
+    margin: 34px auto 4px auto;
+    max-width: 94%;
+  }
+  .shot-row .shot { margin: 0; max-width: 100%; flex: 1; min-width: 0; }
+  .shot-row .caption { margin-left: 0; }
+  .shot {
+    margin: 44px auto 12px auto;
+    max-width: 92%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(45,45,45,0.14);
+    border: 1px solid #E8E4DC;
+  }
+  .shot .bar { background: #F0EEE7; padding: 7px 10px; display: flex; gap: 5px; }
+  .shot .bar span { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .shot .bar span:nth-child(1) { background: #F49878; }
+  .shot .bar span:nth-child(2) { background: #F4C878; }
+  .shot .bar span:nth-child(3) { background: #8BC4A8; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .caption { text-align: center; color: #8C8C8C; font-size: 11px; margin: 6px 0 0 44px; font-style: italic; }
+
+  .tip { background: #EDF6F1; border-left: 4px solid #6EB190; border-radius: 10px; padding: 12px 16px; margin: 12px 0 12px 44px; font-size: 12px; }
+  .tip .tip-label { font-weight: 800; color: #6EB190; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .warn { background: #FDF3EC; border-left: 4px solid #F49878; border-radius: 10px; padding: 12px 16px; margin: 12px 0 12px 44px; font-size: 12px; }
+  .warn .warn-label { font-weight: 800; color: #F49878; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+  .content-body { margin-left: 44px; }
+  ul.checklist { margin: 6px 0 6px 44px; padding-left: 18px; }
+  ul.checklist li { margin-bottom: 5px; }
+
+  .toc { margin: 20px 0; }
+  .toc-item { display: flex; justify-content: space-between; padding: 9px 4px; border-bottom: 1px dashed #E8E4DC; font-size: 13px; }
+  .toc-item .num { color: #3E72AB; font-weight: 800; margin-right: 10px; }
+
+  .page-break { page-break-before: always; }
+
+  .header-strip { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; margin-bottom: 22px; border-bottom: 2px solid #EEF4FB; }
+  .header-strip .brand { font-weight: 800; color: #3E72AB; font-size: 13px; }
+  .header-strip .role { color: #F49878; font-weight: 700; font-size: 12px; }
+
+  .closing { background: #EEF4FB; border-radius: 16px; padding: 22px 26px; margin-top: 10px; }
+  .closing h2 { color: #3E72AB; }
+
+  .faq-item { margin-bottom: 12px; }
+  .faq-q { font-weight: 800; color: #2D2D2D; margin-bottom: 2px; }
+  .faq-a { color: #5C5C5C; }
+</style>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover">
+  <div class="owl">🦉</div>
+  <div class="kicker">SocialMind</div>
+  <h1>Guía práctica para llevar SocialMind al aula</h1>
+  <div class="role-badge">🍎 Para Docentes</div>
+  <p class="subtitle">Ideas y pasos concretos para acompañar, desde la escuela, a estudiantes en el espectro autista (grado 1).</p>
+</div>
+
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+
+<h2>SocialMind en el aula</h2>
+<p class="content-body">SocialMind ayuda a tus estudiantes a practicar habilidades sociales y emocionales de forma calmada y estructurada — un buen complemento entre lo que trabajas en el aula y lo que la familia refuerza en casa. Como docente, puedes hacer seguimiento del progreso de los estudiantes que las familias te asignen y aportar recursos pedagógicos a toda la comunidad SocialMind.</p>
+
+<div class="tip"><div class="tip-label">Nota sobre roles</div>En el registro, la plataforma agrupa a docentes junto con terapeutas y psicólogos bajo el rol <strong>"Especialista"</strong>. Tendrás las mismas herramientas de seguimiento y aporte de contenido que ellos.</div>
+
+<h2 style="margin-top:22px;">En esta guía encontrarás</h2>
+<div class="toc">
+  <div class="toc-item"><span><span class="num">1</span>Regístrate en SocialMind</span><span class="muted">Registro</span></div>
+  <div class="toc-item"><span><span class="num">2</span>Iniciar sesión</span><span class="muted">Acceso</span></div>
+  <div class="toc-item"><span><span class="num">3</span>Tu panel principal</span><span class="muted">Dashboard</span></div>
+  <div class="toc-item"><span><span class="num">4</span>Seguimiento de tus estudiantes</span><span class="muted">Panel Profesional</span></div>
+  <div class="toc-item"><span><span class="num">5</span>Cómo te vinculan las familias</span><span class="muted">Colaboración</span></div>
+  <div class="toc-item"><span><span class="num">6</span>Comparte recursos pedagógicos</span><span class="muted">Biblioteca</span></div>
+  <div class="toc-item"><span><span class="num">7</span>Infografías para el aula</span><span class="muted">Aprendo Hábitos</span></div>
+  <div class="toc-item"><span><span class="num">8</span>Ideas para integrar SocialMind</span><span class="muted">En el aula</span></div>
+  <div class="toc-item"><span><span class="num">9</span>Comunicación con las familias</span><span class="muted">Recomendaciones</span></div>
+  <div class="toc-item"><span><span class="num">10</span>Preguntas frecuentes</span><span class="muted">Soporte</span></div>
+</div>
+
+<!-- ===================== PASO 1: REGISTRO ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">1</span><h2>Regístrate en SocialMind</h2></div>
+  <p class="section-intro">Entra a <strong>socialmind.it.com</strong> y selecciona "Crear cuenta".</p>
+  <div class="shot-row">
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03-registro.jpg"></div><p class="caption">Pantalla de registro</p></div>
+    <div><div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/03b-registro-roles.jpg"></div><p class="caption">Elige "Especialista" y confirma</p></div>
+  </div>
+  <ul class="checklist">
+    <li>Completa tu nombre completo y correo institucional o personal.</li>
+    <li>Crea una contraseña de al menos 8 caracteres.</li>
+    <li>En "Soy...", selecciona <strong>Especialista (Terapeuta, Psicólogo, Docente)</strong>.</li>
+  </ul>
+</section>
+
+<section class="step">
+  <div class="section-title-row"><span class="section-num">2</span><h2>Inicia sesión</h2></div>
+  <p class="section-intro">Con tu correo y contraseña registrados, entra cuando lo necesites.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/02-login.jpg"></div>
+  <p class="caption">Pantalla de inicio de sesión</p>
+</section>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">3</span><h2>Tu panel principal</h2></div>
+  <p class="section-intro">Al iniciar sesión verás cuatro módulos: Panel Profesional, Biblioteca, Consultar Biblioteca y Chat con Lumi.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/15-dashboard-especialista.jpg"></div>
+  <p class="caption">Panel principal</p>
+</section>
+
+<!-- ===================== PANEL PROFESIONAL ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">4</span><h2>Seguimiento de tus estudiantes</h2></div>
+  <p class="section-intro">El Panel Profesional funciona como tu registro de seguimiento: verás qué familias te asignaron y cuánta actividad tiene cada estudiante (chats, pausas de calma, escenarios completados).</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/16-panel-profesional.jpg"></div>
+  <p class="caption">Panel Profesional con estudiantes asignados</p>
+  <div class="warn"><div class="warn-label">Privacidad</div>Verás conteos de actividad, no el contenido literal de lo que el estudiante conversó con Lumi. Es una señal de participación, útil para saber quién necesita más acompañamiento — no un registro disciplinario ni clínico.</div>
+</section>
+
+<!-- ===================== VINCULACIÓN ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">5</span><h2>Cómo te vinculan las familias</h2></div>
+  <p class="section-intro">Son los padres, madres o tutores quienes te agregan como especialista desde el perfil de su hijo/a, buscándote por tu correo registrado en SocialMind.</p>
+  <ul class="checklist">
+    <li>Comparte tu correo de SocialMind con las familias de tu clase que quieran vincularte.</li>
+    <li>Una vez vinculado, el estudiante aparece en tu Panel Profesional.</li>
+    <li>Puedes sugerirlo en reuniones de padres o en la comunicación habitual con la familia.</li>
+  </ul>
+</section>
+
+<!-- ===================== BIBLIOTECA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">6</span><h2>Comparte recursos pedagógicos</h2></div>
+  <p class="section-intro">Sube documentos PDF con estrategias de aula, adaptaciones curriculares o material educativo sobre el autismo. Estos alimentan las respuestas de la IA en "Consultar Biblioteca", disponible para todas las familias.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/17-biblioteca-gestion.jpg"></div>
+  <p class="caption">Gestión de la Biblioteca educativa</p>
+  <ul class="checklist">
+    <li>Solo se aceptan archivos <strong>PDF</strong>, hasta 10 MB.</li>
+    <li>Prioriza guías prácticas: adaptaciones de aula, estrategias de comunicación, rutinas visuales.</li>
+  </ul>
+</section>
+
+<!-- ===================== APRENDO HABITOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">7</span><h2>Infografías para el aula</h2></div>
+  <p class="section-intro">Sube infografías (imágenes o PDF) que puedas usar tanto en el salón de clases como recomendación para el hogar.</p>
+  <div class="shot"><div class="bar"><span></span><span></span><span></span></div><img src="images/18-habitos-gestion.jpg"></div>
+  <p class="caption">Gestión de Aprendo Hábitos</p>
+  <ul class="checklist">
+    <li>Formatos aceptados: <strong>PNG, JPEG, WebP y PDF</strong>, hasta 10 MB.</li>
+    <li>Usa categorías claras (por ejemplo, "Rutinas", "Comunicación", "Aula") para que las familias las encuentren fácilmente.</li>
+  </ul>
+  <div class="tip"><div class="tip-label">Idea de uso</div>Muchas infografías de hábitos funcionan bien como carteles visuales de aula: rutinas de la mañana, turnos para hablar, o pasos para pedir ayuda.</div>
+</section>
+
+<!-- ===================== IDEAS PARA EL AULA ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">8</span><h2>Ideas para integrar SocialMind en la rutina escolar</h2></div>
+  <div class="content-body">
+    <ul class="checklist">
+      <li><strong>Antes de una actividad grupal:</strong> sugiere el escenario "Hablar con un compañero" o "Esperar turno" como práctica previa.</li>
+      <li><strong>Rincón de calma:</strong> si tu aula tiene un espacio de regulación emocional, la Zona de calma de SocialMind puede usarse ahí como apoyo visual y guiado.</li>
+      <li><strong>Chequeo emocional al llegar:</strong> el Selector emocional puede ser parte de una rutina de bienvenida, para que el estudiante identifique cómo llega ese día.</li>
+      <li><strong>Después de un conflicto:</strong> el escenario "Manejar la frustración" ofrece un lenguaje común para conversar sobre lo ocurrido, sin señalar ni castigar.</li>
+      <li><strong>Refuerzo en casa:</strong> recomienda a las familias qué módulo practicar según lo trabajado esa semana en el aula.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== COMUNICACION FAMILIAS ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">9</span><h2>Comunicación con las familias</h2></div>
+  <div class="content-body">
+    <div class="tip">
+      <div class="tip-label">Recomendación</div>
+      Comparte con las familias qué actividades trabajaste en el aula para que puedan reforzarlas en casa con SocialMind, y pregúntales qué módulos usa el estudiante para adaptar tu propio acompañamiento. La coherencia entre escuela y hogar es clave para consolidar habilidades sociales.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Guía para Docentes</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">10</span><h2>Preguntas frecuentes</h2></div>
+  <div class="content-body">
+    <div class="faq-item"><div class="faq-q">¿Puedo tener estudiantes de varios grados o secciones?</div><div class="faq-a">Sí. Todas las familias que te vinculen aparecerán en tu Panel Profesional, sin importar el grado.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Veo las conversaciones completas del estudiante con Lumi?</div><div class="faq-a">No. Por privacidad, solo ves conteos de actividad, no el contenido textual de las conversaciones.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Puedo usar SocialMind en una computadora del aula compartida por varios estudiantes?</div><div class="faq-a">Cada estudiante debe iniciar sesión con el perfil creado por su familia; recuerda cerrar sesión al cambiar de usuario.</div></div>
+    <div class="faq-item"><div class="faq-q">¿Hay límite de tamaño para los archivos que subo?</div><div class="faq-a">Sí, 10 MB por archivo tanto en la Biblioteca como en Aprendo Hábitos.</div></div>
+  </div>
+</section>
+
+<div class="closing">
+  <h2>🦉 Gracias por llevar SocialMind a tu salón de clases</h2>
+  <p style="margin-bottom:0;">Tu rol como docente es clave para que cada estudiante practique en un entorno consistente, dentro y fuera del aula.</p>
+</div>
