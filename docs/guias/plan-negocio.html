@@ -1,0 +1,296 @@
+<title>Plan de Negocio SocialMind</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 20mm 15mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    color: #2D2D2D;
+    background: #FFFFFF;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { font-weight: 800; color: #3E72AB; margin: 0 0 6px 0; }
+  p { margin: 0 0 10px 0; }
+  .muted { color: #8C8C8C; }
+  .secondary { color: #6EB190; }
+
+  /* Cover */
+  .cover {
+    height: 258mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #EEF4FB 0%, #F8F6F0 60%, #FFFFFF 100%);
+    border-radius: 0;
+    page-break-after: always;
+  }
+  .cover .owl { font-size: 90px; margin-bottom: 10px; }
+  .cover .kicker {
+    display: inline-block;
+    background: #3E72AB;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .cover h1 { font-size: 42px; color: #2D2D2D; max-width: 480px; line-height: 1.2; }
+  .cover .role-badge {
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #3E72AB;
+    background: #fff;
+    border: 2px solid #E8E4DC;
+    padding: 10px 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(62,114,171,0.12);
+  }
+  .cover .subtitle { max-width: 420px; color: #5C5C5C; font-size: 15px; margin-top: 22px; }
+
+  /* Section headers */
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    background: #3E72AB;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+  .section-title-row { display: flex; align-items: center; margin-bottom: 4px; }
+  .section-title-row h2 { font-size: 21px; }
+  .section-intro { color: #5C5C5C; margin: 8px 0 14px 44px; font-size: 12.5px; }
+  section.step { page-break-inside: avoid; margin-bottom: 22px; }
+
+  /* Tables */
+  table.plan-table { width: 100%; margin: 10px 0 16px 0; border-collapse: collapse; font-size: 11.5px; }
+  table.plan-table th {
+    background: #3E72AB;
+    color: #fff;
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 800;
+  }
+  table.plan-table th:first-child { border-radius: 8px 0 0 0; }
+  table.plan-table th:last-child { border-radius: 0 8px 0 0; }
+  table.plan-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #E8E4DC;
+    vertical-align: top;
+  }
+  table.plan-table tr:nth-child(even) td { background: #FAF9F6; }
+
+  /* Tip / warn boxes */
+  .tip {
+    background: #EDF6F1;
+    border-left: 4px solid #6EB190;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0 12px 44px;
+    font-size: 12px;
+  }
+  .tip .tip-label { font-weight: 800; color: #6EB190; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .warn {
+    background: #FDF3EC;
+    border-left: 4px solid #F49878;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin: 12px 0 12px 44px;
+    font-size: 12px;
+  }
+  .warn .warn-label { font-weight: 800; color: #F49878; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+  .content-body { margin-left: 44px; }
+  ul.checklist { margin: 6px 0 6px 44px; padding-left: 18px; }
+  ul.checklist li { margin-bottom: 5px; }
+
+  .toc { margin: 20px 0; }
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 4px;
+    border-bottom: 1px dashed #E8E4DC;
+    font-size: 13px;
+  }
+  .toc-item .num { color: #3E72AB; font-weight: 800; margin-right: 10px; }
+
+  .page-break { page-break-before: always; }
+
+  .header-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    margin-bottom: 22px;
+    border-bottom: 2px solid #EEF4FB;
+  }
+  .header-strip .brand { font-weight: 800; color: #3E72AB; font-size: 13px; }
+  .header-strip .role { color: #6EB190; font-weight: 700; font-size: 12px; }
+
+  .closing {
+    background: #EEF4FB;
+    border-radius: 16px;
+    padding: 22px 26px;
+    margin-top: 10px;
+  }
+  .closing h2 { color: #3E72AB; }
+
+  .status-badge {
+    display: inline-block;
+    background: #FDF3EC;
+    color: #C97650;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-left: 44px;
+    margin-bottom: 14px;
+  }
+</style>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="cover">
+  <div class="owl">🦉</div>
+  <div class="kicker">SocialMind</div>
+  <h1>Plan de Negocio: modelo freemium sostenible</h1>
+  <div class="role-badge">📊 Estrategia interna</div>
+  <p class="subtitle">Una capa gratuita real para quienes más lo necesitan, y un modelo de ingresos mixto que permite que SocialMind siga creciendo.</p>
+</div>
+
+<!-- ===================== INTRO + TOC ===================== -->
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+
+<h2>Contexto y objetivo</h2>
+<span class="status-badge">Estado: diseño de estrategia — sin implementación técnica todavía</span>
+<p class="content-body">SocialMind ya está en producción, con cuentas reales activas y tres roles (padre, especialista, admin). El proyecto nace de una motivación personal de Douglas Isturiz de dar apoyo accesible a niños y adolescentes en el espectro autista (grado 1).</p>
+<p class="content-body">Este documento define un modelo de negocio que busca tres cosas a la vez: mantener una capa gratuita real y útil, generar ingresos suficientes para sostener infraestructura y desarrollo futuro, y mantenerse coherente con los principios de accesibilidad cognitiva y calma del producto — sin fricción, sin ambigüedad, sin sensación de "versión pobre".</p>
+
+<div class="tip">
+  <div class="tip-label">Nota</div>
+  Este documento es una estrategia, no un plan de implementación técnica. La decisión de cuándo construir el cobro real queda abierta y no es urgente.
+</div>
+
+<h2 style="margin-top:22px;">En este documento encontrarás</h2>
+<div class="toc">
+  <div class="toc-item"><span><span class="num">1</span>Estructura de niveles</span><span class="muted">Fase 1</span></div>
+  <div class="toc-item"><span><span class="num">2</span>Precios sugeridos</span><span class="muted">Punto de partida</span></div>
+  <div class="toc-item"><span><span class="num">3</span>Convenios institucionales</span><span class="muted">Proceso manual</span></div>
+  <div class="toc-item"><span><span class="num">4</span>Pasarela de pago</span><span class="muted">Consideración práctica</span></div>
+  <div class="toc-item"><span><span class="num">5</span>Roadmap de fases</span><span class="muted">Cuándo construir qué</span></div>
+  <div class="toc-item"><span><span class="num">6</span>Riesgos y ética</span><span class="muted">Consideraciones</span></div>
+  <div class="toc-item"><span><span class="num">7</span>Alternativas descartadas</span><span class="muted">Por qué no</span></div>
+  <div class="toc-item"><span><span class="num">8</span>Próximos pasos</span><span class="muted">Siguiente etapa</span></div>
+</div>
+
+<!-- ===================== 1. NIVELES ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+
+<section class="step">
+  <div class="section-title-row"><span class="section-num">1</span><h2>Estructura de niveles (Fase 1)</h2></div>
+  <p class="section-intro">Cuatro niveles, cada uno alineado a un tipo de usuario distinto de la plataforma.</p>
+  <table class="plan-table">
+    <tr><th>Nivel</th><th>Quién</th><th>Qué obtiene</th><th>Paga</th></tr>
+    <tr><td><strong>Gratis</strong></td><td>Cualquier padre/madre/tutor, sin verificación</td><td>Selector emocional, Escenarios sociales, Zona de calma, Chat con Lumi (con límite mensual razonable)</td><td>No</td></tr>
+    <tr><td><strong>Premium Familia</strong></td><td>Padres que pueden pagar</td><td>Todo lo anterior + Biblioteca (RAG), Aprendo Hábitos, Mi Aventura completa, Chat con Lumi sin límite</td><td>Sí — suscripción</td></tr>
+    <tr><td><strong>Especialista Pro</strong></td><td>Terapeutas, psicólogos, docentes</td><td>Panel profesional completo: seguimiento de niños asignados, tendencias emocionales, gestión de biblioteca, notas clínicas</td><td>Sí — por especialista</td></tr>
+    <tr><td><strong>Convenio Institucional</strong></td><td>ONGs, escuelas, fundaciones</td><td>Acceso Premium Familia gratuito para las familias designadas por la institución</td><td>La institución/donante</td></tr>
+  </table>
+  <p class="content-body">La cuenta de "Especialista" básica (gratis, como existe hoy) se mantiene para vincularse con niños y ver lo esencial; "Especialista Pro" es una capa de pago adicional sobre esa base.</p>
+</section>
+
+<!-- ===================== 2. PRECIOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">2</span><h2>Precios sugeridos</h2></div>
+  <p class="section-intro">Punto de partida conservador, pensado para Latinoamérica — no son precios definitivos.</p>
+  <table class="plan-table">
+    <tr><th>Nivel</th><th>Precio sugerido</th><th>Nota</th></tr>
+    <tr><td><strong>Premium Familia</strong></td><td>USD $4–6/mes<br>(~$40–50/año)</td><td>Precio "psicológicamente accesible", similar a una app de streaming básica. El pago anual mejora el flujo de caja.</td></tr>
+    <tr><td><strong>Especialista Pro</strong></td><td>USD $10–15/mes</td><td>Los profesionales facturan a sus pacientes y pueden absorber un precio mayor; el ahorro de tiempo en seguimiento lo justifica.</td></tr>
+    <tr><td><strong>Convenio Institucional</strong></td><td>Desde USD $2–3/niño/mes<br>(mínimo ~20 niños)</td><td>Sirve como ancla de precio para no regalar el valor completo sin ingreso asociado.</td></tr>
+  </table>
+  <div class="tip"><div class="tip-label">Cómo ajustar</div>Lanzar con estos rangos, medir la conversión de Gratis → Premium, y ajustar ±30% según la respuesta real del mercado, en vez de calcular un precio "perfecto" de antemano.</div>
+</section>
+
+<!-- ===================== 3. CONVENIOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">3</span><h2>Convenios institucionales — proceso Fase 1</h2></div>
+  <p class="section-intro">No se automatiza el alta institucional en esta fase; el proceso es manual.</p>
+  <ul class="checklist">
+    <li><strong>Contacto y negociación:</strong> Douglas negocia precio y cantidad de familias cubiertas directamente con la ONG/escuela/fundación.</li>
+    <li><strong>Marca de cuentas:</strong> usando el módulo Admin existente, se marca manualmente cada cuenta cubierta como "Premium — Convenio [Institución]".</li>
+    <li><strong>Seguimiento:</strong> registro de convenios y vencimientos fuera de la plataforma al inicio (hoja de cálculo), hasta que el volumen justifique un panel dedicado.</li>
+    <li><strong>Renovación:</strong> contacto manual anual o semestral.</li>
+  </ul>
+  <div class="tip"><div class="tip-label">Lo único técnico necesario</div>Un campo de "tipo de plan" en la cuenta de usuario (gratis/premium) y una pasarela de pago para cobros individuales. Los convenios institucionales no requieren desarrollo adicional al inicio.</div>
+</section>
+
+<!-- ===================== 4. PASARELA ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">4</span><h2>Pasarela de pago</h2></div>
+  <p class="section-intro">Consideración práctica para cobrar en Latinoamérica.</p>
+  <ul class="checklist">
+    <li><strong>Stripe:</strong> buena integración de suscripciones recurrentes, pero disponibilidad como cuenta receptora varía por país en LatAm.</li>
+    <li><strong>PayPal:</strong> más cobertura regional, comisiones más altas, peor conversión típica en LatAm.</li>
+    <li><strong>Mercado Pago</strong> (u otro procesador local): mejor conversión si el volumen se concentra en ciertos países, pero puede requerir integración por país.</li>
+  </ul>
+  <div class="warn"><div class="warn-label">Recomendación</div>Comenzar con Stripe por simplicidad de integración, y evaluar sumar un procesador local más adelante si una parte relevante de usuarios no puede pagar con tarjeta internacional. Decisión final pendiente de validar al momento de implementar el cobro.</div>
+</section>
+
+<!-- ===================== 5. ROADMAP ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">5</span><h2>Roadmap de fases</h2></div>
+  <table class="plan-table">
+    <tr><th>Fase</th><th>Contenido</th><th>Cuándo</th></tr>
+    <tr><td><strong>Fase 0</strong></td><td>Este documento de estrategia — sin cambios en el producto</td><td>Completada 2026-07-21</td></tr>
+    <tr><td><strong>Fase 1</strong></td><td>Campo de plan por cuenta, restricción de módulos según plan, pasarela de pago para Premium Familia y Especialista Pro</td><td>A decidir por Douglas, no urgente</td></tr>
+    <tr><td><strong>Fase 2</strong></td><td>Primeros convenios institucionales manuales vía módulo Admin</td><td>En paralelo o después de Fase 1</td></tr>
+    <tr><td><strong>Fase 3</strong></td><td>Automatizar alta institucional (panel self-service, checkout por volumen)</td><td>Solo si el volumen de convenios lo justifica</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 6. RIESGOS ===================== -->
+<div class="page-break"></div>
+<div class="header-strip"><span class="brand">🦉 SocialMind</span><span class="role">Plan de Negocio — Estrategia interna</span></div>
+<section class="step">
+  <div class="section-title-row"><span class="section-num">6</span><h2>Riesgos y consideraciones éticas</h2></div>
+  <ul class="checklist">
+    <li><strong>No debe sentirse como "versión pobre":</strong> los módulos gratuitos deben seguir siendo experiencias completas y pulidas. El límite está en cantidad/alcance, nunca en calidad.</li>
+    <li><strong>Sin fricción para pedir ayuda:</strong> debe existir una forma simple y visible de que una familia sin recursos pida ser conectada con una institución aliada, no depender solo de que la ONG los traiga.</li>
+    <li><strong>Transparencia de precio:</strong> cualquier página de precios debe usar el mismo lenguaje simple y calmado del resto de la app, sin letra pequeña ni condiciones confusas.</li>
+    <li><strong>Riesgo de concentración:</strong> depender de pocos convenios institucionales grandes es frágil. Se recomienda diversificar entre B2C, especialistas y varias instituciones.</li>
+  </ul>
+</section>
+
+<!-- ===================== 7. ALTERNATIVAS ===================== -->
+<section class="step">
+  <div class="section-title-row"><span class="section-num">7</span><h2>Alternativas consideradas y descartadas</h2></div>
+  <ul class="checklist">
+    <li><strong>Todo automatizado desde el día 1:</strong> descartado para Fase 1 por requerir desarrollo significativo antes de validar si las instituciones comprarían así.</li>
+    <li><strong>Modelo por consumo medido:</strong> descartado por generar incertidumbre de "cuánto voy a pagar", lo cual choca con el principio de simplicidad y previsibilidad del diseño accesible de SocialMind.</li>
+    <li><strong>Verificación de ingresos para acceso gratuito:</strong> descartado — se prefiere un nivel gratuito abierto sin fricción, reservando el acceso completo subsidiado para familias que llegan vía convenios institucionales.</li>
+  </ul>
+</section>
+
+<!-- ===================== CIERRE ===================== -->
+<div class="closing">
+  <h2>🦉 Próximos pasos</h2>
+  <p style="margin-bottom:0;">Este documento define la estrategia. La implementación técnica (Fase 1 del roadmap) queda pendiente de que Douglas decida iniciarla — en ese momento corresponde crear un plan de implementación específico para el campo de plan, restricciones por módulo, e integración de pasarela de pago.</p>
+</div>
