@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { LegalFooter } from '../components/layout/LegalFooter'
 
 export function Welcome() {
   const navigate = useNavigate()
@@ -47,6 +48,8 @@ export function Welcome() {
             Ya tengo una cuenta
           </Button>
         </motion.div>
+
+        <LegalFooter />
 
       </div>
     </PageWrapper>

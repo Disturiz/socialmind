@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Card } from '../components/ui/Card'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { LegalFooter } from '../components/layout/LegalFooter'
 
 const ROLE_OPTIONS = [
   { value: 'parent',     label: 'Padre / Madre / Tutor' },
@@ -144,6 +145,9 @@ export function Register() {
             </p>
           </div>
         </Card>
+
+        <LegalFooter />
+
       </div>
     </PageWrapper>
   )

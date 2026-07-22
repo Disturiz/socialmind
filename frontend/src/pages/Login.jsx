@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Card } from '../components/ui/Card'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { LegalFooter } from '../components/layout/LegalFooter'
 
 export function Login() {
   const navigate          = useNavigate()
@@ -97,6 +98,9 @@ export function Login() {
             </p>
           </div>
         </Card>
+
+        <LegalFooter />
+
       </div>
     </PageWrapper>
   )
