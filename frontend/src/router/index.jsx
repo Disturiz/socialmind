@@ -25,6 +25,8 @@ import { WelcomePage } from '../pages/WelcomePage'
 import { AdminPage } from '../pages/AdminPage'
 import { AprendoHabitos } from '../pages/AprendoHabitos'
 import { GestionHabitos } from '../pages/GestionHabitos'
+import { TerminosPage } from '../pages/TerminosPage'
+import { PrivacidadPage } from '../pages/PrivacidadPage'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -128,6 +130,8 @@ export const router = createBrowserRouter([
   { path: '/registro', element: <Register /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
+  { path: '/terminos',   element: <TerminosPage /> },
+  { path: '/privacidad', element: <PrivacidadPage /> },
   { path: '/bienvenida', element: <ProtectedRoute><WelcomePage /></ProtectedRoute> },
   { path: '/admin', element: <AdminRoute><AdminPage /></AdminRoute> },
   {
