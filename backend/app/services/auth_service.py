@@ -26,6 +26,7 @@ def register_user(db: Session, data: RegisterRequest) -> User:
         hashed_password=hash_password(data.password),
         full_name=data.full_name,
         role=data.role,
+        terms_accepted_at=datetime.now(timezone.utc),
     )
     db.add(user)
     db.commit()

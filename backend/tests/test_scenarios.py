@@ -1,7 +1,7 @@
 def test_list_scenarios(client):
     client.post("/api/v1/auth/register", json={
         "email": "padre_list@test.com", "password": "Password123!",
-        "full_name": "Padre List", "role": "parent",
+        "full_name": "Padre List", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={
         "email": "padre_list@test.com", "password": "Password123!",
@@ -49,7 +49,7 @@ def test_get_scenario_not_found(client):
 
 def test_complete_scenario_authenticated(client):
     client.post("/api/v1/auth/register", json={
-        "email": "padre3@test.com", "password": "Password123!", "full_name": "Padre 3", "role": "parent",
+        "email": "padre3@test.com", "password": "Password123!", "full_name": "Padre 3", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "padre3@test.com", "password": "Password123!"})
     token = login.json()["access_token"]
@@ -71,7 +71,7 @@ def test_complete_scenario_unauthenticated(client):
 
 def test_complete_scenario_not_found(client):
     client.post("/api/v1/auth/register", json={
-        "email": "padre4@test.com", "password": "Password123!", "full_name": "Padre 4", "role": "parent",
+        "email": "padre4@test.com", "password": "Password123!", "full_name": "Padre 4", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "padre4@test.com", "password": "Password123!"})
     token = login.json()["access_token"]
@@ -91,7 +91,7 @@ def test_list_scenarios_unauthenticated(client):
 def test_list_scenarios_shows_completed(client):
     client.post("/api/v1/auth/register", json={
         "email": "padre_comp@test.com", "password": "Password123!",
-        "full_name": "Padre Comp", "role": "parent",
+        "full_name": "Padre Comp", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={
         "email": "padre_comp@test.com", "password": "Password123!",

@@ -4,6 +4,7 @@ def _register_parent(client):
         "password": "Password123!",
         "full_name": "Juan García",
         "role": "parent",
+        "terms_accepted": True,
     })
     return r.json()["access_token"]
 
@@ -14,6 +15,7 @@ def _register_specialist(client):
         "password": "Password123!",
         "full_name": "Dra. Ana",
         "role": "specialist",
+        "terms_accepted": True,
     })
     return r.json()["access_token"]
 

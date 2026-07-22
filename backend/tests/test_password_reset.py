@@ -16,6 +16,7 @@ def _make_user(db):
         hashed_password=hash_password("Password123!"),
         full_name="Test User",
         role=UserRole.parent,
+        terms_accepted_at=datetime.now(timezone.utc),
     )
     db.add(user)
     db.commit()
@@ -144,6 +145,7 @@ def test_forgot_password_known_email_returns_200(client, db):
         "password": "Password123!",
         "full_name": "Juan García",
         "role": "parent",
+        "terms_accepted": True,
     })
     with patch("app.routers.auth.request_password_reset") as mock_req:
         response = client.post("/api/v1/auth/forgot-password", json={"email": "padre@example.com"})
@@ -170,6 +172,7 @@ def test_reset_password_valid_flow(client, db):
         "password": "Password123!",
         "full_name": "Juan García",
         "role": "parent",
+        "terms_accepted": True,
     })
     from app.models.user import User
     from app.models.password_reset_token import PasswordResetToken
