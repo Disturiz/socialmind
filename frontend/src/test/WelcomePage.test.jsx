@@ -46,7 +46,7 @@ describe('WelcomePage', () => {
     renderPage()
     await waitFor(() => screen.getByRole('button', { name: /Siguiente/i }))
     await userEvent.click(screen.getByRole('button', { name: /Siguiente/i }))
-    await waitFor(() => screen.getByRole('button', { name: /Siguiente/i }))
+    await waitFor(() => screen.getByText(/aprender juntos/i))
     await userEvent.click(screen.getByRole('button', { name: /Siguiente/i }))
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Vamos a explorar/i })).toBeInTheDocument()
@@ -58,7 +58,7 @@ describe('WelcomePage', () => {
     renderPage()
     await waitFor(() => screen.getByRole('button', { name: /Siguiente/i }))
     await userEvent.click(screen.getByRole('button', { name: /Siguiente/i }))
-    await waitFor(() => screen.getByRole('button', { name: /Siguiente/i }))
+    await waitFor(() => screen.getByText(/aprender juntos/i))
     await userEvent.click(screen.getByRole('button', { name: /Siguiente/i }))
     await waitFor(() => screen.getByRole('button', { name: /Vamos a explorar/i }))
     await userEvent.click(screen.getByRole('button', { name: /Vamos a explorar/i }))

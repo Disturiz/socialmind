@@ -42,6 +42,7 @@ export function WelcomePage() {
       <PageWrapper className="items-center justify-center px-6 py-12">
         <div className="max-w-md w-full flex flex-col items-center">
           <LumiCharacter state="idle" size={160} />
+          <span className="sr-only" aria-live="polite">Cargando bienvenida...</span>
         </div>
       </PageWrapper>
     )
