@@ -4,7 +4,7 @@ from app.models.child_profile import ChildProfile
 
 def _login(client, email, role="parent"):
     client.post("/api/v1/auth/register", json={
-        "email": email, "password": "Password123!", "full_name": "Test User", "role": role,
+        "email": email, "password": "Password123!", "full_name": "Test User", "role": role, "terms_accepted": True,
     })
     resp = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
     return resp.json()["access_token"]

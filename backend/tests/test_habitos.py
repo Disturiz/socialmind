@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from sqlalchemy import text
 
 from app.services.habitos_service import detect_file_type
@@ -42,7 +43,7 @@ import io
 
 def _login_habitos(client, email, role="specialist"):
     client.post("/api/v1/auth/register", json={
-        "email": email, "password": "Password123!", "full_name": "Test User", "role": role,
+        "email": email, "password": "Password123!", "full_name": "Test User", "role": role, "terms_accepted": True,
     })
     resp = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
     return resp.json()["access_token"]
@@ -64,6 +65,7 @@ def _login_admin_habitos(client, db, email="admin_habito_upload@test.com"):
         hashed_password=hash_password("Password123!"),
         full_name="Test User",
         role=UserRole.admin,
+        terms_accepted_at=datetime.now(timezone.utc),
     )
     db.add(user)
     db.commit()

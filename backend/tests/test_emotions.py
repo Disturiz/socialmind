@@ -13,7 +13,7 @@ def test_list_emotions(client):
 
 def test_log_emotion_authenticated(client):
     client.post("/api/v1/auth/register", json={
-        "email": "padre@test.com", "password": "Password123!", "full_name": "Padre Test", "role": "parent",
+        "email": "padre@test.com", "password": "Password123!", "full_name": "Padre Test", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "padre@test.com", "password": "Password123!"})
     token = login.json()["access_token"]
@@ -36,7 +36,7 @@ def test_log_emotion_unauthenticated(client):
 
 def test_log_emotion_invalid_key(client):
     client.post("/api/v1/auth/register", json={
-        "email": "padre2@test.com", "password": "Password123!", "full_name": "Padre 2", "role": "parent",
+        "email": "padre2@test.com", "password": "Password123!", "full_name": "Padre 2", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "padre2@test.com", "password": "Password123!"})
     token = login.json()["access_token"]
@@ -51,7 +51,7 @@ def test_log_emotion_invalid_key(client):
 
 def test_emotions_today_returns_latest_emotion(client):
     client.post("/api/v1/auth/register", json={
-        "email": "today1@test.com", "password": "Password123!", "full_name": "Hoy Test", "role": "parent",
+        "email": "today1@test.com", "password": "Password123!", "full_name": "Hoy Test", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "today1@test.com", "password": "Password123!"})
     token = login.json()["access_token"]
@@ -72,7 +72,7 @@ def test_emotions_today_returns_latest_emotion(client):
 
 def test_emotions_today_returns_null_when_no_log_today(client):
     client.post("/api/v1/auth/register", json={
-        "email": "today2@test.com", "password": "Password123!", "full_name": "Sin Log", "role": "parent",
+        "email": "today2@test.com", "password": "Password123!", "full_name": "Sin Log", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": "today2@test.com", "password": "Password123!"})
     token = login.json()["access_token"]

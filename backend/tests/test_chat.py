@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 def _register_and_login(client, email="chat@test.com"):
     client.post("/api/v1/auth/register", json={
-        "email": email, "password": "Password123!", "full_name": "Chat Test", "role": "parent",
+        "email": email, "password": "Password123!", "full_name": "Chat Test", "role": "parent", "terms_accepted": True,
     })
     login = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
     return login.json()["access_token"]

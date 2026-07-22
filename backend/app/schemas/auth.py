@@ -7,12 +7,20 @@ class RegisterRequest(BaseModel):
     password: str
     full_name: str
     role: UserRole = UserRole.parent
+    terms_accepted: bool
 
     @field_validator('password')
     @classmethod
     def password_min_length(cls, v: str) -> str:
         if len(v) < 8:
             raise ValueError('La contraseña debe tener al menos 8 caracteres.')
+        return v
+
+    @field_validator('terms_accepted')
+    @classmethod
+    def terms_must_be_accepted(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError('Debes aceptar los Términos y la Política de Privacidad para crear una cuenta.')
         return v
 
 

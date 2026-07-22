@@ -1,6 +1,6 @@
 def _register_and_login(client, email="gami_ep@test.com"):
     client.post("/api/v1/auth/register", json={
-        "email": email, "password": "Password123!", "full_name": "Gami", "role": "parent",
+        "email": email, "password": "Password123!", "full_name": "Gami", "role": "parent", "terms_accepted": True,
     })
     r = client.post("/api/v1/auth/login", json={"email": email, "password": "Password123!"})
     return r.json()["access_token"]
