@@ -68,8 +68,12 @@ describe('WelcomePage', () => {
   it('si getMe falla, muestra el paso 1 sin nombre específico', async () => {
     mockGetMe.mockRejectedValueOnce(new Error('network'))
     renderPage()
+    // Before settling: no greeting shown yet (loading state shows only Lumi)
+    expect(screen.queryByText(/¡Hola!/i)).not.toBeInTheDocument()
+    // After rejection settles: greeting without name appears
     await waitFor(() => {
       expect(screen.getByText(/¡Hola!/i)).toBeInTheDocument()
     })
+    expect(screen.queryByText(/Sofía/i)).not.toBeInTheDocument()
   })
 })

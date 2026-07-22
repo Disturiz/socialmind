@@ -27,14 +27,25 @@ function buildSteps(name) {
 export function WelcomePage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
-  const [childName, setChildName] = useState('')
+  const [childName, setChildName] = useState(null)
   const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     profilesApi.getMe()
       .then(res => setChildName(res.data.child?.name || ''))
-      .catch(() => {})
+      .catch(() => setChildName(''))
   }, [])
+
+  // Loading state: API not yet settled — show only Lumi
+  if (childName === null) {
+    return (
+      <PageWrapper className="items-center justify-center px-6 py-12">
+        <div className="max-w-md w-full flex flex-col items-center">
+          <LumiCharacter state="idle" size={160} />
+        </div>
+      </PageWrapper>
+    )
+  }
 
   const steps = buildSteps(childName)
   const current = steps[step]
@@ -65,12 +76,14 @@ export function WelcomePage() {
           className="flex gap-2"
           role="progressbar"
           aria-valuenow={step + 1}
+          aria-valuemin={1}
           aria-valuemax={steps.length}
           aria-label="Progreso de la bienvenida"
         >
           {steps.map((_, i) => (
             <span
               key={i}
+              aria-hidden="true"
               className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 i === step ? 'bg-primary-500' : 'bg-calm-border'
               }`}
