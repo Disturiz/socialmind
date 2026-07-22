@@ -7,6 +7,7 @@ import { PageWrapper } from '../components/layout/PageWrapper'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { LumiCharacter } from '../components/lumi/LumiCharacter'
+import { LegalFooter } from '../components/layout/LegalFooter'
 
 const ROLE_LABELS = {
   parent:     'Familia',
@@ -231,6 +232,8 @@ export function Dashboard() {
         <Button variant="ghost" onClick={handleLogout} className="self-start">
           Cerrar sesión
         </Button>
+
+        <LegalFooter />
       </div>
     </PageWrapper>
   )

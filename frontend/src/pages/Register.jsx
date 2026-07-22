@@ -20,6 +20,7 @@ export function Register() {
   const [form, setForm]   = useState({ email: '', password: '', full_name: '', role: 'parent' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
@@ -32,7 +33,7 @@ export function Register() {
     }
     setLoading(true)
     try {
-      await register(form)
+      await register({ ...form, terms_accepted: termsAccepted })
       if (form.role === 'parent') {
         navigate('/perfil/nuevo-nino')
       } else {
@@ -121,6 +122,25 @@ export function Register() {
                 </div>
               </div>
 
+              <label className="flex items-start gap-3 text-xs text-text-secondary">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="accent-primary-500 w-5 h-5 mt-0.5 shrink-0"
+                />
+                <span>
+                  Acepto los{' '}
+                  <Link to="/terminos" target="_blank" rel="noopener noreferrer" className="text-primary-600 font-semibold underline">
+                    Términos y Condiciones
+                  </Link>{' '}
+                  y la{' '}
+                  <Link to="/privacidad" target="_blank" rel="noopener noreferrer" className="text-primary-600 font-semibold underline">
+                    Política de Privacidad
+                  </Link>.
+                </span>
+              </label>
+
               {error && (
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -132,7 +152,7 @@ export function Register() {
                 </motion.p>
               )}
 
-              <Button type="submit" disabled={loading} className="w-full mt-2">
+              <Button type="submit" disabled={loading || !termsAccepted} className="w-full mt-2">
                 {loading ? 'Creando cuenta...' : 'Crear mi cuenta'}
               </Button>
             </form>
